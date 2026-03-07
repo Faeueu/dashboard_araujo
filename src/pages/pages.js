@@ -141,7 +141,7 @@ export class P1_VisaoGeral {
         vendas.forEach(v => { dm[v.dow] = (dm[v.dow] || 0) + v.rec; });
         barChart('p1-dow', {
             labels: DOW,
-            datasets: [{ data: DOW.map(d => Math.round(dm[d] || 0)), backgroundColor: DOW.map((d, i) => i === 5 ? P.red : i === 6 ? 'rgba(232,0,13,.6)' : 'rgba(255,255,255,.09)'), borderRadius: 4, borderSkipped: false }],
+            datasets: [{ data: DOW.map(d => Math.round(dm[d] || 0)), backgroundColor: DOW.map((d, i) => i === 5 ? P.red : i === 6 ? 'rgba(220,38,38,.6)' : 'rgba(15,23,42,.09)'), borderRadius: 4, borderSkipped: false }],
             yFmt: v => brl(v),
         });
     }
@@ -200,15 +200,15 @@ export class P2_Ticket {
                 { label: 'Ticket Médio', data: tkS.map(d => d.ticket), borderColor: P.red, backgroundColor: P.redDim, fill: true, tension: .4, borderWidth: 2.5, pointRadius: 3 },
                 { label: 'Meta R$96,60', data: Array(tkS.length).fill(96.60), borderColor: P.white2, borderDash: [5, 4], borderWidth: 1.5, pointRadius: 0 },
             ],
-            yFmt: v => 'R$' + Math.round(v), yMin: 88, yMax: 108, legend: true,
+            yFmt: v => brl(v), yMin: 88, yMax: 108, legend: true,
         });
 
         // barras campanha
         const cSort = [...camps].sort((a, b) => a.tp - b.tp);
         barChart('p2-camp', {
             labels: cSort.map(d => d.label),
-            datasets: [{ data: cSort.map(d => Math.round(d.tp)), backgroundColor: cSort.map(d => d.tp >= 280 ? P.red : d.tp >= 268 ? 'rgba(232,0,13,.45)' : 'rgba(255,255,255,.11)'), borderRadius: 3, borderSkipped: false }],
-            horizontal: true, xFmt: v => 'R$' + v,
+            datasets: [{ data: cSort.map(d => Math.round(d.tp)), backgroundColor: cSort.map(d => d.tp >= 280 ? P.red : d.tp >= 268 ? 'rgba(220,38,38,.45)' : 'rgba(15,23,42,.11)'), borderRadius: 3, borderSkipped: false }],
+            horizontal: true, xFmt: v => brl(v),
         });
 
         // heatmap
@@ -262,12 +262,12 @@ export class P3_Margem {
 
         barChart('p3-marg', {
             labels: cm.map(d => d.label),
-            datasets: [{ data: cm.map(d => +d.pct.toFixed(1)), backgroundColor: cm.map(d => d.pct >= 40 ? P.red : d.pct >= 30 ? 'rgba(232,0,13,.45)' : d.pct >= 23 ? 'rgba(255,255,255,.18)' : 'rgba(255,255,255,.08)'), borderRadius: 3, borderSkipped: false }],
+            datasets: [{ data: cm.map(d => +d.pct.toFixed(1)), backgroundColor: cm.map(d => d.pct >= 40 ? P.red : d.pct >= 30 ? 'rgba(220,38,38,.45)' : d.pct >= 23 ? 'rgba(15,23,42,.18)' : 'rgba(15,23,42,.08)'), borderRadius: 3, borderSkipped: false }],
             horizontal: true, xFmt: v => v + '%',
         });
 
         scatterChart('p3-scat', {
-            datasets: cm.map(d => ({ label: d.label, data: [{ x: d.rec, y: +d.pct.toFixed(1) }], backgroundColor: d.pct >= 40 ? P.red : d.pct >= 30 ? 'rgba(232,0,13,.45)' : 'rgba(255,255,255,.28)', pointRadius: 9, pointHoverRadius: 11 })),
+            datasets: cm.map(d => ({ label: d.label, data: [{ x: d.rec, y: +d.pct.toFixed(1) }], backgroundColor: d.pct >= 40 ? P.red : d.pct >= 30 ? 'rgba(220,38,38,.45)' : 'rgba(15,23,42,.28)', pointRadius: 9, pointHoverRadius: 11 })),
             xFmt: v => brl(v), yFmt: v => v + '%',
         });
 
@@ -345,7 +345,7 @@ export class P4_Estoque {
         const ck = Object.keys(cob);
         barChart('p4-cob', {
             labels: ck,
-            datasets: [{ data: Object.values(cob), backgroundColor: ck.map(k => k === '0–7d' ? P.red : k === '8–15d' ? 'rgba(232,0,13,.5)' : k === '16–30d' ? P.white : 'rgba(255,255,255,.14)'), borderRadius: 4, borderSkipped: false }],
+            datasets: [{ data: Object.values(cob), backgroundColor: ck.map(k => k === '0–7d' ? P.red : k === '8–15d' ? 'rgba(220,38,38,.5)' : k === '16–30d' ? P.white : 'rgba(15,23,42,.14)'), borderRadius: 4, borderSkipped: false }],
             yFmt: v => num(v),
         });
 
@@ -419,7 +419,7 @@ export class P5_Rupturas {
         const ma = MESES_ORD.filter(m => mm[m]);
         dualChart('p5-mes', {
             labels: ma.map(fmtMes),
-            barDs: { type: 'bar', label: 'Qtd Rupturas', data: ma.map(m => mm[m]?.count || 0), backgroundColor: 'rgba(232,0,13,.12)', borderColor: P.red, borderWidth: 1, borderRadius: 4, yAxisID: 'y', yFmt: v => num(v) },
+            barDs: { type: 'bar', label: 'Qtd Rupturas', data: ma.map(m => mm[m]?.count || 0), backgroundColor: 'rgba(220,38,38,.12)', borderColor: P.red, borderWidth: 1, borderRadius: 4, yAxisID: 'y', yFmt: v => num(v) },
             lineDs: { type: 'line', label: 'Receita Perdida', data: ma.map(m => Math.round(mm[m]?.perd || 0)), borderColor: P.white, backgroundColor: 'transparent', borderWidth: 2, pointRadius: 4, tension: .3, yAxisID: 'y2', yFmt: v => brl(v) },
         });
 
@@ -427,7 +427,7 @@ export class P5_Rupturas {
         const top10 = porCat.slice(0, 10);
         barChart('p5-cat', {
             labels: top10.map(d => d.label),
-            datasets: [{ data: top10.map(d => Math.round(d.perdida)), backgroundColor: top10.map((_, i) => `rgba(232,0,13,${(1 - i * .08).toFixed(2)})`), borderRadius: 4, borderSkipped: false }],
+            datasets: [{ data: top10.map(d => Math.round(d.perdida)), backgroundColor: top10.map((_, i) => `rgba(220,38,38,${(1 - i * .08).toFixed(2)})`), borderRadius: 4, borderSkipped: false }],
             horizontal: true, xFmt: v => brl(v),
         });
     }

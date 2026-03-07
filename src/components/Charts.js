@@ -3,38 +3,39 @@
 // Gerencia instâncias para evitar memory leak ao re-renderizar.
 
 export const P = {
-  red:     '#E8000D',
-  redDim:  'rgba(232,0,13,.13)',
-  red2:    '#FF4455',
-  white:   '#EEEEF2',
-  white2:  '#9898AA',
-  gray:    '#464658',
-  gray2:   '#2A2A36',
-  centro:  '#E8000D',
-  norte:   '#D8D8E8',
-  sul:     '#5A5A72',
-  grid:    'rgba(255,255,255,.045)',
+  red:     '#dc2626',
+  redDim:  'rgba(220,38,38,.08)',
+  red2:    '#ef4444',
+  white:   '#0F172A', // Changed to dark for contrast in light theme
+  white2:  '#475569', // Changed to dark gray
+  gray:    '#94A3B8',
+  gray2:   '#CBD5E1',
+  centro:  '#dc2626',
+  norte:   '#cbd5e1', 
+  sul:     '#334155',
+  grid:    'rgba(0,0,0,0.06)', // Dark grid lines with low opacity
 };
 
 const _inst = new Map();
 
 export function applyDefaults(Chart) {
-  const font = "'Figtree', 'DM Sans', system-ui, sans-serif";
+  const font = "'Figtree', system-ui, sans-serif";
   Chart.defaults.font.family                            = font;
-  Chart.defaults.font.size                              = 11.5;
-  Chart.defaults.color                                  = '#55556A';
+  Chart.defaults.font.size                              = 12.5;
+  Chart.defaults.color                                  = '#64748b'; // Slate 500
   Chart.defaults.plugins.legend.display                 = false;
-  Chart.defaults.plugins.tooltip.backgroundColor        = '#17171F';
-  Chart.defaults.plugins.tooltip.borderColor            = '#2A2A38';
+  Chart.defaults.plugins.tooltip.backgroundColor        = '#ffffff'; // Light tooltip
+  Chart.defaults.plugins.tooltip.borderColor            = '#e2e8f0';
   Chart.defaults.plugins.tooltip.borderWidth            = 1;
-  Chart.defaults.plugins.tooltip.padding                = 11;
-  Chart.defaults.plugins.tooltip.cornerRadius           = 7;
+  Chart.defaults.plugins.tooltip.padding                = 12;
+  Chart.defaults.plugins.tooltip.cornerRadius           = 8;
   Chart.defaults.plugins.tooltip.displayColors          = true;
-  Chart.defaults.plugins.tooltip.boxPadding             = 4;
-  Chart.defaults.plugins.tooltip.titleColor             = '#EEEEF2';
-  Chart.defaults.plugins.tooltip.bodyColor              = '#8888A0';
-  Chart.defaults.plugins.tooltip.titleFont              = { family: font, weight: '600', size: 12 };
-  Chart.defaults.plugins.tooltip.bodyFont               = { family: font, size: 11 };
+  Chart.defaults.plugins.tooltip.boxPadding             = 6;
+  Chart.defaults.plugins.tooltip.titleColor             = '#0f172a';
+  Chart.defaults.plugins.tooltip.bodyColor              = '#334155';
+  Chart.defaults.plugins.tooltip.titleFont              = { family: font, weight: '700', size: 13.5 };
+  Chart.defaults.plugins.tooltip.bodyFont               = { family: font, size: 12.5 };
+  Chart.defaults.plugins.tooltip.bodySpacing            = 6;
 }
 
 function mk(id, cfg) {
