@@ -1,0 +1,322 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — Tailwind v4 @theme
+═══════════════════════════════════════════════════════════════ */
+@theme {
+  --color-bg: #F1F5F9;
+  --color-bg-alt: #E2E8F0;
+  --color-surface: #FFFFFF;
+  --color-card: #FFFFFF;
+  --color-card-hover: #F8FAFC;
+
+  --color-border: #E2E8F0;
+  --color-border-strong: #CBD5E1;
+  --color-border-subtle: #F1F5F9;
+
+  --color-primary: #DC2626;
+  --color-primary-dim: rgba(220, 38, 38, 0.08);
+  --color-primary-soft: rgba(220, 38, 38, 0.15);
+  --color-primary-hover: #B91C1C;
+
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+
+  --color-text-1: #0F172A;
+  --color-text-2: #334155;
+  --color-text-3: #64748B;
+  --color-text-4: #94A3B8;
+
+  --color-centro: #DC2626;
+  --color-norte: #6366F1;
+  --color-sul: #0EA5E9;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --sidebar-w: 260px;
+  --topbar-h: 56px;
+}
+
+/* ─── Reset ─── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 15px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text-1);
+  font-family: var(--font-sans);
+  font-size: 14.5px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Custom scrollbar ─── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 10px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LOADING SPLASH
+═══════════════════════════════════════════════════════════════ */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  gap: 20px;
+  transition: opacity 500ms var(--ease-out);
+}
+
+.loading-screen.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-name {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-text-1);
+  letter-spacing: -0.3px;
+}
+
+.loading-name em {
+  font-style: normal;
+  color: var(--color-primary);
+}
+
+.loading-bar {
+  width: 180px;
+  height: 3px;
+  background: var(--color-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.loading-prog {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), #EF4444);
+  border-radius: 10px;
+  animation: ldAnim 1.4s var(--ease-out) infinite;
+}
+
+@keyframes ldAnim {
+  0% { width: 0%; margin-left: 0; }
+  50% { width: 60%; margin-left: 40%; }
+  100% { width: 0%; margin-left: 100%; }
+}
+
+.loading-text {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--color-text-3);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════════════════════════ */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 350ms var(--ease-out) both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 300ms var(--ease-out) both;
+}
+
+.animate-slide-in {
+  animation: slideInRight 350ms var(--ease-out) both;
+}
+
+/* Staggered children animation */
+.stagger > *:nth-child(1) { animation-delay: 0ms; }
+.stagger > *:nth-child(2) { animation-delay: 40ms; }
+.stagger > *:nth-child(3) { animation-delay: 80ms; }
+.stagger > *:nth-child(4) { animation-delay: 120ms; }
+.stagger > *:nth-child(5) { animation-delay: 160ms; }
+.stagger > *:nth-child(6) { animation-delay: 200ms; }
+.stagger > *:nth-child(7) { animation-delay: 240ms; }
+.stagger > *:nth-child(8) { animation-delay: 280ms; }
+
+/* ═══════════════════════════════════════════════════════════════
+   APEXCHARTS OVERRIDES
+═══════════════════════════════════════════════════════════════ */
+.apexcharts-tooltip {
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08) !important;
+  font-family: var(--font-sans) !important;
+}
+
+.apexcharts-tooltip-title {
+  background: var(--color-bg) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  font-weight: 600 !important;
+  padding: 8px 12px !important;
+}
+
+.apexcharts-tooltip-text {
+  font-size: 12.5px !important;
+}
+
+.apexcharts-legend-text {
+  font-family: var(--font-sans) !important;
+  font-size: 12px !important;
+  color: var(--color-text-2) !important;
+}
+
+.apexcharts-xaxis-label,
+.apexcharts-yaxis-label {
+  font-family: var(--font-sans) !important;
+  fill: var(--color-text-3) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HEATMAP TABLE
+═══════════════════════════════════════════════════════════════ */
+.heatmap-table {
+  border-collapse: collapse;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.heatmap-table th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--color-text-3);
+  padding: 10px 14px;
+  text-align: center;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  font-weight: 600;
+}
+
+.heatmap-table td {
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  text-align: center;
+  border: 1px solid var(--color-surface);
+}
+
+.heatmap-loja {
+  color: var(--color-text-1);
+  font-size: 12px;
+  white-space: nowrap;
+  text-align: center !important;
+  font-weight: 600;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DATA TABLE
+═══════════════════════════════════════════════════════════════ */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  min-width: 360px;
+}
+
+.data-table thead th {
+  background: var(--color-bg);
+  color: var(--color-text-3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 12px 14px;
+  text-align: center;
+  border-bottom: 2px solid var(--color-border-strong);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.data-table tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+  text-align: center;
+  transition: background 150ms;
+}
+
+.data-table tbody tr:hover td {
+  background: var(--color-bg);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 860px) {
+  .mobile-hidden {
+    display: none !important;
+  }
+}
