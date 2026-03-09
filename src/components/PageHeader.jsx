@@ -1,20 +1,18 @@
 // src/components/PageHeader.jsx
 export default function PageHeader({ badge, title, description }) {
   return (
-    <div className="mb-8 pb-6 relative text-center flex flex-col items-center justify-center animate-fade-up">
-      <div className="font-mono text-[10.5px] tracking-[2.5px] uppercase text-primary mb-2.5 flex items-center gap-2 justify-center font-bold">
-        <span className="inline-block w-4 h-[2px] bg-primary" />
+    <div className="mb-6 pb-5 flex flex-col items-start font-sans animate-fade-up">
+      <div className="font-mono text-[10px] tracking-[2px] uppercase text-primary mb-1.5 font-bold">
         {badge}
       </div>
       <h1
-        className="text-2xl lg:text-[28px] font-extrabold leading-tight mb-3 text-text-1"
-        style={{ letterSpacing: '-0.5px' }}
-        dangerouslySetInnerHTML={{ __html: title }}
+        className="text-[26px] lg:text-[32px] font-extrabold leading-tight mb-2 text-text-1"
+        style={{ letterSpacing: '-0.7px' }}
+        dangerouslySetInnerHTML={{ __html: title.replace('<br/>', ' ') }}
       />
-      <p className="text-text-3 text-[13px] max-w-xl leading-relaxed mb-5">
+      <p className="text-text-3 text-[14px] max-w-2xl leading-relaxed">
         {description}
       </p>
-      <div className="w-8 h-[3px] bg-primary" />
     </div>
   );
 }

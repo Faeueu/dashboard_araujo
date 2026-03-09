@@ -48,6 +48,10 @@ function baseOpts({ chart, grid, tooltip, legend, ...rest } = {}) {
       padding: { left: 8, right: 8 },
       ...grid,
     },
+    dataLabels: {
+      enabled: false,
+      ...(rest.dataLabels || {})
+    },
     tooltip: {
       theme: 'light',
       style: { fontSize: '12.5px', fontFamily: FONT },
@@ -136,7 +140,7 @@ export function BarChart({ series, categories, horizontal = false, yFormatter, x
 // ═══════════════════════════════════════════════════════════════
 //  DONUT CHART
 // ═══════════════════════════════════════════════════════════════
-export function DonutChart({ series, labels, colors, height = 200, tooltipFormatter }) {
+export function DonutChart({ series, labels, colors, height = 200, tooltipFormatter, valueFormatter }) {
   const options = useMemo(() => ({
     chart: {
       type: 'donut',
@@ -153,8 +157,12 @@ export function DonutChart({ series, labels, colors, height = 200, tooltipFormat
           labels: {
             show: true,
             name: { fontSize: '13px', fontFamily: FONT, color: COLORS.text1 },
-            value: { fontSize: '18px', fontFamily: FONT, fontWeight: 700, color: COLORS.text1 },
-            total: { show: true, fontSize: '11px', fontFamily: MONO, color: COLORS.text3, label: 'Total' },
+            value: { fontSize: '18px', fontFamily: FONT, fontWeight: 700, color: COLORS.text1, formatter: valueFormatter || ((val) => Number(val).toLocaleString('pt-BR')) },
+            total: { show: true, fontSize: '11px', fontFamily: MONO, color: COLORS.text3, label: 'Total', formatter: (w) => {
+                const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                return valueFormatter ? valueFormatter(total) : Number(total).toLocaleString('pt-BR');
+              }
+            },
           },
         },
       },
@@ -164,7 +172,7 @@ export function DonutChart({ series, labels, colors, height = 200, tooltipFormat
     tooltip: {
       y: { formatter: tooltipFormatter },
     },
-  }), [labels, colors, height, tooltipFormatter]);
+  }), [labels, colors, height, tooltipFormatter, valueFormatter]);
 
   return <Chart options={options} series={series} type="donut" height={height} />;
 }

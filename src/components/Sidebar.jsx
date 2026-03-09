@@ -30,10 +30,10 @@ export default function Sidebar({ isOpen, onClose }) {
     >
       {/* Logo */}
       <div className="px-5 pt-6 pb-5 border-b border-border">
-        <div className="font-mono text-[9.5px] tracking-[2.5px] uppercase text-text-4 font-semibold mb-1.5">
+        <div className="font-mono text-[9px] tracking-[1.5px] uppercase text-text-4 font-semibold mb-2">
           Dashboard · V2
         </div>
-        <div className="text-lg font-extrabold text-text-1 leading-tight tracking-tight">
+        <div className="text-[16px] font-extrabold text-text-1 leading-tight tracking-tight">
           Supermercados<br />
           <em className="not-italic text-primary">Araújo</em>
         </div>

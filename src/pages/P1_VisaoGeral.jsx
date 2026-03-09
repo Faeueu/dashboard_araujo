@@ -10,7 +10,17 @@ import { brl, brlFull, pct, dataCurta } from '../utils/fmt.js';
 
 const LOJAS = ['Araújo Centro', 'Araújo Norte', 'Araújo Sul'];
 const LCOL = [COLORS.centro, COLORS.norte, COLORS.sul];
-const CAT_COLORS = [COLORS.primary, '#EF4444', '#F87171', '#FCA5A5', '#FECACA', COLORS.norte, COLORS.sul, '#94A3B8', '#CBD5E1'];
+const CAT_COLORS = [
+  '#0F172A', // Preto
+  COLORS.centro, // Vermelho
+  COLORS.sul, // Cinza Escuro
+  COLORS.norte, // Cinza Claro
+  '#64748B', // Slate
+  '#B91C1C', // Vermelho Escuro
+  '#94A3B8', // Slate Claro
+  '#FCA5A5', // Vermelho Claro
+  '#E2E8F0', // Cinza Gelo
+];
 const DOW_LABELS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
 export default function P1_VisaoGeral() {
@@ -117,6 +127,7 @@ export default function P1_VisaoGeral() {
                 labels={dLbl}
                 colors={CAT_COLORS}
                 height={180}
+                valueFormatter={(val) => brl(val)}
                 tooltipFormatter={(val) => `${brl(val)} (${((val / tot) * 100).toFixed(1)}%)`}
               />
             </div>
@@ -141,6 +152,7 @@ export default function P1_VisaoGeral() {
               data: dowData,
             }]}
             categories={DOW_LABELS}
+            colors={dowColors}
             yFormatter={v => brl(v)}
             height={200}
           />

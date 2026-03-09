@@ -20,10 +20,12 @@ export function brlFull(v) {
   return _brl.format(v);
 }
 
-// Percentual  29.6 → "29,6%"
-export function pct(v, dec = 1) {
+const _n2   = new Intl.NumberFormat('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:2 });
+
+// Percentual  29.61 → "29,61%"
+export function pct(v) {
   if (v == null || isNaN(v)) return '—';
-  return (dec === 1 ? _n1 : _n0).format(v) + '%';
+  return _n2.format(v) + '%';
 }
 
 // Número inteiro  4716 → "4.716"

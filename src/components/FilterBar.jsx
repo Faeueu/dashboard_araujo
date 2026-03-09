@@ -39,15 +39,15 @@ function Dropdown({ campo, opcoes, ativos, onToggle, onClear }) {
       <button
         onClick={() => setOpen(v => !v)}
         className={`
-          flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer
-          border transition-all duration-150 whitespace-nowrap
+          flex items-center justify-between gap-3 px-3.5 py-1.5 rounded-md text-[13px] font-semibold cursor-pointer
+          border shadow-sm transition-all duration-150 min-w-[140px]
           ${hasActive
-            ? 'border-primary text-primary bg-primary-dim hover:bg-primary-soft'
+            ? 'border-primary text-primary bg-primary-dim hover:bg-primary-soft ring-1 ring-primary/20'
             : 'border-border-strong text-text-2 bg-surface hover:border-text-4 hover:text-text-1'
           }
         `}
       >
-        <span>{label}</span>
+        <span className="truncate max-w-[140px]">{label}</span>
         <svg
           className={`w-2.5 h-2.5 text-text-3 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
           viewBox="0 0 10 10"
