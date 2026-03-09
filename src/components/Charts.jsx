@@ -27,8 +27,9 @@ const FONT = "'Inter', system-ui, sans-serif";
 const MONO = "'JetBrains Mono', monospace";
 
 // ── Base options builder ──
-function baseOpts(overrides = {}) {
+function baseOpts({ chart, grid, tooltip, legend, ...rest } = {}) {
   return {
+    ...rest,
     chart: {
       fontFamily: FONT,
       toolbar: { show: false },
@@ -39,18 +40,18 @@ function baseOpts(overrides = {}) {
         speed: 600,
         dynamicAnimation: { speed: 400 },
       },
-      ...overrides.chart,
+      ...chart,
     },
     grid: {
       borderColor: COLORS.grid,
       strokeDashArray: 3,
       padding: { left: 8, right: 8 },
-      ...overrides.grid,
+      ...grid,
     },
     tooltip: {
       theme: 'light',
       style: { fontSize: '12.5px', fontFamily: FONT },
-      ...overrides.tooltip,
+      ...tooltip,
     },
     legend: {
       show: false,
@@ -58,9 +59,8 @@ function baseOpts(overrides = {}) {
       fontSize: '12px',
       labels: { colors: COLORS.text2 },
       markers: { size: 5, shape: 'circle' },
-      ...overrides.legend,
+      ...legend,
     },
-    ...overrides,
   };
 }
 
