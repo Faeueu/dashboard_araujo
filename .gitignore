@@ -1,4 +1,29 @@
+# Dependências
 node_modules/
+
+# Build
 dist/
-.DS_Store
+
+# Logs
 *.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Variáveis de ambiente
+.env
+.env.*
+!.env.example
+
+# Cache
+.cache/
+.temp/
+*.tsbuildinfo
