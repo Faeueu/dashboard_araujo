@@ -1,11 +1,27 @@
 # Dashboard Comercial — Supermercados Araújo
 
 Sistema de análise comercial e operacional com dados de Dez/2025–Mar/2026.
-Construído com **React** + **ApexCharts** + **Tailwind CSS v4** + **Vite**.
+Construído com **React 19** + **ApexCharts** + **Tailwind CSS v4** + **Vite 6**.
+
+> **Tema claro** com uso de branco, preto para texto e vermelho para destaques e ações.
 
 ---
 
-## Como rodar
+## Tecnologias Utilizadas
+
+| Camada       | Tecnologia                    | Versão  |
+|--------------|-------------------------------|---------|
+| Framework    | React                         | 19.x    |
+| Bundler/Dev  | Vite                          | 6.x     |
+| Linguagem    | JavaScript (JSX, ES Modules)  | ES2022  |
+| Estilos      | Tailwind CSS (plugin Vite)    | 4.x     |
+| Gráficos     | ApexCharts + react-apexcharts | 4.5+    |
+| Fontes       | Plus Jakarta Sans + JetBrains Mono (Google Fonts) | — |
+| Deploy       | Vercel (static build)         | —       |
+
+---
+
+## Como Rodar
 
 ```bash
 # Instalar dependências (apenas na primeira vez)
@@ -17,7 +33,7 @@ npm run dev
 
 Abrir `http://localhost:5173` no navegador.
 
-### Outros comandos
+### Outros Comandos
 
 ```bash
 # Build de produção (gera pasta dist/)
@@ -27,9 +43,9 @@ npm run build
 npm run preview
 ```
 
-> **Nota**: como o projeto está no Google Drive, `npm install` pode apresentar
-> erros de filesystem (EBADF/EPERM). Neste caso, copie o `package.json` para um
-> disco local, rode `npm install` lá e copie o `node_modules` de volta.
+> **Nota Google Drive**: como o projeto está no Google Drive, `npm install` pode
+> apresentar erros de filesystem (EBADF/EPERM). Neste caso, copie o `package.json`
+> para um disco local, rode `npm install` lá e copie o `node_modules` de volta.
 
 ---
 
@@ -37,7 +53,7 @@ npm run preview
 
 ```
 Araújo/
-├── index.html                  ← HTML com <div id="root"> + fontes Inter/JetBrains Mono
+├── index.html                  ← HTML raiz com <div id="root"> + Google Fonts
 ├── package.json                ← React, ApexCharts, Tailwind CSS, Vite
 ├── vite.config.js              ← Plugins: @vitejs/plugin-react + @tailwindcss/vite
 ├── vercel.json                 ← Deploy Vercel (build → dist/)
@@ -45,34 +61,34 @@ Araújo/
 │
 ├── public/
 │   └── data/
-│       └── dataset.json        ← Dataset completo (~1.75MB — vendas, estoque, rupturas, metas)
+│       └── dataset.json        ← Dataset completo (~1.75MB)
 │
 └── src/
-    ├── main.jsx                ← Entry point React (loading screen, fetch dataset, render <App/>)
+    ├── main.jsx                ← Entry point React (loading, fetch dataset, render)
     ├── App.jsx                 ← Shell layout (sidebar + filterbar + page outlet)
-    ├── index.css               ← Tailwind v4 @theme tokens, reset, animações, overrides ApexCharts
+    ├── index.css               ← Tailwind v4 @theme (design tokens, tema claro)
     │
     ├── core/
-    │   └── DashboardContext.jsx ← React Context + hooks (dataset, filtros, dados filtrados memoizados)
+    │   └── DashboardContext.jsx ← React Context + hooks (dataset, filtros, memo)
     │
     ├── components/
-    │   ├── Sidebar.jsx         ← Navegação lateral com ícones + menu mobile responsivo
-    │   ├── FilterBar.jsx       ← Filtros multi-select reativos (Loja, Mês, Categoria)
-    │   ├── Charts.jsx          ← 6 wrappers ApexCharts (Line, Bar, Donut, Scatter, Radar, Mixed)
-    │   ├── KpiCard.jsx         ← Card de KPI reutilizável (label, valor, subtítulo, cor)
-    │   ├── ChartCard.jsx       ← Wrapper para gráficos com título e hint
-    │   └── PageHeader.jsx      ← Cabeçalho padronizado (badge, título, descrição)
+    │   ├── Sidebar.jsx         ← Navegação lateral responsiva com menu mobile
+    │   ├── FilterBar.jsx       ← Filtros reativos multi-select (Loja, Mês, Categoria)
+    │   ├── Charts.jsx          ← 6 wrappers ApexCharts (Line, Bar, Donut, Scatter, Dual, Radar)
+    │   ├── KpiCard.jsx         ← Card de KPI centralizado (label, valor, subtítulo)
+    │   ├── ChartCard.jsx       ← Wrapper para gráficos com título e hint centralizados
+    │   └── PageHeader.jsx      ← Cabeçalho centralizado com badge decorativo
     │
     ├── pages/
     │   ├── P1_VisaoGeral.jsx   ← Visão Geral Comercial (receita, ticket, margem, mix)
     │   ├── P2_Ticket.jsx       ← Análise do Ticket Médio (semanal, campanhas, heatmap)
-    │   ├── P3_Margem.jsx       ← Margem & Mix de Produtos (scatter, mensal por loja)
-    │   ├── P4_Estoque.jsx      ← Gestão de Estoque (status bars, cobertura, tabela críticos)
-    │   ├── P5_Rupturas.jsx     ← Análise de Rupturas (motivo donut, dual-axis, categorias)
-    │   └── P6_Metas.jsx        ← Painel de Metas (atingimento, radar de performance)
+    │   ├── P3_Margem.jsx       ← Margem & Mix (barras, scatter, grouped bars)
+    │   ├── P4_Estoque.jsx      ← Gestão de Estoque (status bars, histograma, tabela)
+    │   ├── P5_Rupturas.jsx     ← Rupturas (donut com legendas, dual-axis, barras)
+    │   └── P6_Metas.jsx        ← Metas e Performance (grouped bars, %, radar)
     │
     └── utils/
-        ├── fmt.js              ← Formatadores (BRL, %, data, delta)
+        ├── fmt.js              ← Formatadores (BRL, %, data, abreviações)
         └── filters.js          ← Funções puras de filtragem e agregação
 ```
 
@@ -80,7 +96,7 @@ Araújo/
 
 ## Arquitetura
 
-### Padrão: React Context + Componentes Reativos
+### React Context + Componentes Reativos
 
 ```
 dataset.json (fetch)
@@ -95,7 +111,7 @@ dataset.json (fetch)
    App.jsx
      ├── Sidebar ────── setPage()
      ├── FilterBar ──── setFiltro() → re-render automático
-     └── Page Outlet
+     └── Page Outlet (max-width 1400px, centralizado)
            ├── P1_VisaoGeral ← useFilteredData()
            ├── P2_Ticket     ← useFilteredData()
            ├── P3_Margem     ← useFilteredData()
@@ -104,31 +120,48 @@ dataset.json (fetch)
            └── P6_Metas      ← useFilteredData()
 ```
 
-### Fluxo de inicialização (`src/main.jsx`)
+### Fluxo de Inicialização (`src/main.jsx`)
 
-1. Importa `src/index.css` (Tailwind v4 + design tokens)
-2. Exibe tela de loading animada
+1. Importa `src/index.css` (Tailwind v4 + design tokens do tema claro)
+2. Exibe tela de loading animada (fundo claro, barra vermelha)
 3. Carrega `dataset.json` via `fetch('/data/dataset.json')`
 4. Renderiza `<DashboardProvider>` com dataset
 5. `<App>` monta sidebar, filterbar e page outlet
-6. Remove tela de loading
+6. Remove tela de loading com transição de opacidade
 
-### Módulos
+---
 
-**DashboardContext** — React Context com `useMemo` para dados filtrados. Expõe hooks `useDashboard()` e `useFilteredData()`. Substitui o antigo Store.js (Observer pattern) por reatividade nativa do React.
+## Design System
 
-**App.jsx** — Shell layout que mapeia IDs de página (`visao-geral`, `ticket` …) para componentes React. A página ativa é renderizada dentro do outlet com animação `fadeUp`.
+### Tema Claro
 
-**FilterBar** — Lê valores únicos do dataset, renderiza dropdowns multi-select com checkmarks. Ao mudar, chama `setFiltro()` no Context, disparando re-render de toda a árvore com dados filtrados atualizados via `useMemo`.
+| Token          | Valor     | Uso                        |
+|----------------|-----------|----------------------------|
+| `--color-bg`   | `#F5F6FA` | Fundo geral                |
+| `--color-surf` | `#FFFFFF` | Sidebar, topbar            |
+| `--color-card` | `#FFFFFF` | Cards, chart wrappers      |
+| `--color-primary` | `#DC2626` | Vermelho — destaques, alertas |
+| `--color-text-1` | `#0F172A` | Texto principal (quase preto) |
+| `--color-text-2` | `#475569` | Texto secundário           |
+| `--color-text-3` | `#94A3B8` | Labels, hints              |
 
-**Charts.jsx** — 6 componentes wrapper para `react-apexcharts` com tema padrão do dashboard: `LineChart`, `BarChart`, `DonutChart`, `ScatterChart`, `RadarChart`, `MixedChart`. Opções são memoizadas via `useMemo`.
+### Tipografia
 
-**Filters** (`utils/filters.js`) — Funções puras sem efeitos colaterais. Recebem arrays e retornam agregações. Preservadas integralmente da versão anterior.
+- **Fonte principal**: Plus Jakarta Sans (300–800)
+- **Fonte mono**: JetBrains Mono (400–700)
+- **Tamanho base**: 15px
+- **Títulos de página**: `clamp(26px, 3.5vw, 36px)` — responsivo
+- **Valores KPI**: 28px extrabold, centralizado
+- **Labels de gráfico**: 12–13px, peso 500–600
 
-**Pages** — Cada página é um componente React que:
-1. Consome `useFilteredData()` para obter dados filtrados
-2. Calcula KPIs e séries de gráficos
-3. Renderiza `KpiCard`, `ChartCard` e componentes de gráfico
+### Gráficos (ApexCharts)
+
+- **Alturas padrão**: 280–400px (variável por tipo)
+- **Data labels**: habilitados em gráficos de barras
+- **Marcadores de linha**: 4–5px com borda branca
+- **Tooltips**: tema claro com sombra suave
+- **Legendas**: posição top, 13px bold
+- **Cores**: vermelho (#DC2626), cinza (#64748B, #94A3B8), preto (#1E293B)
 
 ---
 
@@ -144,17 +177,25 @@ dataset.json (fetch)
 
 ---
 
-## Stack Técnica
+## Páginas do Dashboard
 
-| Camada       | Tecnologia |
-|--------------|------------|
-| Framework    | React 19.x |
-| Bundler      | Vite 6.x |
-| Linguagem    | JavaScript (JSX, ES modules) |
-| Estilos      | Tailwind CSS 4.x (plugin Vite, `@theme` tokens) |
-| Gráficos     | ApexCharts 4.x + react-apexcharts |
-| Fontes       | Inter + JetBrains Mono (Google Fonts) |
-| Deploy       | Vercel (static build) |
+### P1 — Visão Geral Comercial
+4 KPIs (Receita, Ticket, Margem, Top Categoria) + 4 gráficos (linha semanal, barras por loja, donut mix, barras DOW).
+
+### P2 — Análise do Ticket Médio
+3 KPIs + linha semanal vs meta + barras campanhas + heatmap loja×dia.
+
+### P3 — Margem & Mix de Produtos
+4 KPIs + barras horizontais margem% + scatter receita×margem + barras agrupadas por loja/mês.
+
+### P4 — Gestão de Estoque
+4 KPIs + status bars animadas + histograma cobertura + tabela SKUs críticos com pills.
+
+### P5 — Análise de Rupturas
+4 KPIs + donut por motivo com legendas + dual-axis (barras qtd + linha R$) + barras impacto por categoria.
+
+### P6 — Metas e Performance
+3 KPIs + barras agrupadas receita + barras % atingimento (semáforo) + radar 5 dimensões.
 
 ---
 
@@ -169,7 +210,7 @@ O `vercel.json` já está configurado:
 }
 ```
 
-Para deploy manual:
+Deploy manual:
 
 ```bash
 npm run build        # Gera dist/
@@ -266,41 +307,11 @@ Semáforo =
 
 ---
 
-## Implantação no Power BI
+## Histórico de Versões
 
-### 1 — Conectar o Excel
-Home → Obter Dados → Excel → marcar todas as abas de dados (excluir 📋 Início e 📐 Dicionário).
-
-### 2 — Power Query
-- Prefixar tabelas: `f` = fato, `d` = dimensão
-- Em **fVendas**: remover colunas `Dia_Semana` e `Categoria` (redundantes — estão nas dimensões)
-- Converter coluna `Data` para tipo **Data** em todas as tabelas
-
-### 3 — Criar dCalendario via DAX
-Modelagem → Nova Tabela:
-
-```dax
-dCalendario = ADDCOLUMNS(
-  CALENDAR(DATE(2025,12,1), DATE(2026,3,31)),
-  "Ano",         YEAR([Date]),
-  "Mes",         MONTH([Date]),
-  "Mes_Ano",     FORMAT([Date], "MMM/YYYY"),
-  "Dia_Semana",  FORMAT([Date], "DDDD"),
-  "Nr_DiaSem",   WEEKDAY([Date], 2),
-  "FimSemana",   IF(WEEKDAY([Date],2) >= 6, "Sim", "Não")
-)
-```
-
-Depois: **Modelagem → Marcar como Tabela de Datas → coluna Date**.
-
-### 4 — Criar dCampanhas
-Modelagem → Inserir Dados → tabela: `Campanha | Tipo | Tem_Desconto`.
-
-### 5 — Relacionamentos
-Aba Modelo: arrastar chaves. Confirmar direção Dimensão → Fato, cardinalidade 1→*.
-
-### 6 — Tabela _Medidas
-Modelagem → Nova Tabela → `_Medidas = {}`. Organizar medidas em pastas: Financeiro, Estoque, Metas, Auxiliares.
-
-### 7 — Sincronizar Slicers
-Exibição → Sincronizar Segmentações → habilitar **Loja** e **Período** para todas as páginas.
+| Versão | Data       | Mudanças Principais |
+|--------|------------|---------------------|
+| v4.0   | Mar/2026   | Tema claro, ApexCharts, gráficos maiores, UI refinada |
+| v3.0   | Mar/2026   | Migração para React + Tailwind v4 + Vite |
+| v2.0   | Mar/2026   | Refatoração para módulos ES (vanilla JS) |
+| v1.0   | Fev/2026   | Versão inicial monolítica (HTML + CSS + JS inline) |

@@ -4,7 +4,7 @@ import PageHeader from '../components/PageHeader.jsx';
 import KpiCard from '../components/KpiCard.jsx';
 import ChartCard from '../components/ChartCard.jsx';
 import { BarChart, ScatterChart, COLORS } from '../components/Charts.jsx';
-import { sum, aggVendas, MORD } from '../utils/filters.js';
+import { sum, MORD } from '../utils/filters.js';
 import { brl, pct, mes as fMes } from '../utils/fmt.js';
 
 const LOJAS = ['Araújo Centro', 'Araújo Norte', 'Araújo Sul'];
@@ -32,25 +32,25 @@ export default function P3_Margem() {
   const rec = sum(vendas, 'rec');
   const mg = sum(vendas, 'mg');
   const mgP = rec > 0 ? (mg / rec) * 100 : 0;
-  
+
   const cm = mgCat(vendas);
   const mel = cm[0] || { label: '—', pct: 0 };
   const pior = cm[cm.length - 1] || { label: '—', pct: 0 };
 
   const barSeries = [{
     data: cm.map(d => +d.pct.toFixed(1)),
-    backgroundColor: cm.map(d => d.pct >= 40 ? COLORS.red : d.pct >= 30 ? 'rgba(232,0,13,.44)' : d.pct >= 23 ? 'rgba(255,255,255,.17)' : 'rgba(255,255,255,.07)'),
-    borderRadius: 4,
+    backgroundColor: cm.map(d => d.pct >= 40 ? COLORS.red : d.pct >= 30 ? '#EF4444' : d.pct >= 23 ? '#94A3B8' : '#CBD5E1'),
+    borderRadius: 6,
     borderSkipped: false,
-    barThickness: 16
+    barThickness: 22
   }];
 
   const scatterSeries = cm.map(d => ({
     label: d.label,
     data: [{ x: d.rec, y: +d.pct.toFixed(1) }],
-    backgroundColor: d.pct >= 40 ? COLORS.red : d.pct >= 30 ? 'rgba(232,0,13,.44)' : 'rgba(255,255,255,.26)',
-    pointRadius: 10,
-    pointHoverRadius: 12
+    backgroundColor: d.pct >= 40 ? COLORS.red : d.pct >= 30 ? '#EF4444' : '#94A3B8',
+    pointRadius: 12,
+    pointHoverRadius: 15
   }));
 
   const mm = {};
@@ -68,20 +68,21 @@ export default function P3_Margem() {
         description="Quem vende mais nem sempre ganha mais. Aqui o foco é na qualidade do faturamento."
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[14px] mb-[14px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
         <KpiCard label="% Margem Bruta" value={pct(mgP)} sub={mgP >= 29 ? '✓ acima do benchmark' : '⚠ atenção'} />
         <KpiCard label="Margem Bruta R$" value={brl(mg)} />
         <KpiCard label="Maior Margem" value={mel.label} sub={pct(mel.pct)} />
         <KpiCard label="Menor Margem" value={pior.label} sub={pct(pior.pct)} alert />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[14px]">
-        <ChartCard title="Margem Bruta % por Categoria" hint="Ordenado desc — vermelho = abaixo de 25%">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <ChartCard title="Margem Bruta % por Categoria" hint="Ordenado desc — vermelho = acima de 30%">
           <BarChart
             labels={cm.map(d => d.label)}
             datasets={barSeries}
             horiz
             xFmt={v => v + '%'}
+            height={380}
           />
         </ChartCard>
 
@@ -90,6 +91,7 @@ export default function P3_Margem() {
             datasets={scatterSeries}
             xFmt={v => brl(v)}
             yFmt={v => v + '%'}
+            height={380}
           />
         </ChartCard>
 
@@ -99,12 +101,13 @@ export default function P3_Margem() {
             datasets={LOJAS.map((l, i) => ({
               label: l.replace('Araújo ', ''),
               data: ma.map(m => Math.round(mm[m]?.[l] || 0)),
-              backgroundColor: [COLORS.centro, COLORS.norte, COLORS.sul][i],
-              borderRadius: 4,
+              backgroundColor: LCOL[i],
+              borderRadius: 6,
               barPercentage: 0.7
             }))}
             legend
             yFmt={v => brl(v)}
+            height={360}
           />
         </ChartCard>
       </div>

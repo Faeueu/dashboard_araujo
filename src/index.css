@@ -1,39 +1,40 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════
-   DESIGN TOKENS — Tailwind v4 @theme
+   DESIGN TOKENS — LIGHT THEME
 ═══════════════════════════════════════════════════════════════ */
 @theme {
-  --color-bg: #0A0A0F;
-  --color-surf: #101016;
-  --color-card: #14141C;
-  --color-card-h: #1A1A24;
-  
-  /* Borders */
-  --color-b0: #0E0E16;
-  --color-b1: #1C1C28;
-  --color-b2: #262636;
-  --color-b3: #343448;
+  /* Light backgrounds */
+  --color-bg: #F5F6FA;
+  --color-surf: #FFFFFF;
+  --color-card: #FFFFFF;
+  --color-card-h: #F8F9FC;
 
-  /* Brand / Primary */
-  --color-primary: #E8000D;
-  --color-primary-dim: rgba(232, 0, 13, 0.12);
-  --color-primary-soft: rgba(232, 0, 13, 0.2);
-  --color-primary-hover: #FF2233;
+  /* Borders — subtle gray */
+  --color-b0: #F0F1F5;
+  --color-b1: #E4E7EE;
+  --color-b2: #D1D5E0;
+  --color-b3: #B0B8C9;
+
+  /* Brand / Primary — red */
+  --color-primary: #DC2626;
+  --color-primary-dim: rgba(220, 38, 38, 0.07);
+  --color-primary-soft: rgba(220, 38, 38, 0.14);
+  --color-primary-hover: #EF4444;
 
   /* Status */
-  --color-success: #00D250;
-  --color-warning: #FFB020;
+  --color-success: #16A34A;
+  --color-warning: #F59E0B;
 
-  /* Text */
-  --color-text-1: #F4F4F8;
-  --color-text-2: #8A8AA4;
-  --color-text-3: #3E3E58;
+  /* Text — dark on light */
+  --color-text-1: #0F172A;
+  --color-text-2: #475569;
+  --color-text-3: #94A3B8;
 
   /* Chart Colors */
-  --color-centro: #E8000D;
-  --color-norte: #C8C8DC;
-  --color-sul: #525270;
+  --color-centro: #DC2626;
+  --color-norte: #64748B;
+  --color-sul: #1E293B;
 
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -45,8 +46,8 @@
   --breakpoint-md: 860px;
   --breakpoint-lg: 1120px;
 
-  --sidebar-w: 224px;
-  --topbar-h: 52px;
+  --sidebar-w: 240px;
+  --topbar-h: 56px;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -58,24 +59,24 @@
     margin: 0;
     padding: 0;
   }
-  
+
   html {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   body {
     background-color: var(--color-bg);
     color: var(--color-text-1);
     font-family: var(--font-sans);
-    font-size: 13.5px;
+    font-size: 14.5px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Custom Scrollbar */
+  /* Scrollbar — subtle */
   ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+    width: 5px;
+    height: 5px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
@@ -91,23 +92,23 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   UTILITIES & COMPONENTS
+   UTILITIES & ANIMATIONS
 ═══════════════════════════════════════════════════════════════ */
 @layer utilities {
   .stagger > * {
     opacity: 0;
-    animation: fadeUp 240ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: fadeUp 280ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
   .stagger > *:nth-child(1) { animation-delay: 0ms; }
-  .stagger > *:nth-child(2) { animation-delay: 40ms; }
-  .stagger > *:nth-child(3) { animation-delay: 80ms; }
-  .stagger > *:nth-child(4) { animation-delay: 120ms; }
-  .stagger > *:nth-child(5) { animation-delay: 160ms; }
-  .stagger > *:nth-child(6) { animation-delay: 200ms; }
+  .stagger > *:nth-child(2) { animation-delay: 50ms; }
+  .stagger > *:nth-child(3) { animation-delay: 100ms; }
+  .stagger > *:nth-child(4) { animation-delay: 150ms; }
+  .stagger > *:nth-child(5) { animation-delay: 200ms; }
+  .stagger > *:nth-child(6) { animation-delay: 250ms; }
 }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -116,107 +117,120 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Insight Boxes */
+/* ═══════════════════════════════════════════════════════════════
+   INSIGHT BOXES
+═══════════════════════════════════════════════════════════════ */
 .ins {
-  background: var(--color-card-h);
-  border: 1px solid var(--color-b2);
+  background: var(--color-card);
+  border: 1px solid var(--color-b1);
   border-left: 3px solid var(--color-primary);
-  border-radius: 0 8px 8px 0;
-  padding: 14px 16px;
+  border-radius: 0 10px 10px 0;
+  padding: 16px 20px;
 }
 .ins-title {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--color-primary);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 .ins-txt {
-  font-size: 12px;
+  font-size: 13.5px;
   color: var(--color-text-2);
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
-/* Data Table */
+/* ═══════════════════════════════════════════════════════════════
+   DATA TABLE
+═══════════════════════════════════════════════════════════════ */
 .dt {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: 13.5px;
 }
 .dt thead th {
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--color-bg);
   color: var(--color-text-3);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  padding: 10px 13px;
-  text-align: left;
-  border-bottom: 1px solid var(--color-b2);
-  font-weight: 400;
+  padding: 12px 16px;
+  text-align: center;
+  border-bottom: 2px solid var(--color-b2);
+  font-weight: 600;
   white-space: nowrap;
 }
 .dt tbody td {
-  padding: 10px 13px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-b1);
   vertical-align: middle;
+  text-align: center;
 }
 .dt tbody tr:hover td {
-  background: rgba(255, 255, 255, 0.025);
+  background: var(--color-bg);
 }
 .dt .dn {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text-1);
+  text-align: left;
 }
 
 .tscroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
-/* Status Bars */
+/* ═══════════════════════════════════════════════════════════════
+   STATUS BARS
+═══════════════════════════════════════════════════════════════ */
 .sbar-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 14px;
+  margin-bottom: 14px;
 }
 .sbar-lbl {
-  width: 90px;
+  width: 100px;
   text-align: right;
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: 11px;
   color: var(--color-text-2);
   flex-shrink: 0;
+  font-weight: 600;
 }
 .sbar-track {
   flex: 1;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
-  height: 24px;
+  background: var(--color-bg);
+  border-radius: 6px;
+  height: 28px;
   overflow: hidden;
 }
 .sbar-fill {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
-  padding-left: 10px;
+  padding-left: 12px;
   font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   transition: width 0.7s var(--ease-out);
 }
 .sbar-pct {
   font-family: var(--font-mono);
-  font-size: 9.5px;
-  width: 42px;
+  font-size: 11px;
+  width: 48px;
   flex-shrink: 0;
+  font-weight: 600;
 }
 
-/* Heatmap */
+/* ═══════════════════════════════════════════════════════════════
+   HEATMAP TABLE
+═══════════════════════════════════════════════════════════════ */
 .hmt {
   border-collapse: collapse;
   width: 100%;
@@ -224,31 +238,32 @@
 }
 .hmt th {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10.5px;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: var(--color-text-3);
-  padding: 9px 12px;
+  padding: 12px 14px;
   text-align: center;
-  background: rgba(0, 0, 0, 0.35);
+  background: var(--color-bg);
   border: 1px solid var(--color-b1);
-  font-weight: 400;
+  font-weight: 600;
 }
 .hmt th:first-child {
-  text-align: left;
+  text-align: center;
 }
 .hmt td {
-  padding: 9px 14px;
+  padding: 12px 16px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   text-align: center;
   border: 1px solid var(--color-b0);
 }
 .hmt .hl {
-  color: var(--color-text-2);
-  text-align: left;
-  font-size: 10.5px;
+  color: var(--color-text-1);
+  text-align: center;
+  font-size: 12px;
   white-space: nowrap;
-  font-weight: 400;
+  font-weight: 600;
+  background: var(--color-bg);
 }

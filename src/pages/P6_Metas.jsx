@@ -38,7 +38,7 @@ export default function P6_Metas() {
     metaM[m.mes][m.loja] = m.meta_fat;
   });
 
-  const atCol = v => v >= 95 ? COLORS.white : v >= 80 ? COLORS.gray : COLORS.red;
+  const atCol = v => v >= 95 ? '#16A34A' : v >= 80 ? '#F59E0B' : COLORS.red;
 
   return (
     <>
@@ -48,13 +48,13 @@ export default function P6_Metas() {
         description="Visão consolidada de atingimento. Identifique onde agir antes do mês fechar."
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-[14px] mb-[14px]">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
         <KpiCard label="Atingimento de Ticket" value={pct(atTk, 0) + ' ating.'} sub={`Meta: R$ ${Math.round(mTk)}`} />
         <KpiCard label="Melhor Mês" value={totM ? fMes(totM.mes) : '—'} sub={totM ? brl(totM.tot) : ''} />
         <KpiCard label="Melhor Loja" value={totL ? totL.l.replace('Araújo ', '') : '—'} sub={totL ? brl(totL.tot) : ''} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[14px]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <ChartCard title="Receita Real por Loja e Mês" hint="Comparativo entre unidades — período selecionado" span>
           <BarChart
             labels={ma.map(fMes)}
@@ -62,15 +62,16 @@ export default function P6_Metas() {
               label: l.replace('Araújo ', ''),
               data: ma.map(m => Math.round(mm[m]?.[l] || 0)),
               backgroundColor: LCOL[i],
-              borderRadius: 4,
+              borderRadius: 6,
               barPercentage: 0.8
             }))}
             legend
             yFmt={v => brl(v)}
+            height={360}
           />
         </ChartCard>
 
-        <ChartCard title="% Atingimento da Meta de Faturamento" hint="Branco ≥95% · Cinza 80–94% · Vermelho <80%">
+        <ChartCard title="% Atingimento da Meta de Faturamento" hint="Verde ≥95% · Amarelo 80–94% · Vermelho <80%">
           <BarChart
             labels={ma.map(fMes)}
             datasets={LOJAS.map((l, i) => {
@@ -83,11 +84,12 @@ export default function P6_Metas() {
                 label: l.replace('Araújo ', ''),
                 data: vs,
                 backgroundColor: vs.map(atCol),
-                borderRadius: 4
+                borderRadius: 6
               };
             })}
             legend
             yFmt={v => v + '%'}
+            height={340}
           />
         </ChartCard>
 
@@ -95,10 +97,11 @@ export default function P6_Metas() {
           <RadarChart
             labels={['Faturamento', 'Ticket Médio', 'Margem Bruta', 'Giro de Estoque', 'Anti-Ruptura']}
             datasets={[
-              { label: 'Centro', data: [68, 104, 96, 87, 93], borderColor: COLORS.centro, backgroundColor: 'rgba(232,0,13,.1)', borderWidth: 2, pointBackgroundColor: COLORS.centro },
-              { label: 'Norte', data: [73, 108, 98, 90, 91], borderColor: COLORS.norte, backgroundColor: 'rgba(200,200,220,.05)', borderWidth: 2, pointBackgroundColor: COLORS.norte },
-              { label: 'Sul', data: [70, 102, 94, 85, 94], borderColor: COLORS.sul, backgroundColor: 'rgba(82,82,112,.05)', borderWidth: 2, pointBackgroundColor: COLORS.sul }
+              { label: 'Centro', data: [68, 104, 96, 87, 93], borderColor: COLORS.centro, backgroundColor: 'rgba(220,38,38,.08)', borderWidth: 2.5, pointBackgroundColor: COLORS.centro },
+              { label: 'Norte', data: [73, 108, 98, 90, 91], borderColor: COLORS.norte, backgroundColor: 'rgba(100,116,139,.06)', borderWidth: 2.5, pointBackgroundColor: COLORS.norte },
+              { label: 'Sul', data: [70, 102, 94, 85, 94], borderColor: COLORS.sul, backgroundColor: 'rgba(30,41,59,.06)', borderWidth: 2.5, pointBackgroundColor: COLORS.sul }
             ]}
+            height={380}
           />
         </ChartCard>
       </div>

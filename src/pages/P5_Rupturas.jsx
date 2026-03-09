@@ -30,7 +30,7 @@ export default function P5_Rupturas() {
   const topM = itemsM[0] || { label: '—', n: 0 };
   const topC = itemsC[0] || { label: '—', p: 0 };
 
-  const MC = [COLORS.red, '#FF4455', '#FF7080', 'rgba(232,0,13,.5)', 'rgba(232,0,13,.28)'];
+  const MC = [COLORS.red, '#EF4444', '#F87171', '#FCA5A5', '#FECACA'];
 
   const mm = {};
   rupturas.forEach(r => {
@@ -50,30 +50,31 @@ export default function P5_Rupturas() {
         description="Cada ruptura é venda perdida — e venda que foi para o concorrente. Entenda onde e por quê."
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[14px] mb-[14px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
         <KpiCard label="Receita Total Perdida" value={brl(perd)} sub="receita estimada" alert={perd > 0} />
         <KpiCard label="Eventos de Ruptura" value={num(rupturas.length)} sub="eventos registrados" />
         <KpiCard label="Principal Causa" value={topM.label} sub={num(topM.n) + ' ocorrências'} />
         <KpiCard label="Categoria Mais Afetada" value={topC.label} sub={brl(topC.p) + ' perdidos'} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[14px]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <ChartCard title="Rupturas por Motivo" hint="Distribuição de causas — quantidade de eventos">
-          <div className="flex items-center gap-[16px] flex-wrap mt-[6px]">
-            <div className="flex-0 w-[170px]">
+          <div className="flex flex-col items-center gap-6 mt-2">
+            <div className="w-[240px]">
               <DonutChart
                 labels={itemsM.map(d => d.label)}
                 data={itemsM.map(d => d.n)}
                 colors={MC}
-                cutout="60%"
+                cutout="58%"
+                height={240}
                 ttFmt={ctx => ` ${ctx.label}: ${ctx.raw} eventos`}
               />
             </div>
-            <div className="flex-1 flex flex-wrap gap-[6px_16px]">
+            <div className="flex flex-wrap gap-3 justify-center">
               {itemsM.map((d, i) => (
-                <div key={d.label} className="flex items-center gap-[6px] text-[11px] text-text-2">
-                  <span className="w-[7px] h-[7px] rounded-full shrink-0" style={{ background: MC[i] || '#555' }}></span>
-                  <span>{d.label} <span className="font-mono text-[9.5px] text-text-3">({d.n})</span></span>
+                <div key={d.label} className="flex items-center gap-2 text-[13px] text-text-2 font-medium">
+                  <span className="w-[10px] h-[10px] rounded-full shrink-0 border-2 border-white shadow-sm" style={{ background: MC[i] || '#CBD5E1' }}></span>
+                  <span>{d.label} <span className="font-mono text-[11px] text-text-3 font-bold">({d.n})</span></span>
                 </div>
               ))}
             </div>
@@ -87,10 +88,10 @@ export default function P5_Rupturas() {
               type: 'bar',
               label: 'Qtd Rupturas',
               data: ma.map(m => mm[m]?.n || 0),
-              backgroundColor: 'rgba(232,0,13,.12)',
+              backgroundColor: 'rgba(220,38,38,.12)',
               borderColor: COLORS.red,
               borderWidth: 1,
-              borderRadius: 5,
+              borderRadius: 6,
               yAxisID: 'y',
               yFmt: v => num(v)
             }}
@@ -100,12 +101,13 @@ export default function P5_Rupturas() {
               data: ma.map(m => Math.round(mm[m]?.p || 0)),
               borderColor: COLORS.white,
               backgroundColor: 'transparent',
-              borderWidth: 2.5,
-              pointRadius: 4,
+              borderWidth: 3,
+              pointRadius: 5,
               tension: 0.3,
               yAxisID: 'y2',
               yFmt: v => brl(v)
             }}
+            height={340}
           />
         </ChartCard>
 
@@ -114,13 +116,14 @@ export default function P5_Rupturas() {
             labels={top10.map(d => d.label)}
             datasets={[{
               data: top10.map(d => Math.round(d.p)),
-              backgroundColor: top10.map((_, i) => `rgba(232,0,13,${(1 - i * 0.08).toFixed(2)})`),
-              borderRadius: 5,
+              backgroundColor: top10.map((_, i) => `rgba(220,38,38,${(1 - i * 0.07).toFixed(2)})`),
+              borderRadius: 6,
               borderSkipped: false,
-              barThickness: 20
+              barThickness: 26
             }]}
             horiz
             xFmt={v => brl(v)}
+            height={400}
           />
         </ChartCard>
       </div>

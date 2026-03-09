@@ -2,14 +2,14 @@
 export default function ChartCard({ title, hint, children, span = false }) {
   return (
     <div className={`
-      bg-card border border-b1 rounded-xl p-[20px_22px]
-      transition-colors duration-200 hover:border-b2
+      bg-card border border-b1 rounded-2xl p-6
+      transition-all duration-200 hover:border-b2 hover:shadow-[0_4px_20px_rgba(0,0,0,0.04)]
       ${span ? 'col-span-full' : ''}
     `}>
-      <div className="flex justify-between items-start gap-[12px] mb-[16px] pb-[14px] border-b border-b1">
-        <h3 className="text-[13px] font-bold text-text-1 leading-[1.3] m-0">{title}</h3>
+      <div className="flex flex-col items-center gap-2 mb-5 pb-4 border-b border-b1 text-center">
+        <h3 className="text-[16px] font-bold text-text-1 leading-snug m-0">{title}</h3>
         {hint && (
-          <span className="font-mono text-[9px] text-text-3 text-right shrink-0 max-w-[180px] leading-[1.6] mt-[1px]">
+          <span className="font-mono text-[10.5px] text-text-3 leading-relaxed font-medium">
             {hint}
           </span>
         )}

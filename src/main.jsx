@@ -32,8 +32,8 @@ function Root() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-bg">
-        <div className="text-[22px] font-extrabold text-text-1">Supermercados <em className="not-italic text-primary">Araújo</em></div>
-        <div className="text-primary mt-4 font-mono text-[11px] uppercase tracking-wider">
+        <div className="text-[24px] font-extrabold text-text-1">Supermercados <em className="not-italic text-primary">Araújo</em></div>
+        <div className="text-primary mt-4 font-mono text-[11px] uppercase tracking-wider font-bold">
           Erro ao carregar dados: {error}
         </div>
       </div>

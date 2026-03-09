@@ -56,16 +56,16 @@ export default function P2_Ticket() {
       backgroundColor: COLORS.redD,
       fill: true,
       tension: 0.4,
-      borderWidth: 2.5,
-      pointRadius: 3,
+      borderWidth: 3,
+      pointRadius: 4,
       pointBackgroundColor: COLORS.red
     },
     {
       label: 'Meta R$96,60',
       data: Array(ts.length).fill(96.60),
-      borderColor: COLORS.w2,
+      borderColor: COLORS.gray,
       borderDash: [5, 4],
-      borderWidth: 1.5,
+      borderWidth: 2,
       pointRadius: 0
     }
   ];
@@ -73,13 +73,12 @@ export default function P2_Ticket() {
   const cs = [...camps].sort((a, b) => a.tp - b.tp);
   const barSeries = [{
     data: cs.map(d => Math.round(d.tp)),
-    backgroundColor: cs.map(d => d.tp >= 280 ? COLORS.red : d.tp >= 268 ? 'rgba(232,0,13,.44)' : 'rgba(255,255,255,.1)'),
-    borderRadius: 4,
+    backgroundColor: cs.map(d => d.tp >= 280 ? COLORS.red : d.tp >= 268 ? '#EF4444' : '#CBD5E1'),
+    borderRadius: 6,
     borderSkipped: false,
-    barThickness: 20
+    barThickness: 28
   }];
 
-  // Heatmap data emulation as in base code
   const L = ['Araújo Centro', 'Araújo Norte', 'Araújo Sul'];
   const D = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
   const V = {
@@ -96,10 +95,10 @@ export default function P2_Ticket() {
     const t = (v - mn) / (mx - mn);
     if (t < 0.5) {
       const s = t * 2;
-      return `rgb(${Math.round(14 + s * 215)},${Math.round(s * 4)},${Math.round(s * 4)})`;
+      return `rgb(${Math.round(220 + s * 10)},${Math.round(38 + s * 60)},${Math.round(38 + s * 60)})`;
     }
     const s = (t - 0.5) * 2;
-    return `rgb(${Math.round(228 + s * 27)},${Math.round(s * 215)},${Math.round(s * 215)})`;
+    return `rgb(${Math.round(230 + s * 25)},${Math.round(98 + s * 130)},${Math.round(98 + s * 130)})`;
   };
 
   return (
@@ -110,20 +109,21 @@ export default function P2_Ticket() {
         description="Ticket médio é a alavanca mais eficiente: aumenta receita sem precisar de novos clientes."
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-[14px] mb-[14px]">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
         <KpiCard label="Ticket Médio Real" value={brlFull(tk)} sub="por atendimento" />
         <KpiCard label="Melhor Campanha" value={topC.label} sub={brlFull(topC.tp) + ' / transação'} />
         <KpiCard label="Dia de Pico" value={mel} sub={brl(dm[mel] || 0) + ' acumulado'} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[14px]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <ChartCard title="Evolução Semanal do Ticket" hint="Linha real vs meta de R$96,60 (tracejada)">
           <LineChart
             labels={ts.map(d => dataCurta(d.w))}
             datasets={lineSeries}
-            yFmt={v => 'R$' + Math.round(v)}
+            yFmt={v => brl(v)}
             yMin={85}
             yMax={112}
+            height={340}
             legend
           />
         </ChartCard>
@@ -133,12 +133,13 @@ export default function P2_Ticket() {
             labels={cs.map(d => d.label)}
             datasets={barSeries}
             horiz
-            xFmt={v => 'R$' + v}
+            xFmt={v => brl(v)}
+            height={340}
           />
         </ChartCard>
 
-        <ChartCard title="Heatmap: Loja × Dia da Semana" hint="Ticket estimado — vermelho=baixo · branco=alto" span>
-          <div className="tscroll mt-[10px]">
+        <ChartCard title="Heatmap: Loja × Dia da Semana" hint="Ticket estimado — quanto mais claro, maior o ticket" span>
+          <div className="tscroll mt-3">
             <table className="hmt">
               <thead>
                 <tr>
@@ -149,11 +150,11 @@ export default function P2_Ticket() {
               <tbody>
                 {L.map(l => (
                   <tr key={l}>
-                    <td className="hl">{l}</td>
+                    <td className="hl">{l.replace('Araújo ', '')}</td>
                     {V[l].map((v, idx) => (
-                      <td 
-                        key={idx} 
-                        style={{ background: hc(v), color: v > (mn + mx) / 2 ? '#000' : '#fff' }}
+                      <td
+                        key={idx}
+                        style={{ background: hc(v), color: v > (mn + mx) / 2 ? '#fff' : '#fff' }}
                       >
                         R${v}
                       </td>
@@ -166,7 +167,7 @@ export default function P2_Ticket() {
         </ChartCard>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-[14px] mt-[14px]">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
         <div className="ins">
           <div className="ins-title">Cross-sell</div>
           <div className="ins-txt">Campanhas combinando Carnes + Bebidas elevam ticket em 18–25% vs. campanha única.</div>

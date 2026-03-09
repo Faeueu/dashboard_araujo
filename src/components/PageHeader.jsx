@@ -1,20 +1,21 @@
 // src/components/PageHeader.jsx
 export default function PageHeader({ badge, title, description }) {
   return (
-    <div className="relative mb-[28px] pb-[22px] border-b border-b1">
-      <div className="absolute bottom-[-1px] left-0 w-[36px] h-[2px] bg-primary rounded-[2px]" />
-      
-      <div className="font-mono text-[9px] tracking-[3px] uppercase text-primary mb-[10px] flex items-center gap-[8px]">
-        <span className="inline-block w-[16px] h-[1.5px] bg-primary rounded-[2px]" />
+    <div className="relative mb-10 pb-6 border-b border-b1 text-center flex flex-col items-center">
+      <div className="absolute bottom-[-1px] left-1/2 -translate-x-1/2 w-[60px] h-[3px] bg-primary rounded-full" />
+
+      <div className="font-mono text-[11px] tracking-[3px] uppercase text-primary mb-3 flex items-center gap-2 font-bold">
+        <span className="inline-block w-[18px] h-[2px] bg-primary rounded-full" />
         {badge}
+        <span className="inline-block w-[18px] h-[2px] bg-primary rounded-full" />
       </div>
-      
-      <h1 
-        className="text-[clamp(22px,3vw,30px)] font-extrabold leading-[1.1] mb-[8px] tracking-[-0.6px] text-text-1"
+
+      <h1
+        className="text-[clamp(26px,3.5vw,36px)] font-extrabold leading-[1.15] mb-3 tracking-[-0.7px] text-text-1"
         dangerouslySetInnerHTML={{ __html: title }}
       />
-      
-      <p className="text-text-2 text-[12.5px] max-w-[480px] leading-[1.8] m-0">
+
+      <p className="text-text-2 text-[14.5px] max-w-[560px] leading-[1.8] m-0 font-medium">
         {description}
       </p>
     </div>

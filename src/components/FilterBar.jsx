@@ -33,15 +33,18 @@ function Dropdown({ campo, opcoes, ativos, onToggle, onClear }) {
     : LABEL_MAP[campo];
 
   return (
-    <div className={`fb-group ${hasActive ? 'active' : ''} relative`} ref={ref}>
+    <div className={`relative`} ref={ref}>
       <button
         onClick={() => setOpen(v => !v)}
-        className="fb-btn flex items-center gap-[7px] px-[12px] py-[7px] bg-card border border-b2 rounded-[8px] color-text-2 font-sans text-[12px] font-medium cursor-pointer whitespace-nowrap transition-all duration-[140ms] hover:border-b3 hover:text-text-1"
-        style={hasActive ? { borderColor: 'var(--color-primary)', color: 'var(--color-text-1)', backgroundColor: 'var(--color-primary-dim)' } : {}}
+        className={`flex items-center gap-2 px-3.5 py-2 border rounded-xl text-[13px] font-semibold cursor-pointer whitespace-nowrap transition-all duration-[140ms]
+          ${hasActive
+            ? 'border-primary text-primary bg-primary-dim'
+            : 'bg-card border-b1 text-text-2 hover:border-b3 hover:text-text-1'
+          }`}
       >
-        <span className="fb-btxt truncate max-w-[140px]">{label}</span>
+        <span className="truncate max-w-[140px]">{label}</span>
         <svg
-          className={`fb-chev w-[10px] h-[10px] text-text-3 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+          className={`w-[10px] h-[10px] text-text-3 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
           viewBox="0 0 10 10"
           fill="none"
         >
@@ -49,19 +52,19 @@ function Dropdown({ campo, opcoes, ativos, onToggle, onClear }) {
         </svg>
       </button>
 
-      <div className={`fb-dd ${open ? 'open block' : 'hidden'} absolute top-[calc(100%+7px)] left-0 bg-card-h border border-b2 rounded-[10px] min-w-[220px] z-[400] shadow-[0_16px_48px_rgba(0,0,0,0.6)] overflow-hidden animate-[ddIn_140ms_var(--ease-out)_both]`}>
-        <div className="fb-dd-head flex justify-between items-center px-[14px] py-[11px] pb-[9px] border-b border-b1 font-mono text-[9px] tracking-[1.5px] uppercase text-text-3">
+      <div className={`${open ? 'block' : 'hidden'} absolute top-[calc(100%+7px)] left-0 bg-card border border-b1 rounded-xl min-w-[230px] z-[400] shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden animate-[ddIn_140ms_var(--ease-out)_both]`}>
+        <div className="flex justify-between items-center px-4 py-3 border-b border-b1 font-mono text-[10px] tracking-[1.5px] uppercase text-text-3 font-semibold">
           <span>{LABEL_MAP[campo]}</span>
           {hasActive && (
             <button
               onClick={() => { onClear(campo); setOpen(false); }}
-              className="fb-dd-clr font-mono text-[9px] text-primary bg-none border-none cursor-pointer p-0"
+              className="font-mono text-[10px] text-primary bg-none border-none cursor-pointer p-0 font-bold hover:underline"
             >
               limpar
             </button>
           )}
         </div>
-        <ul className="fb-list list-none max-h-[250px] overflow-y-auto p-[5px]">
+        <ul className="list-none max-h-[260px] overflow-y-auto p-1.5">
           {opcoes.map(op => {
             const sel = ativos.includes(op);
             return (
@@ -69,14 +72,14 @@ function Dropdown({ campo, opcoes, ativos, onToggle, onClear }) {
                 key={op}
                 onClick={() => onToggle(campo, op)}
                 className={`
-                  fb-item flex items-center gap-[10px] px-[10px] py-[8px] rounded-[6px] cursor-pointer text-[12.5px] transition-all duration-[100ms]
+                  flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13.5px] transition-all duration-[100ms] font-medium
                   ${sel
-                    ? 'sel text-text-1 bg-primary-dim'
-                    : 'text-text-2 hover:bg-[rgba(255,255,255,0.05)] hover:text-text-1'
+                    ? 'text-primary bg-primary-dim font-bold'
+                    : 'text-text-2 hover:bg-bg hover:text-text-1'
                   }
                 `}
               >
-                <span className="fb-check w-[14px] text-[10px] text-primary font-mono shrink-0 text-center">
+                <span className="w-[16px] text-[11px] text-primary font-mono shrink-0 text-center font-bold">
                   {sel ? '✓' : ''}
                 </span>
                 <span>{fmt(op)}</span>
@@ -112,10 +115,10 @@ export default function FilterBar() {
   };
 
   return (
-    <div id="filterbar" className="bg-surf border-b border-b1 px-[28px] py-[11px] shrink-0">
-      <div className="fb-wrap flex items-center gap-[8px] flex-wrap">
-        <span className="fb-lbl font-mono text-[9px] tracking-[2px] uppercase text-text-3 mr-[6px]">
-          Filtrar por
+    <div id="filterbar" className="bg-surf border-b border-b1 px-7 py-3 shrink-0">
+      <div className="flex items-center gap-2.5 flex-wrap">
+        <span className="font-mono text-[10px] tracking-[2px] uppercase text-text-3 mr-2 font-semibold">
+          Filtrar
         </span>
 
         <Dropdown campo="loja" opcoes={lojas} ativos={filtros.lojas} onToggle={handleToggle} onClear={handleClear} />
@@ -125,12 +128,12 @@ export default function FilterBar() {
         {hasActiveFiltros && (
           <button
             onClick={clearFiltros}
-            className="fb-clear flex items-center gap-[6px] px-[12px] py-[7px] bg-[rgba(232,0,13,0.08)] border border-[rgba(232,0,13,0.22)] rounded-[8px] text-[#FF4455] font-sans text-[11.5px] font-medium cursor-pointer transition-all duration-[140ms] hover:bg-[rgba(232,0,13,0.16)]"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-primary/5 border border-primary/20 rounded-xl text-primary font-sans text-[12.5px] font-bold cursor-pointer transition-all duration-[140ms] hover:bg-primary/10"
           >
             <svg width="10" height="10" viewBox="0 0 10 10">
               <path d="M1.5 1.5l7 7M8.5 1.5l-7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
             </svg>
-            Limpar filtros
+            Limpar
           </button>
         )}
       </div>
