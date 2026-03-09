@@ -4,12 +4,11 @@ import PageHeader from '../components/PageHeader.jsx';
 import KpiCard from '../components/KpiCard.jsx';
 import ChartCard from '../components/ChartCard.jsx';
 import { BarChart, ScatterChart, COLORS } from '../components/Charts.jsx';
-import { sum, aggVendas } from '../utils/filters.js';
+import { sum, aggVendas, MORD } from '../utils/filters.js';
 import { brl, pct, mes as fMes } from '../utils/fmt.js';
 
 const LOJAS = ['Araújo Centro', 'Araújo Norte', 'Araújo Sul'];
-const LCOL = ['COLORS.centro, COLORS.norte, COLORS.sul'];
-const MORD = ['2025-12', '2026-01', '2026-02', '2026-03'];
+const LCOL = [COLORS.centro, COLORS.norte, COLORS.sul];
 
 function mgCat(v) {
   const m = {};
