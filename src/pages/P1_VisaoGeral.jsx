@@ -78,7 +78,7 @@ export default function P1_VisaoGeral() {
       />
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3 stagger">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-3 stagger">
         <KpiCard label="Receita Líquida" value={brl(rec)} />
         <KpiCard label="Ticket Médio" value={brlFull(tk)} />
         <KpiCard

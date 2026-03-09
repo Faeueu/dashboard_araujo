@@ -40,16 +40,16 @@ function Dropdown({ campo, opcoes, ativos, onToggle, onClear }) {
         onClick={() => setOpen(v => !v)}
         className={`
           flex items-center justify-between gap-3 px-3.5 py-1.5 rounded-md text-[13px] font-semibold cursor-pointer
-          border shadow-sm transition-all duration-150 min-w-[140px]
+          border shadow-sm transition-all duration-300 min-w-[140px]
           ${hasActive
-            ? 'border-primary text-primary bg-primary-dim hover:bg-primary-soft ring-1 ring-primary/20'
+            ? 'border-primary text-primary bg-primary-dim hover:bg-primary-soft ring-1 ring-primary/20 bg-opacity-80 backdrop-blur-sm'
             : 'border-border-strong text-text-2 bg-surface hover:border-text-4 hover:text-text-1'
           }
         `}
       >
         <span className="truncate max-w-[140px]">{label}</span>
         <svg
-          className={`w-2.5 h-2.5 text-text-3 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+          className={`w-2.5 h-2.5 text-text-3 transition-transform duration-300 ${open ? '-rotate-180' : ''}`}
           viewBox="0 0 10 10"
           fill="none"
         >
@@ -58,9 +58,9 @@ function Dropdown({ campo, opcoes, ativos, onToggle, onClear }) {
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-1.5 bg-surface border border-border-strong rounded-xl min-w-[220px] z-50 shadow-xl overflow-hidden animate-fade-up"
-          style={{ animationDuration: '140ms' }}>
-          <div className="flex justify-between items-center px-3.5 py-2.5 border-b border-border">
+        <div className="absolute top-full left-0 mt-2 bg-surface border border-border-strong rounded-xl min-w-[220px] z-50 shadow-2xl overflow-hidden animate-fade-up origin-top"
+          style={{ animationDuration: '200ms' }}>
+          <div className="flex justify-between items-center px-3.5 py-3 border-b border-border">
             <span className="font-mono text-[9.5px] tracking-wider uppercase text-text-3 font-semibold">
               {LABEL_MAP[campo]}
             </span>
@@ -127,9 +127,9 @@ export default function FilterBar() {
 
   return (
     <div className="bg-surface border-b border-border px-5 lg:px-7 py-2.5 shrink-0">
-      <div className="flex items-center gap-2 flex-wrap">
-        <span className="font-mono text-[9.5px] tracking-[1.5px] uppercase text-text-3 mr-1 font-semibold">
-          Filtrar
+      <div className="flex items-center gap-2.5 flex-wrap">
+        <span className="font-mono text-[10px] tracking-[1.5px] uppercase text-text-3 mr-1 font-semibold">
+          Filtrar por
         </span>
 
         <Dropdown campo="loja" opcoes={lojas} ativos={filtros.lojas} onToggle={handleToggle} onClear={handleClear} />

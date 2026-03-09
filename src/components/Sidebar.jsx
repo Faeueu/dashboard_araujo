@@ -51,17 +51,20 @@ export default function Sidebar({ isOpen, onClose }) {
               key={r.id}
               onClick={() => handleNav(r.id)}
               className={`
-                w-full flex items-center px-4 py-2.5 rounded-lg text-[13px] font-medium
-                cursor-pointer border-none text-left transition-all duration-150
+                group w-full flex items-center px-4 py-3 rounded-lg text-[13.5px] font-medium
+                cursor-pointer border-none text-left transition-all duration-200
                 ${isActive
-                  ? 'bg-primary-soft text-primary font-bold'
-                  : 'bg-transparent text-text-2 hover:bg-bg hover:text-text-1'
+                  ? 'bg-primary-dim text-text-1 font-bold'
+                  : 'bg-transparent text-text-3 hover:bg-bg hover:text-text-1'
                 }
               `}
             >
-              <span className={`text-[10px] mr-3 ${isActive ? 'text-primary' : 'text-text-4'}`}>
-                {isActive ? '▪' : '▸'}
-              </span>
+              <div 
+                className={`
+                  w-1.5 h-1.5 rounded-full mr-3 shrink-0 transition-all duration-300
+                  ${isActive ? 'bg-primary shadow-[0_0_8px_rgba(232,0,13,0.8)] scale-125' : 'bg-text-4 group-hover:bg-text-3'}
+                `} 
+              />
               <span>{r.label}</span>
             </button>
           );
