@@ -1,7 +1,7 @@
 # Dashboard Comercial — Supermercados Araújo
 
-Sistema de análise comercial e operacional com dados reais de Dez/2025–Mar/2026.
-Construído com **Vite** + vanilla JS (ES modules), Chart.js para visualizações.
+Sistema de análise comercial e operacional com dados de Dez/2025–Mar/2026.
+Construído com **React** + **ApexCharts** + **Tailwind CSS v4** + **Vite**.
 
 ---
 
@@ -28,8 +28,8 @@ npm run preview
 ```
 
 > **Nota**: como o projeto está no Google Drive, `npm install` pode apresentar
-> erros de filesystem. Neste caso, copie o `package.json` para um disco local,
-> rode `npm install` lá e copie o `node_modules` de volta.
+> erros de filesystem (EBADF/EPERM). Neste caso, copie o `package.json` para um
+> disco local, rode `npm install` lá e copie o `node_modules` de volta.
 
 ---
 
@@ -37,29 +37,40 @@ npm run preview
 
 ```
 Araújo/
-├── index.html                  ← HTML limpo (~50 linhas, apenas estrutura + <script module>)
-├── package.json                ← Scripts dev/build/preview, dependência: Vite
-├── vite.config.js              ← Configuração Vite (root, publicDir, outDir)
+├── index.html                  ← HTML com <div id="root"> + fontes Inter/JetBrains Mono
+├── package.json                ← React, ApexCharts, Tailwind CSS, Vite
+├── vite.config.js              ← Plugins: @vitejs/plugin-react + @tailwindcss/vite
 ├── vercel.json                 ← Deploy Vercel (build → dist/)
-├── .gitignore                  ← node_modules/ + dist/
+├── .gitignore
 │
 ├── public/
 │   └── data/
 │       └── dataset.json        ← Dataset completo (~1.75MB — vendas, estoque, rupturas, metas)
 │
 └── src/
-    ├── main.js                 ← Entry point (importa CSS, carrega dados, inicializa app)
-    ├── styles/
-    │   └── main.css            ← Todo o CSS do dashboard (design tokens, layout, componentes)
+    ├── main.jsx                ← Entry point React (loading screen, fetch dataset, render <App/>)
+    ├── App.jsx                 ← Shell layout (sidebar + filterbar + page outlet)
+    ├── index.css               ← Tailwind v4 @theme tokens, reset, animações, overrides ApexCharts
+    │
     ├── core/
-    │   ├── Store.js            ← Estado global reativo (Observer pattern)
-    │   └── Router.js           ← Roteador SPA (hash-based, lazy page init)
+    │   └── DashboardContext.jsx ← React Context + hooks (dataset, filtros, dados filtrados memoizados)
+    │
     ├── components/
-    │   ├── Charts.js           ← Wrapper Chart.js com defaults e factory functions
-    │   ├── FilterBar.js        ← Dropdowns multi-select (Loja, Mês, Categoria)
-    │   └── Sidebar.js          ← Navegação lateral + menu mobile
+    │   ├── Sidebar.jsx         ← Navegação lateral com ícones + menu mobile responsivo
+    │   ├── FilterBar.jsx       ← Filtros multi-select reativos (Loja, Mês, Categoria)
+    │   ├── Charts.jsx          ← 6 wrappers ApexCharts (Line, Bar, Donut, Scatter, Radar, Mixed)
+    │   ├── KpiCard.jsx         ← Card de KPI reutilizável (label, valor, subtítulo, cor)
+    │   ├── ChartCard.jsx       ← Wrapper para gráficos com título e hint
+    │   └── PageHeader.jsx      ← Cabeçalho padronizado (badge, título, descrição)
+    │
     ├── pages/
-    │   └── pages.js            ← 6 páginas (P1–P6) em um único módulo
+    │   ├── P1_VisaoGeral.jsx   ← Visão Geral Comercial (receita, ticket, margem, mix)
+    │   ├── P2_Ticket.jsx       ← Análise do Ticket Médio (semanal, campanhas, heatmap)
+    │   ├── P3_Margem.jsx       ← Margem & Mix de Produtos (scatter, mensal por loja)
+    │   ├── P4_Estoque.jsx      ← Gestão de Estoque (status bars, cobertura, tabela críticos)
+    │   ├── P5_Rupturas.jsx     ← Análise de Rupturas (motivo donut, dual-axis, categorias)
+    │   └── P6_Metas.jsx        ← Painel de Metas (atingimento, radar de performance)
+    │
     └── utils/
         ├── fmt.js              ← Formatadores (BRL, %, data, delta)
         └── filters.js          ← Funções puras de filtragem e agregação
@@ -69,47 +80,55 @@ Araújo/
 
 ## Arquitetura
 
-### Padrão: MVC simplificado (Observable State + Page Controllers)
+### Padrão: React Context + Componentes Reativos
 
 ```
 dataset.json (fetch)
      │
      ▼
-  Store.js ──────────────► FilterBar.js (Controller)
-     │                           │
-     │ on('change')              │ setFiltro()
-     ▼                           │
-  Router.js                      │
-     │                           ▼
-     ▼                    filters.js (funções puras)
-  Page.render()  ◄────────────┘
+ DashboardProvider (Context)
+     │
+     ├─── filtros (lojas, meses, cats)
+     ├─── filteredData (useMemo)
      │
      ▼
-  Charts.js + DOM
+   App.jsx
+     ├── Sidebar ────── setPage()
+     ├── FilterBar ──── setFiltro() → re-render automático
+     └── Page Outlet
+           ├── P1_VisaoGeral ← useFilteredData()
+           ├── P2_Ticket     ← useFilteredData()
+           ├── P3_Margem     ← useFilteredData()
+           ├── P4_Estoque    ← useFilteredData()
+           ├── P5_Rupturas   ← useFilteredData()
+           └── P6_Metas      ← useFilteredData()
 ```
 
-### Fluxo de inicialização (`src/main.js`)
+### Fluxo de inicialização (`src/main.jsx`)
 
-1. Importa `src/styles/main.css` (injetado pelo Vite)
-2. Aplica defaults do Chart.js (carregado via CDN)
+1. Importa `src/index.css` (Tailwind v4 + design tokens)
+2. Exibe tela de loading animada
 3. Carrega `dataset.json` via `fetch('/data/dataset.json')`
-4. Registra dados no `Store`
-5. Inicializa `Sidebar`, `FilterBar` e `Router`
+4. Renderiza `<DashboardProvider>` com dataset
+5. `<App>` monta sidebar, filterbar e page outlet
 6. Remove tela de loading
 
 ### Módulos
 
-**Store** — singleton reativo. Mantém filtros ativos (`lojas`, `meses`, `categorias`) e emite eventos quando mudam. Qualquer componente se registra com `Store.on('change', cb)`.
+**DashboardContext** — React Context com `useMemo` para dados filtrados. Expõe hooks `useDashboard()` e `useFilteredData()`. Substitui o antigo Store.js (Observer pattern) por reatividade nativa do React.
 
-**Router** — mapeia IDs de página (`visao-geral`, `ticket` …) para classes Page. Instancia cada página uma única vez (lazy) e chama `page.render()` / `page.update(filteredData)`.
+**App.jsx** — Shell layout que mapeia IDs de página (`visao-geral`, `ticket` …) para componentes React. A página ativa é renderizada dentro do outlet com animação `fadeUp`.
 
-**Filters** — funções puras sem efeitos colaterais. Recebem o dataset bruto + filtros, retornam subsets e agregações. Testáveis isoladamente.
+**FilterBar** — Lê valores únicos do dataset, renderiza dropdowns multi-select com checkmarks. Ao mudar, chama `setFiltro()` no Context, disparando re-render de toda a árvore com dados filtrados atualizados via `useMemo`.
 
-**Pages** — cada classe exporta dois métodos:
-- `render(el)` → monta o HTML estático da página
-- `update(filteredData)` → atualiza KPIs e reconstrói os charts
+**Charts.jsx** — 6 componentes wrapper para `react-apexcharts` com tema padrão do dashboard: `LineChart`, `BarChart`, `DonutChart`, `ScatterChart`, `RadarChart`, `MixedChart`. Opções são memoizadas via `useMemo`.
 
-**FilterBar** — lê valores únicos do dataset, renderiza dropdowns multi-select. Ao mudar, chama `Store.setFiltro()`, disparando o ciclo de atualização.
+**Filters** (`utils/filters.js`) — Funções puras sem efeitos colaterais. Recebem arrays e retornam agregações. Preservadas integralmente da versão anterior.
+
+**Pages** — Cada página é um componente React que:
+1. Consome `useFilteredData()` para obter dados filtrados
+2. Calcula KPIs e séries de gráficos
+3. Renderiza `KpiCard`, `ChartCard` e componentes de gráfico
 
 ---
 
@@ -129,11 +148,12 @@ dataset.json (fetch)
 
 | Camada       | Tecnologia |
 |--------------|------------|
+| Framework    | React 19.x |
 | Bundler      | Vite 6.x |
-| Linguagem    | JavaScript (ES modules) |
-| Estilos      | CSS puro (variáveis CSS, responsive) |
-| Gráficos     | Chart.js 4.4 (CDN) |
-| Fontes       | Figtree + DM Mono (Google Fonts) |
+| Linguagem    | JavaScript (JSX, ES modules) |
+| Estilos      | Tailwind CSS 4.x (plugin Vite, `@theme` tokens) |
+| Gráficos     | ApexCharts 4.x + react-apexcharts |
+| Fontes       | Inter + JetBrains Mono (Google Fonts) |
 | Deploy       | Vercel (static build) |
 
 ---
