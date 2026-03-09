@@ -50,7 +50,7 @@ export function margemPorCat(vendas) {
 export function ticketSemanal(atend) {
   const m = {};
   for (const a of atend) {
-    const w = _weekEnd(a.data);
+    const w = wk(a.data);
     if (!m[w]) m[w] = { fat: 0, atd: 0 };
     m[w].fat += a.fat;
     m[w].atd += a.atd;
@@ -64,7 +64,7 @@ export function ticketSemanal(atend) {
 export function recSemanal(vendas) {
   const m = {};
   for (const v of vendas) {
-    const w = _weekEnd(v.data);
+    const w = wk(v.data);
     if (!m[v.loja]) m[v.loja] = {};
     m[v.loja][w] = (m[v.loja][w] || 0) + v.rec;
   }
@@ -73,7 +73,7 @@ export function recSemanal(vendas) {
 
 // Semanas únicas de vendas → string[] sorted
 export function semanas(vendas) {
-  return [...new Set(vendas.map(v => _weekEnd(v.data)))].sort();
+  return [...new Set(vendas.map(v => wk(v.data)))].sort();
 }
 
 // Rupturas por campo → [{label, count, perdida}] desc por perdida
@@ -122,9 +122,13 @@ export function statusPorCat(estoque) {
 }
 
 // Data → domingo da semana seguinte (agrupa semanas)
-function _weekEnd(dateStr) {
+export function wk(dateStr) {
   const d = new Date(dateStr + 'T00:00:00');
   const rem = 7 - d.getDay();
   d.setDate(d.getDate() + rem);
   return d.toISOString().slice(0, 10);
 }
+
+// Ordem dos meses para o dashboard
+export const MORD = ['2025-12', '2026-01', '2026-02', '2026-03'];
+
