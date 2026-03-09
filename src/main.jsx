@@ -27,24 +27,14 @@ function Root() {
       });
   }, []);
 
-  if (loading) {
-    return (
-      <div className="loading-screen">
-        <div className="loading-name">Supermercados <em>Araújo</em></div>
-        <div className="loading-bar">
-          <div className="loading-prog"></div>
-        </div>
-        <div className="loading-text">Carregando dataset…</div>
-      </div>
-    );
-  }
+  if (loading) return null; // Let index.html handle the initial load
 
   if (error) {
     return (
-      <div className="loading-screen">
-        <div className="loading-name">Supermercados <em>Araújo</em></div>
-        <div className="loading-text" style={{ color: '#DC2626' }}>
-          Erro ao carregar dados. Recarregue a página.
+      <div className="flex flex-col items-center justify-center h-screen bg-bg">
+        <div className="text-[22px] font-extrabold text-text-1">Supermercados <em className="not-italic text-primary">Araújo</em></div>
+        <div className="text-primary mt-4 font-mono text-[11px] uppercase tracking-wider">
+          Erro ao carregar dados: {error}
         </div>
       </div>
     );

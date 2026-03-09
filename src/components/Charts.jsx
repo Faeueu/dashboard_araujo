@@ -1,290 +1,201 @@
 // src/components/Charts.jsx
-// ApexCharts wrapper components with dashboard theme defaults
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  RadialLinearScale,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js';
+import { Line, Bar, Doughnut, Scatter, Radar } from 'react-chartjs-2';
 
-import { useMemo } from 'react';
-import Chart from 'react-apexcharts';
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  RadialLinearScale,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
-// ── Theme Colors ──
+const font = "'Plus Jakarta Sans', system-ui, sans-serif";
+
 export const COLORS = {
-  primary: '#DC2626',
-  primaryDim: 'rgba(220, 38, 38, 0.08)',
-  primarySoft: 'rgba(220, 38, 38, 0.45)',
-  text1: '#0F172A',
-  text2: '#334155',
-  text3: '#64748B',
-  text4: '#94A3B8',
-  grid: 'rgba(0, 0, 0, 0.05)',
-  border: '#E2E8F0',
-  white: '#FFFFFF',
-  centro: '#DC2626',
-  norte: '#6366F1',
-  sul: '#0EA5E9',
-  success: '#22C55E',
-  warning: '#F59E0B',
+  red: '#E8000D',
+  redD: 'rgba(232,0,13,.12)',
+  red2: '#FF3344',
+  white: '#F0F0F6',
+  w2: '#8888A4',
+  gray: '#484860',
+  gray2: '#2A2A3A',
+  centro: '#E8000D',
+  norte: '#C8C8DC',
+  sul: '#525270',
+  grid: 'rgba(255,255,255,.04)',
 };
 
-const FONT = "'Inter', system-ui, sans-serif";
-const MONO = "'JetBrains Mono', monospace";
+ChartJS.defaults.font.family = font;
+ChartJS.defaults.font.size = 11.5;
+ChartJS.defaults.color = '#50506A';
+ChartJS.defaults.plugins.legend.display = false;
+ChartJS.defaults.plugins.tooltip.backgroundColor = '#14141C';
+ChartJS.defaults.plugins.tooltip.borderColor = '#262636';
+ChartJS.defaults.plugins.tooltip.borderWidth = 1;
+ChartJS.defaults.plugins.tooltip.padding = 12;
+ChartJS.defaults.plugins.tooltip.cornerRadius = 8;
+ChartJS.defaults.plugins.tooltip.displayColors = true;
+ChartJS.defaults.plugins.tooltip.boxPadding = 5;
+ChartJS.defaults.plugins.tooltip.titleColor = '#F0F0F6';
+ChartJS.defaults.plugins.tooltip.bodyColor = '#8888A4';
+ChartJS.defaults.plugins.tooltip.titleFont = { family: font, weight: '700', size: 12 };
+ChartJS.defaults.plugins.tooltip.bodyFont = { family: font, size: 11 };
 
-// ── Base options builder ──
-function baseOpts({ chart, grid, tooltip, legend, ...rest } = {}) {
-  return {
-    ...rest,
-    chart: {
-      fontFamily: FONT,
-      toolbar: { show: false },
-      zoom: { enabled: false },
-      animations: {
-        enabled: true,
-        easing: 'easeinout',
-        speed: 600,
-        dynamicAnimation: { speed: 400 },
-      },
-      ...chart,
-    },
-    grid: {
-      borderColor: COLORS.grid,
-      strokeDashArray: 3,
-      padding: { left: 8, right: 8 },
-      ...grid,
-    },
-    dataLabels: {
-      enabled: false,
-      ...(rest.dataLabels || {})
-    },
-    tooltip: {
-      theme: 'light',
-      style: { fontSize: '12.5px', fontFamily: FONT },
-      ...tooltip,
-    },
-    legend: {
-      show: false,
-      fontFamily: FONT,
-      fontSize: '12px',
-      labels: { colors: COLORS.text2 },
-      markers: { size: 5, shape: 'circle' },
-      ...legend,
+const legOpts = { display: true, labels: { color: COLORS.w2, boxWidth: 10, boxHeight: 10, padding: 18, font: { size: 11.5, family: font } } };
+const gX = (cb, extra = {}) => ({ grid: { color: COLORS.grid }, ticks: { color: '#404058', font: { size: 10.5 }, maxRotation: 40, ...extra, callback: cb || undefined } });
+const gY = (cb, mn, mx) => ({ grid: { color: COLORS.grid }, ticks: { color: '#404058', font: { size: 10.5 }, callback: cb || undefined }, min: mn, max: mx });
+const gYr = (cb) => ({ grid: { display: false }, ticks: { color: COLORS.w2, font: { size: 10.5 }, callback: cb || undefined } });
+const gXt = (cb) => ({ grid: { color: COLORS.grid }, ticks: { color: '#404058', font: { size: 10.5 }, callback: cb || undefined } });
+
+export function LineChart({ labels, datasets, yFmt, yMin, yMax, legend = false, maxT = 10, height }) {
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: legend ? legOpts : { display: false } },
+    scales: {
+      x: { ...gX(null, { maxTicksLimit: maxT }) },
+      y: gY(yFmt, yMin, yMax),
     },
   };
+  return (
+    <div style={{ height: height || 215, width: '100%' }}>
+      <Line data={{ labels, datasets }} options={options} />
+    </div>
+  );
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  LINE CHART
-// ═══════════════════════════════════════════════════════════════
-export function LineChart({ type = 'line', series, categories, yFormatter, yMin, yMax, height = 240, legend = false }) {
-  const options = useMemo(() => baseOpts({
-    chart: { type, height },
-    stroke: { curve: 'smooth', width: 2.5 },
-    markers: { size: 3, hover: { size: 5 } },
-    fill: type === 'area' ? { type: 'solid', opacity: 0.1 } : { type: 'solid', opacity: 1 },
-    xaxis: {
-      categories,
-      labels: { style: { fontSize: '10.5px', fontFamily: FONT, colors: COLORS.text3 } },
-      axisBorder: { show: false },
-      axisTicks: { show: false },
-    },
-    yaxis: {
-      labels: {
-        style: { fontSize: '10.5px', fontFamily: FONT, colors: COLORS.text3 },
-        formatter: yFormatter,
-      },
-      min: yMin,
-      max: yMax,
-    },
-    legend: { show: legend, position: 'top' },
-  }), [type, categories, yFormatter, yMin, yMax, height, legend]);
-
-  return <Chart options={options} series={series} type={type} height={height} />;
+export function BarChart({ labels, datasets, horiz = false, yFmt, xFmt, legend = false, height }) {
+  const options = {
+    indexAxis: horiz ? 'y' : 'x',
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: legend ? legOpts : { display: false } },
+    scales: horiz
+      ? { x: gXt(xFmt), y: gYr() }
+      : {
+          x: { grid: { display: false }, ticks: { color: COLORS.w2, font: { size: 10.5 } } },
+          y: gY(yFmt),
+        },
+  };
+  return (
+    <div style={{ height: height || 215, width: '100%' }}>
+      <Bar data={{ labels, datasets }} options={options} />
+    </div>
+  );
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  BAR CHART
-// ═══════════════════════════════════════════════════════════════
-export function BarChart({ series, categories, horizontal = false, yFormatter, xFormatter, height = 240, legend = false, stacked = false, colors }) {
-  const options = useMemo(() => baseOpts({
-    chart: { type: 'bar', height, stacked },
-    colors: colors || undefined,
-    plotOptions: {
-      bar: {
-        horizontal,
-        borderRadius: 4,
-        borderRadiusApplication: 'end',
-        columnWidth: horizontal ? '100%' : '55%',
-        barHeight: horizontal ? '85%' : '55%',
-        distributed: !!colors, // Necessary for different colors per bar when using single series
-      },
-    },
-    dataLabels: { enabled: false },
-    xaxis: {
-      categories,
-      labels: {
-        style: { fontSize: '10.5px', fontFamily: FONT, colors: COLORS.text3 },
-        formatter: horizontal ? xFormatter : undefined,
-      },
-      axisBorder: { show: false },
-      axisTicks: { show: false },
-    },
-    yaxis: {
-      labels: {
-        style: { fontSize: '10.5px', fontFamily: FONT, colors: COLORS.text3 },
-        formatter: horizontal ? undefined : yFormatter,
-      },
-    },
-    legend: { show: legend, position: 'top' },
-    grid: horizontal ? { xaxis: { lines: { show: true } }, yaxis: { lines: { show: false } } } : undefined,
-  }), [categories, horizontal, yFormatter, xFormatter, height, legend, stacked, colors]);
-
-  return <Chart options={options} series={series} type="bar" height={height} />;
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  DONUT CHART
-// ═══════════════════════════════════════════════════════════════
-export function DonutChart({ series, labels, colors, height = 200, tooltipFormatter, valueFormatter }) {
-  const options = useMemo(() => ({
-    chart: {
-      type: 'donut',
-      fontFamily: FONT,
-      animations: { enabled: true, speed: 600 },
-    },
-    labels,
-    colors,
-    stroke: { width: 2, colors: ['#FFFFFF'] },
-    plotOptions: {
-      pie: {
-        donut: {
-          size: '64%',
-          labels: {
-            show: true,
-            name: { fontSize: '13px', fontFamily: FONT, color: COLORS.text1 },
-            value: { fontSize: '18px', fontFamily: FONT, fontWeight: 700, color: COLORS.text1, formatter: valueFormatter || ((val) => Number(val).toLocaleString('pt-BR')) },
-            total: { show: true, fontSize: '11px', fontFamily: MONO, color: COLORS.text3, label: 'Total', formatter: (w) => {
-                const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
-                return valueFormatter ? valueFormatter(total) : Number(total).toLocaleString('pt-BR');
-              }
-            },
+export function DonutChart({ labels, data, colors, cutout = '64%', ttFmt, height }) {
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ttFmt ? (ctx) => ttFmt(ctx) : (ctx) => {
+            const t = ctx.dataset.data.reduce((a, b) => a + b, 0);
+            return ` ${ctx.label}: ${((ctx.raw / t) * 100).toFixed(1)}%`;
           },
         },
       },
     },
-    dataLabels: { enabled: false },
-    legend: { show: false },
-    tooltip: {
-      y: { formatter: tooltipFormatter },
-    },
-  }), [labels, colors, height, tooltipFormatter, valueFormatter]);
-
-  return <Chart options={options} series={series} type="donut" height={height} />;
+  };
+  const cData = {
+    labels,
+    datasets: [{ data, backgroundColor: colors, borderWidth: 1.5, borderColor: '#14141C', hoverOffset: 5 }],
+  };
+  return (
+    <div style={{ height: height || 170, width: '100%' }}>
+      <Doughnut data={cData} options={options} />
+    </div>
+  );
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  SCATTER CHART
-// ═══════════════════════════════════════════════════════════════
-export function ScatterChart({ series, xFormatter, yFormatter, height = 240 }) {
-  const options = useMemo(() => baseOpts({
-    chart: { type: 'scatter', height },
-    markers: { size: 10, hover: { size: 13 } },
-    xaxis: {
-      labels: {
-        style: { fontSize: '10.5px', fontFamily: FONT, colors: COLORS.text3 },
-        formatter: xFormatter,
-      },
-      axisBorder: { show: false },
-      axisTicks: { show: false },
-    },
-    yaxis: {
-      labels: {
-        style: { fontSize: '10.5px', fontFamily: FONT, colors: COLORS.text3 },
-        formatter: yFormatter,
-      },
-    },
-    legend: { show: true, position: 'top', fontSize: '11px' },
-  }), [xFormatter, yFormatter, height]);
-
-  return <Chart options={options} series={series} type="scatter" height={height} />;
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  RADAR CHART
-// ═══════════════════════════════════════════════════════════════
-export function RadarChart({ series, categories, height = 300 }) {
-  const options = useMemo(() => ({
-    chart: {
-      type: 'radar',
-      fontFamily: FONT,
-      toolbar: { show: false },
-      animations: { enabled: true, speed: 600 },
-    },
-    xaxis: {
-      categories,
-      labels: { style: { fontSize: '11px', fontFamily: FONT, colors: COLORS.text2 } },
-    },
-    yaxis: {
-      show: false,
-      min: 0,
-      max: 120,
-      tickAmount: 5,
-    },
-    plotOptions: {
-      radar: {
-        size: undefined,
-        polygons: {
-          strokeColors: 'rgba(0, 0, 0, 0.06)',
-          fill: { colors: ['transparent', 'rgba(0, 0, 0, 0.01)'] },
+export function ScatterChart({ datasets, xFmt, yFmt, height }) {
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => ` ${ctx.dataset.label}: Rec ${xFmt(ctx.raw.x)} · Mg ${yFmt(ctx.raw.y)}`,
         },
       },
     },
-    stroke: { width: 2 },
-    markers: { size: 4, hover: { size: 6 } },
-    fill: { opacity: 0.1 },
-    legend: {
-      show: true,
-      position: 'bottom',
-      fontFamily: FONT,
-      fontSize: '12px',
-      labels: { colors: COLORS.text2 },
-      markers: { size: 5 },
+    scales: {
+      x: gY(xFmt),
+      y: gY(yFmt),
     },
-    tooltip: { theme: 'light' },
-  }), [categories, height]);
-
-  return <Chart options={options} series={series} type="radar" height={height} />;
+  };
+  return (
+    <div style={{ height: height || 215, width: '100%' }}>
+      <Scatter data={{ datasets }} options={options} />
+    </div>
+  );
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  MIXED CHART (bar + line, dual axis)
-// ═══════════════════════════════════════════════════════════════
-export function MixedChart({ series, categories, yFormatter, y2Formatter, height = 240 }) {
-  const options = useMemo(() => baseOpts({
-    chart: { type: 'line', height, stacked: false },
-    stroke: { width: [0, 2.5], curve: 'smooth' },
-    plotOptions: {
-      bar: { borderRadius: 4, borderRadiusApplication: 'end', columnWidth: '45%' },
+export function DualChart({ labels, bDs, lDs, height }) {
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: legOpts },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: COLORS.w2, font: { size: 10.5 } } },
+      y: gY(bDs.yFmt),
+      y2: { position: 'right', grid: { display: false }, ticks: { color: COLORS.w2, font: { size: 10.5 }, callback: lDs.yFmt } },
     },
-    dataLabels: { enabled: false },
-    xaxis: {
-      categories,
-      labels: { style: { fontSize: '10.5px', fontFamily: FONT, colors: COLORS.text3 } },
-      axisBorder: { show: false },
-      axisTicks: { show: false },
-    },
-    yaxis: [
-      {
-        labels: {
-          style: { fontSize: '10.5px', fontFamily: FONT, colors: COLORS.text3 },
-          formatter: yFormatter,
-        },
-      },
-      {
-        opposite: true,
-        labels: {
-          style: { fontSize: '10.5px', fontFamily: FONT, colors: COLORS.text3 },
-          formatter: y2Formatter,
-        },
-      },
-    ],
-    legend: { show: true, position: 'top', fontFamily: FONT, fontSize: '12px', labels: { colors: COLORS.text2 } },
-  }), [categories, yFormatter, y2Formatter, height]);
+  };
+  return (
+    <div style={{ height: height || 215, width: '100%' }}>
+      <Bar data={{ labels, datasets: [bDs, lDs] }} options={options} />
+    </div>
+  );
+}
 
-  return <Chart options={options} series={series} type="line" height={height} />;
+export function RadarChart({ labels, datasets, height }) {
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: legOpts },
+    scales: {
+      r: {
+        angleLines: { color: 'rgba(255,255,255,.06)' },
+        grid: { color: 'rgba(255,255,255,.09)' },
+        pointLabels: { color: COLORS.w2, font: { size: 11, family: font } },
+        ticks: { color: '#404058', backdropColor: 'transparent', stepSize: 25, font: { size: 9 } },
+        min: 0,
+        max: 120,
+      },
+    },
+  };
+  return (
+    <div style={{ height: height || 215, width: '100%' }}>
+      <Radar data={{ labels, datasets }} options={options} />
+    </div>
+  );
 }

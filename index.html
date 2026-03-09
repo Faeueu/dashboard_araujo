@@ -10,13 +10,44 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
     rel="stylesheet">
 </head>
 
 <body>
+  <div id="loading">
+    <div class="ld-logo" style="font-size:22px; font-weight:800; color:#F4F4F8; font-family: 'Plus Jakarta Sans', sans-serif;">
+      Supermercados <em style="font-style:normal; color:#E8000D;">Araújo</em>
+    </div>
+    <div class="ld-bar" style="width:160px; height:2px; background:#1C1C28; border-radius:2px; overflow:hidden; margin-top:20px;">
+      <div class="ld-fill" style="height:100%; background:#E8000D; border-radius:2px; width:0%; animation: ldA 1.5s cubic-bezier(.4,0,.2,1) infinite;"></div>
+    </div>
+    <div class="ld-txt" style="font-family:'JetBrains Mono', monospace; font-size:9.5px; color:#3E3E58; letter-spacing:2px; text-transform:uppercase; margin-top:20px;">Inicializando Dashboard</div>
+  </div>
+
+  <style>
+    #loading {
+      position: fixed; inset: 0; background: #0A0A0F;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 999; gap: 0; transition: opacity 380ms;
+    }
+    #loading.hide { opacity: 0; pointer-events: none; }
+    @keyframes ldA {
+      0% { width: 0%; margin-left: 0; }
+      50% { width: 55%; margin-left: 45%; }
+      100% { width: 0%; margin-left: 100%; }
+    }
+  </style>
+
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
+  <script>
+    // Simple loader dismiss
+    window.addEventListener('load', () => {
+      const ld = document.getElementById('loading');
+      if(ld) setTimeout(() => ld.classList.add('hide'), 400);
+    });
+  </script>
 </body>
 
 </html>

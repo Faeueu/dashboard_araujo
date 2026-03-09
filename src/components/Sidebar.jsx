@@ -20,28 +20,26 @@ export default function Sidebar({ isOpen, onClose }) {
 
   return (
     <aside
+      id="sidebar"
       className={`
-        w-[var(--sidebar-w)] shrink-0 bg-surface border-r border-border
-        flex flex-col overflow-y-auto z-50 transition-transform duration-300
+        w-[var(--sidebar-w)] flex-shrink-0 bg-surf border-r border-b1
+        flex flex-col overflow-y-auto z-50 transition-transform duration-[280ms] ease-out
         fixed inset-y-0 left-0 lg:relative lg:translate-x-0
-        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        ${isOpen ? 'translate-x-0 open shadow-[8px_0_40px_rgba(0,0,0,0.6)]' : '-translate-x-[110%]'}
       `}
-      style={{ transitionTimingFunction: 'var(--ease-out)' }}
     >
-      {/* Logo */}
-      <div className="px-5 pt-6 pb-5 border-b border-border">
-        <div className="font-mono text-[9px] tracking-[1.5px] uppercase text-text-4 font-semibold mb-2">
-          Dashboard · V2
+      <div className="sb-logo px-[22px] py-[26px] pb-[22px] border-b border-b1">
+        <div className="sb-brand font-mono text-[11px] font-semibold tracking-[3px] uppercase text-primary mb-[10px]">
+          Dashboard · v3
         </div>
-        <div className="text-[16px] font-extrabold text-text-1 leading-tight tracking-tight">
+        <div className="sb-name text-[19px] font-extrabold leading-[1.15] tracking-[-0.4px] text-text-1">
           Supermercados<br />
           <em className="not-italic text-primary">Araújo</em>
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="p-3 flex-1 flex flex-col gap-1.5 mt-2">
-        <span className="block font-mono text-[9px] tracking-[2px] uppercase text-text-4 px-2.5 mb-2 font-semibold">
+      <nav className="sb-nav px-[12px] py-[18px] flex-1 flex flex-col gap-0.5">
+        <span className="sb-section block font-mono text-[9px] tracking-[2.5px] uppercase text-text-3 px-[10px] mb-[8px] mt-[4px]">
           Análises
         </span>
         {ROUTES.map(r => {
@@ -51,29 +49,27 @@ export default function Sidebar({ isOpen, onClose }) {
               key={r.id}
               onClick={() => handleNav(r.id)}
               className={`
-                group w-full flex items-center px-4 py-3 rounded-lg text-[13.5px] font-medium
-                cursor-pointer border-none text-left transition-all duration-200
+                sb-item w-full flex items-center gap-[11px] px-[12px] py-[9px] rounded-[8px]
+                text-[13px] font-medium cursor-pointer border-none text-left transition-all duration-[140ms]
+                mb-[2px] select-none
                 ${isActive
-                  ? 'bg-primary-dim text-text-1 font-bold'
-                  : 'bg-transparent text-text-3 hover:bg-bg hover:text-text-1'
+                  ? 'active bg-primary-dim text-text-1 font-semibold'
+                  : 'bg-transparent text-text-2 hover:bg-[rgba(255,255,255,0.05)] hover:text-text-1'
                 }
               `}
             >
-              <div 
-                className={`
-                  w-1.5 h-1.5 rounded-full mr-3 shrink-0 transition-all duration-300
-                  ${isActive ? 'bg-primary shadow-[0_0_8px_rgba(232,0,13,0.8)] scale-125' : 'bg-text-4 group-hover:bg-text-3'}
-                `} 
-              />
+              <span className={`
+                sb-pip w-[5px] h-[5px] rounded-full shrink-0 transition-colors duration-[140ms]
+                ${isActive ? 'bg-primary shadow-[0_0_8px_var(--color-primary)]' : 'bg-b3'}
+              `} />
               <span>{r.label}</span>
             </button>
           );
         })}
       </nav>
 
-      {/* Footer */}
-      <div className="px-5 py-4 font-mono text-[9.5px] text-text-3 leading-relaxed border-t border-border">
-        Base v4 · Dez/2025–Mar/2026<br />
+      <div className="sb-foot px-[22px] py-[18px] font-mono text-[9px] text-text-3 leading-[1.9] border-t border-b1">
+        Base v3 · Dez/2025–Mar/2026<br />
         3 Lojas · 4.400 SKUs
       </div>
     </aside>

@@ -1,13 +1,12 @@
-// src/pages/P6_Metas.jsx — Painel de Metas
+// src/pages/P6_Metas.jsx
 import { useFilteredData } from '../core/DashboardContext.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import KpiCard from '../components/KpiCard.jsx';
 import ChartCard from '../components/ChartCard.jsx';
 import { BarChart, RadarChart, COLORS } from '../components/Charts.jsx';
-import { sum } from '../utils/filters.js';
-import { brl, pct, mes as fmtMes } from '../utils/fmt.js';
+import { sum, MORD } from '../utils/filters.js';
+import { brl, pct, mes as fMes } from '../utils/fmt.js';
 
-const MESES_ORD = ['2025-12', '2026-01', '2026-02', '2026-03'];
 const LOJAS = ['Araújo Centro', 'Araújo Norte', 'Araújo Sul'];
 const LCOL = [COLORS.centro, COLORS.norte, COLORS.sul];
 
@@ -16,105 +15,90 @@ export default function P6_Metas() {
   if (!data) return null;
 
   const { vendas, atend, metas } = data;
+
   const fat = sum(atend, 'fat');
   const atd = sum(atend, 'atd');
   const tk = atd > 0 ? fat / atd : 0;
-  const metaTk = metas.length ? sum(metas, 'meta_ticket') / metas.length : 96.60;
-  const atTk = metaTk > 0 ? (tk / metaTk) * 100 : 0;
+  const mTk = metas.length ? sum(metas, 'meta_ticket') / metas.length : 96.60;
+  const atTk = mTk > 0 ? (tk / mTk) * 100 : 0;
 
-  // Revenue by month × store
   const mm = {};
   vendas.forEach(v => {
     if (!mm[v.mes]) mm[v.mes] = {};
     mm[v.mes][v.loja] = (mm[v.mes][v.loja] || 0) + v.rec;
   });
-  const ma = MESES_ORD.filter(m => mm[m]);
+  const ma = MORD.filter(m => mm[m]);
 
-  // Best month & store
-  const totMes = ma
-    .map(m => ({ mes: m, tot: LOJAS.reduce((a, l) => a + (mm[m]?.[l] || 0), 0) }))
-    .sort((a, b) => b.tot - a.tot)[0];
-  const totLoja = LOJAS
-    .map(l => ({ loja: l, tot: ma.reduce((a, m) => a + (mm[m]?.[l] || 0), 0) }))
-    .sort((a, b) => b.tot - a.tot)[0];
+  const totM = ma.map(m => ({ mes: m, tot: LOJAS.reduce((a, l) => a + (mm[m]?.[l] || 0), 0) })).sort((a, b) => b.tot - a.tot)[0];
+  const totL = LOJAS.map(l => ({ l, tot: ma.reduce((a, m) => a + (mm[m]?.[l] || 0), 0) })).sort((a, b) => b.tot - a.tot)[0];
 
-  // Revenue bar series
-  const revSeries = LOJAS.map((l, i) => ({
-    name: l.replace('Araújo ', ''),
-    data: ma.map(m => Math.round(mm[m]?.[l] || 0)),
-    color: LCOL[i],
-  }));
-
-  // Achievement bar
-  const metaMap = {};
+  const metaM = {};
   metas.forEach(m => {
-    if (!metaMap[m.mes]) metaMap[m.mes] = {};
-    metaMap[m.mes][m.loja] = m.meta_fat;
+    if (!metaM[m.mes]) metaM[m.mes] = {};
+    metaM[m.mes][m.loja] = m.meta_fat;
   });
 
-  const atingSeries = LOJAS.map(l => {
-    const vals = ma.map(m => {
-      const r = mm[m]?.[l] || 0;
-      const mt = metaMap[m]?.[l] || 1;
-      return +((r / mt) * 100).toFixed(1);
-    });
-    return { name: l.replace('Araújo ', ''), data: vals };
-  });
-
-  // Radar
-  const radarSeries = [
-    { name: 'Centro', data: [68, 104, 96, 87, 93], color: COLORS.centro },
-    { name: 'Norte', data: [73, 108, 98, 90, 91], color: COLORS.norte },
-    { name: 'Sul', data: [70, 102, 94, 85, 94], color: COLORS.sul },
-  ];
+  const atCol = v => v >= 95 ? COLORS.white : v >= 80 ? COLORS.gray : COLORS.red;
 
   return (
     <>
       <PageHeader
         badge="Página 6 · Executivo"
-        title="Painel de<br/>Metas"
-        description="Visão gerencial de atingimento. Semáforo claro para tomada de decisão rápida."
+        title="Painel de<br/>Metas e Performance"
+        description="Visão consolidada de atingimento. Identifique onde agir antes do mês fechar."
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-3 stagger">
-        <KpiCard label="Ating. Ticket Médio" value={pct(atTk, 0)} sub={`Meta R$${metaTk.toFixed(0)}`} />
-        <KpiCard
-          label="Melhor Mês"
-          value={totMes ? fmtMes(totMes.mes) : '—'}
-          sub={totMes ? brl(totMes.tot) : ''}
-        />
-        <KpiCard
-          label="Melhor Loja"
-          value={totLoja ? totLoja.loja.replace('Araújo ', '') : '—'}
-          sub={totLoja ? brl(totLoja.tot) : ''}
-        />
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-[14px] mb-[14px]">
+        <KpiCard label="Atingimento de Ticket" value={pct(atTk, 0) + ' ating.'} sub={`Meta: R$ ${Math.round(mTk)}`} />
+        <KpiCard label="Melhor Mês" value={totM ? fMes(totM.mes) : '—'} sub={totM ? brl(totM.tot) : ''} />
+        <KpiCard label="Melhor Loja" value={totL ? totL.l.replace('Araújo ', '') : '—'} sub={totL ? brl(totL.tot) : ''} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 stagger">
-        <ChartCard title="Receita Real por Loja × Mês" hint="Barras agrupadas — período selecionado" spanAll>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[14px]">
+        <ChartCard title="Receita Real por Loja e Mês" hint="Comparativo entre unidades — período selecionado" span>
           <BarChart
-            series={revSeries}
-            categories={ma.map(fmtMes)}
-            yFormatter={v => brl(v)}
+            labels={ma.map(fMes)}
+            datasets={LOJAS.map((l, i) => ({
+              label: l.replace('Araújo ', ''),
+              data: ma.map(m => Math.round(mm[m]?.[l] || 0)),
+              backgroundColor: LCOL[i],
+              borderRadius: 4,
+              barPercentage: 0.8
+            }))}
             legend
-            height={260}
+            yFmt={v => brl(v)}
           />
         </ChartCard>
 
-        <ChartCard title="% Atingimento por Loja × Mês" hint="≥95%=Verde · 80–95%=Cinza · <80%=Vermelho">
+        <ChartCard title="% Atingimento da Meta de Faturamento" hint="Branco ≥95% · Cinza 80–94% · Vermelho <80%">
           <BarChart
-            series={atingSeries}
-            categories={ma.map(fmtMes)}
-            yFormatter={v => v + '%'}
+            labels={ma.map(fMes)}
+            datasets={LOJAS.map((l, i) => {
+              const vs = ma.map(m => {
+                const r = mm[m]?.[l] || 0;
+                const mt = metaM[m]?.[l] || 1;
+                return +((r / mt) * 100).toFixed(1);
+              });
+              return {
+                label: l.replace('Araújo ', ''),
+                data: vs,
+                backgroundColor: vs.map(atCol),
+                borderRadius: 4
+              };
+            })}
             legend
+            yFmt={v => v + '%'}
           />
         </ChartCard>
 
-        <ChartCard title="Radar de Performance" hint="5 dimensões · escala 0–120">
+        <ChartCard title="Radar de Performance — 5 Dimensões" hint="Centro vs Norte vs Sul · escala 0–120">
           <RadarChart
-            series={radarSeries}
-            categories={['Faturamento', 'Ticket Médio', 'Margem Bruta', 'Giro Estoque', 'Anti-Ruptura']}
-            height={320}
+            labels={['Faturamento', 'Ticket Médio', 'Margem Bruta', 'Giro de Estoque', 'Anti-Ruptura']}
+            datasets={[
+              { label: 'Centro', data: [68, 104, 96, 87, 93], borderColor: COLORS.centro, backgroundColor: 'rgba(232,0,13,.1)', borderWidth: 2, pointBackgroundColor: COLORS.centro },
+              { label: 'Norte', data: [73, 108, 98, 90, 91], borderColor: COLORS.norte, backgroundColor: 'rgba(200,200,220,.05)', borderWidth: 2, pointBackgroundColor: COLORS.norte },
+              { label: 'Sul', data: [70, 102, 94, 85, 94], borderColor: COLORS.sul, backgroundColor: 'rgba(82,82,112,.05)', borderWidth: 2, pointBackgroundColor: COLORS.sul }
+            ]}
           />
         </ChartCard>
       </div>
