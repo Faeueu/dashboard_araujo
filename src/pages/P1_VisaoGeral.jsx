@@ -84,6 +84,7 @@ export default function P1_VisaoGeral() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 stagger">
         <ChartCard title="Receita Semanal por Loja" hint="Tendência semanal — 3 lojas">
           <LineChart
+            type="area"
             series={lineSeries.map((s, i) => ({
               ...s,
               color: lineColors[i],
@@ -102,6 +103,7 @@ export default function P1_VisaoGeral() {
             }]}
             categories={byLoja.map(d => d.label.replace('Araújo ', ''))}
             horizontal
+            colors={barColors}
             xFormatter={v => brl(v)}
             height={200}
           />

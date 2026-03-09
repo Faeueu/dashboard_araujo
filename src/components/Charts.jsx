@@ -67,11 +67,12 @@ function baseOpts({ chart, grid, tooltip, legend, ...rest } = {}) {
 // ═══════════════════════════════════════════════════════════════
 //  LINE CHART
 // ═══════════════════════════════════════════════════════════════
-export function LineChart({ series, categories, yFormatter, yMin, yMax, height = 240, legend = false }) {
+export function LineChart({ type = 'line', series, categories, yFormatter, yMin, yMax, height = 240, legend = false }) {
   const options = useMemo(() => baseOpts({
-    chart: { type: 'line', height },
+    chart: { type, height },
     stroke: { curve: 'smooth', width: 2.5 },
     markers: { size: 3, hover: { size: 5 } },
+    fill: type === 'area' ? { type: 'solid', opacity: 0.1 } : { type: 'solid', opacity: 1 },
     xaxis: {
       categories,
       labels: { style: { fontSize: '10.5px', fontFamily: FONT, colors: COLORS.text3 } },
@@ -87,24 +88,26 @@ export function LineChart({ series, categories, yFormatter, yMin, yMax, height =
       max: yMax,
     },
     legend: { show: legend, position: 'top' },
-  }), [categories, yFormatter, yMin, yMax, height, legend]);
+  }), [type, categories, yFormatter, yMin, yMax, height, legend]);
 
-  return <Chart options={options} series={series} type="line" height={height} />;
+  return <Chart options={options} series={series} type={type} height={height} />;
 }
 
 // ═══════════════════════════════════════════════════════════════
 //  BAR CHART
 // ═══════════════════════════════════════════════════════════════
-export function BarChart({ series, categories, horizontal = false, yFormatter, xFormatter, height = 240, legend = false, stacked = false }) {
+export function BarChart({ series, categories, horizontal = false, yFormatter, xFormatter, height = 240, legend = false, stacked = false, colors }) {
   const options = useMemo(() => baseOpts({
     chart: { type: 'bar', height, stacked },
+    colors: colors || undefined,
     plotOptions: {
       bar: {
         horizontal,
         borderRadius: 4,
         borderRadiusApplication: 'end',
-        columnWidth: '55%',
-        barHeight: '55%',
+        columnWidth: horizontal ? '100%' : '55%',
+        barHeight: horizontal ? '85%' : '55%',
+        distributed: !!colors, // Necessary for different colors per bar when using single series
       },
     },
     dataLabels: { enabled: false },
@@ -125,7 +128,7 @@ export function BarChart({ series, categories, horizontal = false, yFormatter, x
     },
     legend: { show: legend, position: 'top' },
     grid: horizontal ? { xaxis: { lines: { show: true } }, yaxis: { lines: { show: false } } } : undefined,
-  }), [categories, horizontal, yFormatter, xFormatter, height, legend, stacked]);
+  }), [categories, horizontal, yFormatter, xFormatter, height, legend, stacked, colors]);
 
   return <Chart options={options} series={series} type="bar" height={height} />;
 }
