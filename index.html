@@ -10,50 +10,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 
 <body>
-
-  <!-- Loading splash -->
-  <div id="loading">
-    <div class="ld-name">Supermercados <em>Araújo</em></div>
-    <div class="ld-bar">
-      <div class="ld-prog"></div>
-    </div>
-    <div class="ld-txt">Carregando dataset…</div>
-  </div>
-
-  <div id="overlay"></div>
-
-  <div id="shell">
-
-    <!-- Sidebar -->
-    <aside id="sidebar"></aside>
-
-    <!-- Main -->
-    <div id="main">
-
-      <!-- Topbar (mobile) -->
-      <div id="topbar">
-        <span class="tb-logo">Supermercados <em>Araújo</em></span>
-        <button id="hamburger" aria-label="Menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-
-      <!-- Global filter bar -->
-      <div id="filterbar"></div>
-
-      <!-- Page outlet -->
-      <div id="outlet"></div>
-
-    </div>
-  </div>
-
-  <script type="module" src="/src/main.js"></script>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 
 </html>
