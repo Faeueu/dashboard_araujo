@@ -1,5 +1,3 @@
-// src/components/Charts.jsx
-// ApexCharts wrapper — Light theme, bigger charts, intuitive formatting
 import ReactApexChart from 'react-apexcharts';
 
 export const COLORS = {
@@ -58,53 +56,122 @@ export function LineChart({ labels, datasets, yFmt, yMin, yMax, legend = false, 
   const series = datasets.map(ds => ({
     name: ds.label || '',
     data: ds.data,
-    type: 'line',
+   
   }));
 
   const options = {
     ...baseTheme,
-    chart: { ...baseTheme.chart, type: 'line', height: height || 300 },
-    colors: datasets.map(ds => ds.borderColor || COLORS.red),
-    stroke: {
-      width: datasets.map(ds => ds.borderWidth || 3),
-      curve: 'smooth',
-      dashArray: datasets.map(ds => ds.borderDash ? 6 : 0),
+    chart: {
+      ...baseTheme.chart,
+      type: 'line',
+      height: height || 300,
+
+      zoom: {
+        enabled: false,
+        type: 'x',
+        autoScaleYaxis: false,
+        zoomedArea: {
+          fill:   { color: 'transparent' },
+          stroke: { color: 'transparent' },
+        },
+      },
+      selection: { enabled: false },
+      pan:       { enabled: false },
+      toolbar: {
+        show: false,
+        tools: {
+          download:  false,
+          selection: false,
+          zoom:      false,
+          zoomin:    false,
+          zoomout:   false,
+          pan:       false,
+          reset:     false,
+        },
+      },
     },
+
+    colors: datasets.map(ds => ds.borderColor || COLORS.red),
+
+    stroke: {
+      curve:     'smooth',
+      width:     datasets.map(ds => ds.borderDash ? 1.8 : 2.5),
+      dashArray: datasets.map(ds => ds.borderDash ? 6   : 0),
+    },
+
     fill: {
       type: datasets.map(ds => ds.fill ? 'gradient' : 'solid'),
-      opacity: datasets.map(ds => ds.fill ? 0.15 : 0),
-      gradient: { shadeIntensity: 0.3, opacityFrom: 0.2, opacityTo: 0.02, stops: [0, 90, 100] },
+      gradient: {
+        shade:          'dark',
+        type:           'vertical',
+        shadeIntensity: 0,
+        opacityFrom:    5,
+        opacityTo:      1,
+        stops:          [0, 85, 100],
+        inverseColors:  false,
+      },
     },
+
     markers: {
-      size: datasets.map(ds => ds.pointRadius != null ? ds.pointRadius + 1 : 4),
-      colors: datasets.map(ds => ds.pointBackgroundColor || ds.borderColor || COLORS.red),
-      strokeWidth: 2,
-      strokeColors: '#fff',
-      hover: { sizeOffset: 3 },
+      size:        datasets.map(ds => ds.borderDash ? 0 : 4),
+      colors:      datasets.map(ds => ds.pointBackgroundColor || ds.borderColor || COLORS.red),
+      strokeWidth: 0,             
+      hover:       { sizeOffset: 2 },
     },
+
     xaxis: {
       categories: labels,
-      labels: { style: { colors: '#64748B', fontSize: '12px', fontWeight: 500 }, rotate: -40 },
-      axisBorder: { show: false },
-      axisTicks: { show: false },
       tickAmount: maxT,
-    },
-    yaxis: {
-      min: yMin, max: yMax,
       labels: {
-        style: { colors: '#64748B', fontSize: '12px', fontWeight: 500 },
+        style: { colors: '#3E3E58', fontSize: '11px', fontWeight: 500 },
+        rotate: -35,
+        hideOverlappingLabels: true,
+      },
+      axisBorder: { show: false },
+      axisTicks:  { show: false },
+    },
+
+    yaxis: {
+      min: yMin,
+      max: yMax,
+      labels: {
+        style:     { colors: '#3E3E58', fontSize: '11px', fontWeight: 500 },
         formatter: yFmt || (v => v),
       },
     },
-    legend: { ...baseTheme.legend, show: legend, position: 'top' },
+
+    grid: {
+      ...baseTheme.grid,
+      xaxis: { lines: { show: false } },
+      yaxis: { lines: { show: true  } },
+    },
+
+    legend: {
+      ...baseTheme.legend,
+      show:     legend,
+      position: 'top',
+      markers:  { width: 16, height: 3, radius: 2 },
+      itemMargin: { horizontal: 14 },
+    },
+
     tooltip: {
       ...baseTheme.tooltip,
+      shared:    true,
+      intersect: false,
       y: { formatter: yFmt || (v => v) },
     },
-    grid: baseTheme.grid,
+
+    dataLabels: { enabled: false },
   };
 
-  return <ReactApexChart options={options} series={series} type="line" height={height || 300} />;
+  return (
+    <ReactApexChart
+      options={options}
+      series={series}
+      type="line"           // tipo definido AQUI, não dentro de cada série
+      height={height || 300}
+    />
+  );
 }
 
 // ── BAR CHART ──────────────────────────────────────────────────
