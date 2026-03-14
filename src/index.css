@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════
-   DESIGN TOKENS — LIGHT THEME
+   DESIGN TOKENS — LIGHT THEME (default)
 ═══════════════════════════════════════════════════════════════ */
 @theme {
   /* Light backgrounds */
@@ -25,11 +25,13 @@
   /* Status */
   --color-success: #16A34A;
   --color-warning: #F59E0B;
+  --color-info: #3B82F6;
+  --color-danger: #DC2626;
 
   /* Text — dark on light */
   --color-text-1: #0F172A;
   --color-text-2: #475569;
-  --color-text-3: #94A3B8;
+  --color-text-3: #64748B;
 
   /* Chart Colors */
   --color-centro: #DC2626;
@@ -48,6 +50,55 @@
 
   --sidebar-w: 240px;
   --topbar-h: 56px;
+
+  /* Elevation */
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-card-hover: 0 4px 20px rgba(0,0,0,0.06);
+  --shadow-dropdown: 0 8px 30px rgba(0,0,0,0.1);
+
+  /* Skeleton */
+  --color-skeleton: #E2E8F0;
+  --color-skeleton-shimmer: #F1F5F9;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK THEME — applied via .dark on <html>
+═══════════════════════════════════════════════════════════════ */
+.dark {
+  --color-bg: #0B0F1A;
+  --color-surf: #111827;
+  --color-card: #1E293B;
+  --color-card-h: #243044;
+
+  --color-b0: #1E293B;
+  --color-b1: #334155;
+  --color-b2: #475569;
+  --color-b3: #64748B;
+
+  --color-primary: #EF4444;
+  --color-primary-dim: rgba(239, 68, 68, 0.10);
+  --color-primary-soft: rgba(239, 68, 68, 0.18);
+  --color-primary-hover: #F87171;
+
+  --color-success: #22C55E;
+  --color-warning: #FBBF24;
+  --color-info: #60A5FA;
+  --color-danger: #EF4444;
+
+  --color-text-1: #F1F5F9;
+  --color-text-2: #CBD5E1;
+  --color-text-3: #94A3B8;
+
+  --color-centro: #EF4444;
+  --color-norte: #94A3B8;
+  --color-sul: #CBD5E1;
+
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-card-hover: 0 4px 24px rgba(0,0,0,0.3);
+  --shadow-dropdown: 0 8px 30px rgba(0,0,0,0.4);
+
+  --color-skeleton: #334155;
+  --color-skeleton-shimmer: #475569;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -71,6 +122,7 @@
     font-size: 14.5px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    transition: background-color 300ms var(--ease-out), color 200ms var(--ease-out);
   }
 
   /* Scrollbar — subtle */
@@ -89,6 +141,19 @@
     scrollbar-width: thin;
     scrollbar-color: var(--color-b2) transparent;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   THEME TRANSITION — smooth color changes
+═══════════════════════════════════════════════════════════════ */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition: background-color 300ms var(--ease-out),
+              border-color 300ms var(--ease-out),
+              color 200ms var(--ease-out),
+              box-shadow 300ms var(--ease-out) !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -115,6 +180,55 @@
 @keyframes ddIn {
   from { opacity: 0; transform: translateY(-6px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SKELETON / SHIMMER
+═══════════════════════════════════════════════════════════════ */
+.skeleton {
+  background: var(--color-skeleton);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-skeleton-shimmer) 50%,
+    transparent 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.skeleton-text {
+  background: var(--color-skeleton);
+  border-radius: 4px;
+  height: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-text::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-skeleton-shimmer) 50%,
+    transparent 100%
+  );
+  animation: shimmer 1.5s infinite;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -267,3 +381,31 @@
   font-weight: 600;
   background: var(--color-bg);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   COLLAPSIBLE CHART CARD
+═══════════════════════════════════════════════════════════════ */
+.chart-body {
+  overflow: hidden;
+  transition: max-height 350ms var(--ease-out), opacity 250ms var(--ease-out);
+}
+
+.chart-body.collapsed {
+  max-height: 0 !important;
+  opacity: 0;
+}
+
+.collapse-chevron {
+  transition: transform 250ms var(--ease-out);
+}
+
+.collapse-chevron.rotated {
+  transform: rotate(180deg);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DELTA SPANS (fmt.js)
+═══════════════════════════════════════════════════════════════ */
+.delta { font-weight: 700; font-size: 12px; }
+.delta.pos { color: var(--color-success); }
+.delta.neg { color: var(--color-danger); }
