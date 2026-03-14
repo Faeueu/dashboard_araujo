@@ -1,9 +1,8 @@
-// src/pages/P2_Ticket.jsx
 import { useFilteredData } from '../core/DashboardContext.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import KpiCard from '../components/KpiCard.jsx';
 import ChartCard from '../components/ChartCard.jsx';
-import { LineChart, BarChart, COLORS } from '../components/Charts.jsx';
+import { LineChart, BarChart, useChartColors } from '../components/Charts.jsx';
 import { sum, wk } from '../utils/filters.js';
 import { brl, brlFull, dataCurta } from '../utils/fmt.js';
 
@@ -22,6 +21,7 @@ function tkSem(atend) {
 
 export default function P2_Ticket() {
   const data = useFilteredData();
+  const c = useChartColors();
   if (!data) return null;
 
   const { vendas, atend } = data;
@@ -52,18 +52,18 @@ export default function P2_Ticket() {
     {
       label: 'Ticket Real',
       data: ts.map(d => d.t),
-      borderColor: COLORS.red,
-      backgroundColor: COLORS.redD,
+      borderColor: c.red,
+      backgroundColor: c.redD,
       fill: true,
       tension: 0.4,
       borderWidth: 3,
       pointRadius: 4,
-      pointBackgroundColor: COLORS.red
+      pointBackgroundColor: c.red
     },
     {
       label: 'Meta R$96,60',
       data: Array(ts.length).fill(96.60),
-      borderColor: COLORS.gray,
+      borderColor: c.text3,
       borderDash: [5, 4],
       borderWidth: 2,
       pointRadius: 0
@@ -73,7 +73,7 @@ export default function P2_Ticket() {
   const cs = [...camps].sort((a, b) => a.tp - b.tp);
   const barSeries = [{
     data: cs.map(d => Math.round(d.tp)),
-    backgroundColor: cs.map(d => d.tp >= 280 ? COLORS.red : d.tp >= 268 ? '#EF4444' : '#CBD5E1'),
+    backgroundColor: cs.map(d => d.tp >= 280 ? c.red : d.tp >= 268 ? c.red2 : c.bar),
     borderRadius: 6,
     borderSkipped: false,
     barThickness: 28
@@ -91,8 +91,19 @@ export default function P2_Ticket() {
   const mn = Math.min(...allV);
   const mx = Math.max(...allV);
 
+  // Heatmap color function — theme-aware
   const hc = v => {
     const t = (v - mn) / (mx - mn);
+    if (c.isDark) {
+      // Dark mode: from deep red to bright warm tone
+      if (t < 0.5) {
+        const s = t * 2;
+        return `rgb(${Math.round(139 + s * 50)},${Math.round(30 + s * 40)},${Math.round(30 + s * 40)})`;
+      }
+      const s = (t - 0.5) * 2;
+      return `rgb(${Math.round(189 + s * 50)},${Math.round(70 + s * 80)},${Math.round(70 + s * 30)})`;
+    }
+    // Light mode
     if (t < 0.5) {
       const s = t * 2;
       return `rgb(${Math.round(220 + s * 10)},${Math.round(38 + s * 60)},${Math.round(38 + s * 60)})`;
@@ -154,7 +165,7 @@ export default function P2_Ticket() {
                     {V[l].map((v, idx) => (
                       <td
                         key={idx}
-                        style={{ background: hc(v), color: v > (mn + mx) / 2 ? '#fff' : '#fff' }}
+                        style={{ background: hc(v), color: '#fff' }}
                       >
                         R${v}
                       </td>

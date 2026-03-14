@@ -12,25 +12,50 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
     rel="stylesheet">
+
+  <script>
+    // Apply saved theme before first paint to prevent flash
+    (function() {
+      var t = localStorage.getItem('araujo-theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      if (t === 'dark') document.documentElement.classList.add('dark');
+    })();
+  </script>
 </head>
 
 <body>
   <div id="loading">
-    <div style="font-size:24px; font-weight:800; color:#0F172A; font-family: 'Plus Jakarta Sans', sans-serif;">
-      Supermercados <em style="font-style:normal; color:#DC2626;">Araújo</em>
+    <div class="ld-brand">
+      Supermercados <em>Araújo</em>
     </div>
-    <div style="width:180px; height:3px; background:#E2E8F0; border-radius:3px; overflow:hidden; margin-top:24px;">
-      <div style="height:100%; background:#DC2626; border-radius:3px; width:0%; animation: ldA 1.5s cubic-bezier(.4,0,.2,1) infinite;"></div>
+    <div class="ld-bar">
+      <div class="ld-fill"></div>
     </div>
-    <div style="font-family:'JetBrains Mono', monospace; font-size:10px; color:#94A3B8; letter-spacing:2px; text-transform:uppercase; margin-top:20px; font-weight:600;">Inicializando Dashboard</div>
+    <div class="ld-label">Inicializando Dashboard</div>
   </div>
 
   <style>
     #loading {
-      position: fixed; inset: 0; background: #F5F6FA;
+      position: fixed; inset: 0;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       z-index: 999; gap: 0; transition: opacity 380ms;
     }
+    /* Light theme (default) */
+    #loading { background: #F5F6FA; }
+    .ld-brand { font-size: 24px; font-weight: 800; color: #0F172A; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .ld-brand em { font-style: normal; color: #DC2626; }
+    .ld-bar { width: 180px; height: 3px; background: #E2E8F0; border-radius: 3px; overflow: hidden; margin-top: 24px; }
+    .ld-fill { height: 100%; background: #DC2626; border-radius: 3px; width: 0%; animation: ldA 1.5s cubic-bezier(.4,0,.2,1) infinite; }
+    .ld-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #94A3B8; letter-spacing: 2px; text-transform: uppercase; margin-top: 20px; font-weight: 600; }
+
+    /* Dark theme overrides */
+    .dark #loading { background: #0B0F1A; }
+    .dark .ld-brand { color: #F1F5F9; }
+    .dark .ld-brand em { color: #EF4444; }
+    .dark .ld-bar { background: #334155; }
+    .dark .ld-fill { background: #EF4444; }
+    .dark .ld-label { color: #64748B; }
+
     #loading.hide { opacity: 0; pointer-events: none; }
     @keyframes ldA {
       0% { width: 0%; margin-left: 0; }

@@ -1,12 +1,15 @@
-// src/components/KpiCard.jsx
 export default function KpiCard({ label, value = '—', sub = '', alert = false, accent = '' }) {
   return (
-    <div className={`
-      relative bg-card border border-b1 rounded-2xl p-6 overflow-hidden text-center
-      transition-all duration-200 cursor-default group
-      hover:border-b2 hover:shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:-translate-y-[1px]
-      ${alert ? 'border-primary/30' : ''}
-    `}>
+    <div
+      role={alert ? 'status' : undefined}
+      aria-label={`${label}: ${value}${sub ? `, ${sub}` : ''}`}
+      className={`
+        relative bg-card border border-b1 rounded-2xl p-6 overflow-hidden text-center
+        transition-all duration-200 cursor-default group
+        hover:border-b2 hover:shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:-translate-y-px
+        ${alert ? 'border-primary/30' : ''}
+      `}
+    >
       <div className={`
         absolute top-0 left-0 right-0 h-[3px] bg-primary rounded-t-2xl transition-opacity duration-200
         ${alert ? 'opacity-100' : 'opacity-0 group-hover:opacity-40'}

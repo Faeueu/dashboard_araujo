@@ -1,11 +1,8 @@
-// src/core/DashboardContext.jsx
-// React Context replacing Store.js — manages dataset, filters, active page, and filtered data.
-
-import { createContext, useContext, useState, useMemo, useCallback } from 'react';
+import { createContext, useContext, useState, useMemo, useCallback, useEffect } from 'react';
 
 const DashboardContext = createContext(null);
+const ThemeContext = createContext(null);
 
-// ── Filter logic (reuses same logic from old Router.js applyFilters) ──
 function applyFilters(ds, f) {
   const vendas = ds.vendas.filter(v => {
     if (f.lojas.length && !f.lojas.includes(v.loja)) return false;
@@ -36,6 +33,54 @@ function applyFilters(ds, f) {
   return { vendas, atend, estoque, rupturas, metas };
 }
 
+/* ─── Theme Provider ────────────────────────────────────────── */
+function getInitialTheme() {
+  if (typeof window === 'undefined') return 'light';
+  const stored = localStorage.getItem('araujo-theme');
+  if (stored === 'dark' || stored === 'light') return stored;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function applyThemeToDOM(theme) {
+  const html = document.documentElement;
+  html.classList.add('theme-transition');
+  if (theme === 'dark') {
+    html.classList.add('dark');
+  } else {
+    html.classList.remove('dark');
+  }
+  // Remove transition class after animation completes to avoid affecting other transitions
+  setTimeout(() => html.classList.remove('theme-transition'), 350);
+}
+
+export function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState(getInitialTheme);
+
+  useEffect(() => {
+    applyThemeToDOM(theme);
+    localStorage.setItem('araujo-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  }, []);
+
+  const value = useMemo(() => ({ theme, toggleTheme }), [theme, toggleTheme]);
+
+  return (
+    <ThemeContext.Provider value={value}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+export function useTheme() {
+  const ctx = useContext(ThemeContext);
+  if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
+  return ctx;
+}
+
+/* ─── Dashboard Provider ────────────────────────────────────── */
 export function DashboardProvider({ dataset, children }) {
   const [page, setPage] = useState('visao-geral');
   const [filtros, setFiltros] = useState({ lojas: [], meses: [], cats: [] });

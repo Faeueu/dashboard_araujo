@@ -1,5 +1,3 @@
-// src/utils/filters.js — Funções puras de agregação (sem efeitos colaterais)
-
 // Soma um campo numérico
 export const sum = (rows, k) => rows.reduce((a, r) => a + (r[k] || 0), 0);
 

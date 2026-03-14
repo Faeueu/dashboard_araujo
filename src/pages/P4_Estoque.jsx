@@ -1,9 +1,8 @@
-// src/pages/P4_Estoque.jsx
 import { useFilteredData } from '../core/DashboardContext.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import KpiCard from '../components/KpiCard.jsx';
 import ChartCard from '../components/ChartCard.jsx';
-import { BarChart, COLORS } from '../components/Charts.jsx';
+import { BarChart, useChartColors } from '../components/Charts.jsx';
 import { sum } from '../utils/filters.js';
 import { brl, num } from '../utils/fmt.js';
 
@@ -39,6 +38,7 @@ function stCat(e) {
 
 export default function P4_Estoque() {
   const data = useFilteredData();
+  const c = useChartColors();
   if (!data) return null;
 
   const { estoque } = data;
@@ -51,17 +51,17 @@ export default function P4_Estoque() {
   const st = stE(estoque);
   const tot = estoque.length;
   const bars = [
-    { k: 'Ruptura', l: 'Ruptura', c: COLORS.red },
-    { k: 'Crítico', l: 'Crítico', c: '#F59E0B' },
-    { k: 'Abaixo_Mínimo', l: 'Abaixo Mín.', c: '#64748B' },
-    { k: 'Normal', l: 'Normal', c: '#CBD5E1' }
+    { k: 'Ruptura', l: 'Ruptura', c: c.red },
+    { k: 'Crítico', l: 'Crítico', c: c.warning },
+    { k: 'Abaixo_Mínimo', l: 'Abaixo Mín.', c: c.barAlt },
+    { k: 'Normal', l: 'Normal', c: c.bar }
   ];
 
   const cob = cobF(estoque);
   const ck = Object.keys(cob);
   const barSeries = [{
     data: Object.values(cob),
-    backgroundColor: ck.map(k => k === '0–7d' ? COLORS.red : k === '8–15d' ? '#EF4444' : k === '16–30d' ? '#64748B' : '#CBD5E1'),
+    backgroundColor: ck.map(k => k === '0–7d' ? c.red : k === '8–15d' ? c.red2 : k === '16–30d' ? c.barAlt : c.bar),
     borderRadius: 6,
     borderSkipped: false,
     barThickness: 40
@@ -90,13 +90,16 @@ export default function P4_Estoque() {
             {bars.map(b => {
               const v = st[b.k] || 0;
               const p = ((v / tot) * 100).toFixed(1);
+              // Determine text color based on bar background
+              const barIsDark = ['Ruptura', 'Crítico'].includes(b.k) || c.isDark;
+              const textColor = b.k === 'Normal' && !c.isDark ? '#334155' : '#fff';
               return (
                 <div key={b.k} className="sbar-row">
                   <span className="sbar-lbl">{b.l}</span>
                   <div className="sbar-track">
                     <div
                       className="sbar-fill"
-                      style={{ width: `${p}%`, background: b.c, color: b.k === 'Normal' ? '#334155' : '#fff' }}
+                      style={{ width: `${p}%`, background: b.c, color: textColor }}
                     >
                       {v}
                     </div>
@@ -122,7 +125,7 @@ export default function P4_Estoque() {
             <table className="dt w-full">
               <thead>
                 <tr>
-                  <th className="!text-left">Categoria</th>
+                  <th className="text-left!">Categoria</th>
                   <th>Ruptura</th>
                   <th>Crítico</th>
                   <th>Abaixo Mín.</th>
@@ -133,16 +136,16 @@ export default function P4_Estoque() {
               <tbody>
                 {rows.map(r => (
                   <tr key={r.cat}>
-                    <td className="dn !text-left">{r.cat}</td>
+                    <td className="dn text-left!">{r.cat}</td>
                     <td>
-                      <span className={`inline-flex items-center gap-1 font-mono text-[11px] px-3 py-1 rounded-full font-bold ${r.Ruptura > 0 ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-[#16A34A]/10 text-[#16A34A] border border-[#16A34A]/20'}`}>
+                      <span className={`inline-flex items-center gap-1 font-mono text-[11px] px-3 py-1 rounded-full font-bold ${r.Ruptura > 0 ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-success/10 text-success border border-success/20'}`}>
                         {r.Ruptura}
                       </span>
                     </td>
-                    <td className="font-mono font-bold text-[#F59E0B]">{r.Crítico}</td>
+                    <td className="font-mono font-bold text-warning">{r.Crítico}</td>
                     <td className="font-mono font-bold text-text-3">{r.Abaixo_Mínimo}</td>
                     <td className="font-mono font-bold text-text-3">{r.Normal}</td>
-                    <td className="font-mono font-extrabold" style={{ color: r.tot > 150 ? COLORS.red : r.tot > 80 ? '#F59E0B' : 'var(--color-text-2)' }}>{r.tot}</td>
+                    <td className="font-mono font-extrabold" style={{ color: r.tot > 150 ? c.red : r.tot > 80 ? c.warning : 'var(--color-text-2)' }}>{r.tot}</td>
                   </tr>
                 ))}
               </tbody>

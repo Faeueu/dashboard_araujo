@@ -1,7 +1,7 @@
-// src/App.jsx
 import { useState } from 'react';
 import Sidebar from './components/Sidebar.jsx';
 import FilterBar from './components/FilterBar.jsx';
+import Breadcrumb from './components/Breadcrumb.jsx';
 import P1_VisaoGeral from './pages/P1_VisaoGeral.jsx';
 import P2_TicketMedio from './pages/P2_Ticket.jsx';
 import P3_MargemMix from './pages/P3_Margem.jsx';
@@ -31,7 +31,7 @@ function App() {
       {/* Overlay for mobile */}
       <div
         id="ov"
-        className={`fixed inset-0 bg-black/30 z-[150] backdrop-blur-[2px] transition-opacity duration-300 ${sidebarOpen ? 'block opacity-100' : 'hidden opacity-0'}`}
+        className={`fixed inset-0 bg-black/30 z-150 backdrop-blur-[2px] transition-opacity duration-300 ${sidebarOpen ? 'block opacity-100' : 'hidden opacity-0'}`}
         onClick={() => setSidebarOpen(false)}
       />
 
@@ -54,9 +54,12 @@ function App() {
           >
             <span className={`block w-[18px] h-[2px] bg-text-2 rounded-[2px] transition-transform duration-200 ease-out ${sidebarOpen ? 'translate-y-[6.5px] rotate-45' : ''}`}></span>
             <span className={`block w-[18px] h-[2px] bg-text-2 rounded-[2px] transition-opacity duration-150 ${sidebarOpen ? 'opacity-0' : ''}`}></span>
-            <span className={`block w-[18px] h-[2px] bg-text-2 rounded-[2px] transition-transform duration-200 ease-out ${sidebarOpen ? '-translate-y-[6.5px] rotate-[-45deg]' : ''}`}></span>
+            <span className={`block w-[18px] h-[2px] bg-text-2 rounded-[2px] transition-transform duration-200 ease-out ${sidebarOpen ? '-translate-y-[6.5px] rotate-45' : ''}`}></span>
           </button>
         </header>
+
+        {/* Breadcrumb */}
+        <Breadcrumb />
 
         {/* Filter Bar */}
         <FilterBar />

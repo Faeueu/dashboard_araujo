@@ -1,14 +1,12 @@
-// src/pages/P3_Margem.jsx
 import { useFilteredData } from '../core/DashboardContext.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import KpiCard from '../components/KpiCard.jsx';
 import ChartCard from '../components/ChartCard.jsx';
-import { BarChart, ScatterChart, COLORS } from '../components/Charts.jsx';
+import { BarChart, ScatterChart, useChartColors } from '../components/Charts.jsx';
 import { sum, MORD } from '../utils/filters.js';
 import { brl, pct, mes as fMes } from '../utils/fmt.js';
 
 const LOJAS = ['Araújo Centro', 'Araújo Norte', 'Araújo Sul'];
-const LCOL = [COLORS.centro, COLORS.norte, COLORS.sul];
 
 function mgCat(v) {
   const m = {};
@@ -25,8 +23,10 @@ function mgCat(v) {
 
 export default function P3_Margem() {
   const data = useFilteredData();
+  const c = useChartColors();
   if (!data) return null;
 
+  const LCOL = [c.centro, c.norte, c.sul];
   const { vendas } = data;
 
   const rec = sum(vendas, 'rec');
@@ -39,7 +39,7 @@ export default function P3_Margem() {
 
   const barSeries = [{
     data: cm.map(d => +d.pct.toFixed(1)),
-    backgroundColor: cm.map(d => d.pct >= 40 ? COLORS.red : d.pct >= 30 ? '#EF4444' : d.pct >= 23 ? '#94A3B8' : '#CBD5E1'),
+    backgroundColor: cm.map(d => d.pct >= 40 ? c.red : d.pct >= 30 ? c.red2 : d.pct >= 23 ? c.barAlt : c.bar),
     borderRadius: 6,
     borderSkipped: false,
     barThickness: 22
@@ -48,7 +48,7 @@ export default function P3_Margem() {
   const scatterSeries = cm.map(d => ({
     label: d.label,
     data: [{ x: d.rec, y: +d.pct.toFixed(1) }],
-    backgroundColor: d.pct >= 40 ? COLORS.red : d.pct >= 30 ? '#EF4444' : '#94A3B8',
+    backgroundColor: d.pct >= 40 ? c.red : d.pct >= 30 ? c.red2 : c.barAlt,
     pointRadius: 12,
     pointHoverRadius: 15
   }));

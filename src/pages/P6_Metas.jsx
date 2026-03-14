@@ -1,19 +1,19 @@
-// src/pages/P6_Metas.jsx
 import { useFilteredData } from '../core/DashboardContext.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import KpiCard from '../components/KpiCard.jsx';
 import ChartCard from '../components/ChartCard.jsx';
-import { BarChart, RadarChart, COLORS } from '../components/Charts.jsx';
+import { BarChart, RadarChart, useChartColors } from '../components/Charts.jsx';
 import { sum, MORD } from '../utils/filters.js';
 import { brl, pct, mes as fMes } from '../utils/fmt.js';
 
 const LOJAS = ['Araújo Centro', 'Araújo Norte', 'Araújo Sul'];
-const LCOL = [COLORS.centro, COLORS.norte, COLORS.sul];
 
 export default function P6_Metas() {
   const data = useFilteredData();
+  const c = useChartColors();
   if (!data) return null;
 
+  const LCOL = [c.centro, c.norte, c.sul];
   const { vendas, atend, metas } = data;
 
   const fat = sum(atend, 'fat');
@@ -38,7 +38,7 @@ export default function P6_Metas() {
     metaM[m.mes][m.loja] = m.meta_fat;
   });
 
-  const atCol = v => v >= 95 ? '#16A34A' : v >= 80 ? '#F59E0B' : COLORS.red;
+  const atCol = v => v >= 95 ? c.success : v >= 80 ? c.warning : c.red;
 
   return (
     <>
@@ -97,9 +97,9 @@ export default function P6_Metas() {
           <RadarChart
             labels={['Faturamento', 'Ticket Médio', 'Margem Bruta', 'Giro de Estoque', 'Anti-Ruptura']}
             datasets={[
-              { label: 'Centro', data: [68, 104, 96, 87, 93], borderColor: COLORS.centro, backgroundColor: 'rgba(220,38,38,.08)', borderWidth: 2.5, pointBackgroundColor: COLORS.centro },
-              { label: 'Norte', data: [73, 108, 98, 90, 91], borderColor: COLORS.norte, backgroundColor: 'rgba(100,116,139,.06)', borderWidth: 2.5, pointBackgroundColor: COLORS.norte },
-              { label: 'Sul', data: [70, 102, 94, 85, 94], borderColor: COLORS.sul, backgroundColor: 'rgba(30,41,59,.06)', borderWidth: 2.5, pointBackgroundColor: COLORS.sul }
+              { label: 'Centro', data: [68, 104, 96, 87, 93], borderColor: c.centro, backgroundColor: c.isDark ? 'rgba(239,68,68,.10)' : 'rgba(220,38,38,.08)', borderWidth: 2.5, pointBackgroundColor: c.centro },
+              { label: 'Norte', data: [73, 108, 98, 90, 91], borderColor: c.norte, backgroundColor: c.isDark ? 'rgba(96,165,250,.08)' : 'rgba(100,116,139,.06)', borderWidth: 2.5, pointBackgroundColor: c.norte },
+              { label: 'Sul', data: [70, 102, 94, 85, 94], borderColor: c.sul, backgroundColor: c.isDark ? 'rgba(167,139,250,.08)' : 'rgba(30,41,59,.06)', borderWidth: 2.5, pointBackgroundColor: c.sul }
             ]}
             height={380}
           />

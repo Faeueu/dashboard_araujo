@@ -1,9 +1,8 @@
-// src/pages/P5_Rupturas.jsx
 import { useFilteredData } from '../core/DashboardContext.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import KpiCard from '../components/KpiCard.jsx';
 import ChartCard from '../components/ChartCard.jsx';
-import { DonutChart, DualChart, BarChart, COLORS } from '../components/Charts.jsx';
+import { DonutChart, DualChart, BarChart, useChartColors } from '../components/Charts.jsx';
 import { sum, MORD } from '../utils/filters.js';
 import { brl, num, mes as fMes } from '../utils/fmt.js';
 
@@ -20,6 +19,7 @@ function aggR(rows, f) {
 
 export default function P5_Rupturas() {
   const data = useFilteredData();
+  const c = useChartColors();
   if (!data) return null;
 
   const { rupturas } = data;
@@ -30,7 +30,7 @@ export default function P5_Rupturas() {
   const topM = itemsM[0] || { label: '—', n: 0 };
   const topC = itemsC[0] || { label: '—', p: 0 };
 
-  const MC = [COLORS.red, '#EF4444', '#F87171', '#FCA5A5', '#FECACA'];
+  const MC = [c.red, c.red2, c.red3, c.red4, c.red5];
 
   const mm = {};
   rupturas.forEach(r => {
@@ -73,7 +73,7 @@ export default function P5_Rupturas() {
             <div className="flex flex-wrap gap-3 justify-center">
               {itemsM.map((d, i) => (
                 <div key={d.label} className="flex items-center gap-2 text-[13px] text-text-2 font-medium">
-                  <span className="w-[10px] h-[10px] rounded-full shrink-0 border-2 border-white shadow-sm" style={{ background: MC[i] || '#CBD5E1' }}></span>
+                  <span className="w-[10px] h-[10px] rounded-full shrink-0 border-2 border-white shadow-sm" style={{ background: MC[i] || c.bar }}></span>
                   <span>{d.label} <span className="font-mono text-[11px] text-text-3 font-bold">({d.n})</span></span>
                 </div>
               ))}
@@ -88,8 +88,8 @@ export default function P5_Rupturas() {
               type: 'bar',
               label: 'Qtd Rupturas',
               data: ma.map(m => mm[m]?.n || 0),
-              backgroundColor: 'rgba(220,38,38,.12)',
-              borderColor: COLORS.red,
+              backgroundColor: c.redD,
+              borderColor: c.red,
               borderWidth: 1,
               borderRadius: 6,
               yAxisID: 'y',
@@ -99,7 +99,7 @@ export default function P5_Rupturas() {
               type: 'line',
               label: 'Receita Perdida',
               data: ma.map(m => Math.round(mm[m]?.p || 0)),
-              borderColor: COLORS.white,
+              borderColor: c.text1,
               backgroundColor: 'transparent',
               borderWidth: 3,
               pointRadius: 5,
@@ -116,7 +116,12 @@ export default function P5_Rupturas() {
             labels={top10.map(d => d.label)}
             datasets={[{
               data: top10.map(d => Math.round(d.p)),
-              backgroundColor: top10.map((_, i) => `rgba(220,38,38,${(1 - i * 0.07).toFixed(2)})`),
+              backgroundColor: top10.map((_, i) => {
+                const opacity = (1 - i * 0.07).toFixed(2);
+                return c.isDark
+                  ? `rgba(239,68,68,${opacity})`
+                  : `rgba(220,38,38,${opacity})`;
+              }),
               borderRadius: 6,
               borderSkipped: false,
               barThickness: 26
