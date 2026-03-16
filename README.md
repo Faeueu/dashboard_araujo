@@ -3,21 +3,66 @@
 Sistema de análise comercial e operacional com dados de Dez/2025–Mar/2026.
 Construído com **React 19** + **ApexCharts** + **Tailwind CSS v4** + **Vite 6**.
 
-> **Tema claro** com uso de branco, preto para texto e vermelho para destaques e ações.
+> **Tema claro e escuro** com alternância suave, loading skeletons, error boundary e navegação aprimorada.
 
 ---
 
 ## Tecnologias Utilizadas
 
-| Camada       | Tecnologia                    | Versão  |
-|--------------|-------------------------------|---------|
-| Framework    | React                         | 19.x    |
-| Bundler/Dev  | Vite                          | 6.x     |
-| Linguagem    | JavaScript (JSX, ES Modules)  | ES2022  |
-| Estilos      | Tailwind CSS (plugin Vite)    | 4.x     |
-| Gráficos     | ApexCharts + react-apexcharts | 4.5+    |
-| Fontes       | Plus Jakarta Sans + JetBrains Mono (Google Fonts) | — |
-| Deploy       | Vercel (static build)         | —       |
+| Camada      | Tecnologia                                        | Versão |
+| ----------- | ------------------------------------------------- | ------ |
+| Framework   | React                                             | 19.x   |
+| Bundler/Dev | Vite                                              | 6.x    |
+| Linguagem   | JavaScript (JSX, ES Modules)                      | ES2022 |
+| Estilos     | Tailwind CSS (plugin Vite)                        | 4.x    |
+| Gráficos    | ApexCharts + react-apexcharts                     | 4.5+   |
+| Fontes      | Plus Jakarta Sans + JetBrains Mono (Google Fonts) | —      |
+| Deploy      | Vercel (static build)                             | —      |
+
+## Funcionalidades
+
+### 🌙 Dark Mode
+
+- Alternância entre tema claro e escuro
+- Persistência da preferência no `localStorage`
+- Detecção automática de `prefers-color-scheme`
+- Script anti-flash (FOUC) — tema aplicado antes do primeiro paint
+- Transições suaves entre temas
+
+### 💀 Loading Skeletons
+
+- Estados de carregamento específicos por tipo de conteúdo
+- Animação shimmer em todos os skeletons
+- Layout preservado durante o carregamento (reduz CLS)
+- Componentes: `KpiSkeleton`, `ChartSkeleton`, `TableSkeleton`, `LoadingSkeleton`
+
+### 🛡️ Error Boundary
+
+- Captura de erros em toda a aplicação
+- UI de fallback com mensagem amigável
+- Ações de recuperação: "Tentar Novamente" e "Recarregar"
+- Prevenção de tela branca em caso de erro
+
+### 🍞 Breadcrumbs
+
+- Navegação contextual (Dashboard > Página Atual)
+- Ícone home com `aria-label` para acessibilidade
+- Atualização automática conforme a página atual
+
+### 📂 Cards Colapsáveis
+
+- Botão de expandir/recolher em cada gráfico
+- Atributos `aria-expanded` e `aria-label` para acessibilidade
+- Transição suave de `max-height` com opacity
+- Permite foco em gráficos específicos, reduzindo scroll
+
+### ♿ Acessibilidade
+
+- Contraste de cores adequado (ratio 4.5:1)
+- Atributos ARIA em KPIs (`aria-label` descritivo)
+- Roles semânticas em gráficos (`role="img"`)
+- Navegação por breadcrumb com `nav` e `aria-label`
+- Estados expandido/recolhido comunicados a leitores de tela
 
 ---
 
@@ -32,6 +77,24 @@ npm run dev
 ```
 
 Abrir `http://localhost:5173` no navegador.
+
+### Dark Mode
+
+O tema é alternado automaticamente:
+
+- **Manual**: Clique no ícone de sol/lua na sidebar
+- **Persistência**: Preferência salva no `localStorage`
+- **Sistema**: Detecta `prefers-color-scheme` do navegador
+- **Anti-flash**: Script inline previne flash de conteúdo não estilizado
+
+### Interações
+
+| Ação              | Como Fazer                                     |
+| ----------------- | ---------------------------------------------- |
+| Alternar tema     | Ícone 🌙/☀️ na parte inferior da sidebar       |
+| Recolher gráfico  | Botão ▼ no canto superior direito de cada card |
+| Limpar filtros    | Botão "Limpar" na barra de filtros             |
+| Recuperar de erro | Botões "Tentar Novamente" ou "Recarregar"      |
 
 ### Outros Comandos
 
@@ -69,15 +132,18 @@ Araújo/
     ├── index.css               ← Tailwind v4 @theme (design tokens, tema claro)
     │
     ├── core/
-    │   └── DashboardContext.jsx ← React Context + hooks (dataset, filtros, memo)
+    │   └── DashboardContext.jsx ← React Context + hooks (dataset, filtros, memo, ThemeProvider)
     │
     ├── components/
-    │   ├── Sidebar.jsx         ← Navegação lateral responsiva com menu mobile
+    │   ├── Sidebar.jsx         ← Navegação lateral responsiva com menu mobile + toggle tema
     │   ├── FilterBar.jsx       ← Filtros reativos multi-select (Loja, Mês, Categoria)
     │   ├── Charts.jsx          ← 6 wrappers ApexCharts (Line, Bar, Donut, Scatter, Dual, Radar)
-    │   ├── KpiCard.jsx         ← Card de KPI centralizado (label, valor, subtítulo)
-    │   ├── ChartCard.jsx       ← Wrapper para gráficos com título e hint centralizados
-    │   └── PageHeader.jsx      ← Cabeçalho centralizado com badge decorativo
+    │   ├── KpiCard.jsx         ← Card de KPI centralizado (label, valor, subtítulo) com aria-label
+    │   ├── ChartCard.jsx       ← Wrapper para gráficos com título, hint e botão colapsar
+    │   ├── PageHeader.jsx      ← Cabeçalho centralizado com badge decorativo
+    │   ├── Breadcrumb.jsx      ← Navegação contextual Dashboard > Página
+    │   ├── Skeleton.jsx        ← Componentes de loading (Kpi, Chart, Table, Full Page)
+    │   └── ErrorBoundary.jsx   ← Captura de erros com UI de fallback
     │
     ├── pages/
     │   ├── P1_VisaoGeral.jsx   ← Visão Geral Comercial (receita, ticket, margem, mix)
@@ -135,15 +201,15 @@ dataset.json (fetch)
 
 ### Tema Claro
 
-| Token          | Valor     | Uso                        |
-|----------------|-----------|----------------------------|
-| `--color-bg`   | `#F5F6FA` | Fundo geral                |
-| `--color-surf` | `#FFFFFF` | Sidebar, topbar            |
-| `--color-card` | `#FFFFFF` | Cards, chart wrappers      |
+| Token             | Valor     | Uso                           |
+| ----------------- | --------- | ----------------------------- |
+| `--color-bg`      | `#F5F6FA` | Fundo geral                   |
+| `--color-surf`    | `#FFFFFF` | Sidebar, topbar               |
+| `--color-card`    | `#FFFFFF` | Cards, chart wrappers         |
 | `--color-primary` | `#DC2626` | Vermelho — destaques, alertas |
-| `--color-text-1` | `#0F172A` | Texto principal (quase preto) |
-| `--color-text-2` | `#475569` | Texto secundário           |
-| `--color-text-3` | `#94A3B8` | Labels, hints              |
+| `--color-text-1`  | `#0F172A` | Texto principal (quase preto) |
+| `--color-text-2`  | `#475569` | Texto secundário              |
+| `--color-text-3`  | `#94A3B8` | Labels, hints                 |
 
 ### Tipografia
 
@@ -167,34 +233,40 @@ dataset.json (fetch)
 
 ## Dataset (`public/data/dataset.json`)
 
-| Tabela     | Registros | Granularidade |
-|------------|-----------|---------------|
-| `vendas`   | 4.716     | Dia × Loja × Categoria × Campanha |
+| Tabela     | Registros | Granularidade                           |
+| ---------- | --------- | --------------------------------------- |
+| `vendas`   | 4.716     | Dia × Loja × Categoria × Campanha       |
 | `atend`    | 363       | Dia × Loja (Faturamento + Atendimentos) |
-| `estoque`  | 6.000     | Snapshot Loja × SKU |
-| `rupturas` | 612       | Evento × Loja × SKU |
-| `metas`    | 12        | Mês × Loja |
+| `estoque`  | 6.000     | Snapshot Loja × SKU                     |
+| `rupturas` | 612       | Evento × Loja × SKU                     |
+| `metas`    | 12        | Mês × Loja                              |
 
 ---
 
 ## Páginas do Dashboard
 
 ### P1 — Visão Geral Comercial
+
 4 KPIs (Receita, Ticket, Margem, Top Categoria) + 4 gráficos (linha semanal, barras por loja, donut mix, barras DOW).
 
 ### P2 — Análise do Ticket Médio
+
 3 KPIs + linha semanal vs meta + barras campanhas + heatmap loja×dia.
 
 ### P3 — Margem & Mix de Produtos
+
 4 KPIs + barras horizontais margem% + scatter receita×margem + barras agrupadas por loja/mês.
 
 ### P4 — Gestão de Estoque
+
 4 KPIs + status bars animadas + histograma cobertura + tabela SKUs críticos com pills.
 
 ### P5 — Análise de Rupturas
+
 4 KPIs + donut por motivo com legendas + dual-axis (barras qtd + linha R$) + barras impacto por categoria.
 
 ### P6 — Metas e Performance
+
 3 KPIs + barras agrupadas receita + barras % atingimento (semáforo) + radar 5 dimensões.
 
 ---
@@ -219,6 +291,31 @@ npx vercel --prod    # Publica
 
 ---
 
+## Acessibilidade
+
+O dashboard implementa as seguintes melhorias de acessibilidade:
+
+### Contraste e Cores
+
+- Razão de contraste mínima 4.5:1 para todos os textos
+- Cores de status (sucesso, alerta, erro) não dependem apenas da cor
+
+### Navegação
+
+- **Breadcrumbs**: Indicam localização atual com semântica `nav`
+- **Landmarks**: Estrutura semântica com `aside`, `main`, `nav`
+- **Focus**: Estados de foco visíveis em elementos interativos
+
+### Gráficos
+
+- `role="img"` e `aria-label` descrevem o conteúdo para leitores de tela
+- Cards colapsáveis comunicam estado via `aria-expanded`
+
+### Leitores de Tela
+
+- KPIs possuem `aria-label` descritivo com valor e contexto
+- Botões possuem `aria-label` quando o texto não é autoexplicativo
+
 ## Modelo de Dados Power BI
 
 ### Relacionamentos (Star Schema)
@@ -235,6 +332,7 @@ dLojas  + dCalendario ──► fMetas
 ```
 
 Regras:
+
 - Direção: sempre **Dimensão → Fato** (sentido único)
 - Cardinalidade: **1 para Muitos** em todos os relacionamentos
 - Nunca bidirecional sem necessidade explícita
@@ -309,9 +407,10 @@ Semáforo =
 
 ## Histórico de Versões
 
-| Versão | Data       | Mudanças Principais |
-|--------|------------|---------------------|
-| v4.0   | Mar/2026   | Tema claro, ApexCharts, gráficos maiores, UI refinada |
-| v3.0   | Mar/2026   | Migração para React + Tailwind v4 + Vite |
-| v2.0   | Mar/2026   | Refatoração para módulos ES (vanilla JS) |
-| v1.0   | Fev/2026   | Versão inicial monolítica (HTML + CSS + JS inline) |
+| Versão | Data     | Mudanças Principais                                                                                       |
+| ------ | -------- | --------------------------------------------------------------------------------------------------------- |
+| v4.1   | Mar/2026 | Dark mode, loading skeletons, error boundary, breadcrumbs, cards colapsáveis, melhorias de acessibilidade |
+| v4.0   | Mar/2026 | Tema claro, ApexCharts, gráficos maiores, UI refinada                                                     |
+| v3.0   | Mar/2026 | Migração para React + Tailwind v4 + Vite                                                                  |
+| v2.0   | Mar/2026 | Refatoração para módulos ES (vanilla JS)                                                                  |
+| v1.0   | Fev/2026 | Versão inicial monolítica (HTML + CSS + JS inline)                                                        |
