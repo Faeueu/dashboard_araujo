@@ -16,8 +16,7 @@
   <script>
     // Apply saved theme before first paint to prevent flash
     (function() {
-      var t = localStorage.getItem('araujo-theme');
-      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      var t = localStorage.getItem('araujo-theme') || 'light';
       if (t === 'dark') document.documentElement.classList.add('dark');
     })();
   </script>

@@ -102,18 +102,18 @@ export default function P2_Ticket() {
       // Dark mode: from deep red to bright warm tone
       if (t < 0.5) {
         const s = t * 2;
-        return `rgb(${Math.round(139 + s * 50)},${Math.round(30 + s * 40)},${Math.round(30 + s * 40)})`;
+        return { bg: `rgb(${Math.round(139 + s * 50)},${Math.round(30 + s * 40)},${Math.round(30 + s * 40)})`, text: '#fff' };
       }
       const s = (t - 0.5) * 2;
-      return `rgb(${Math.round(189 + s * 50)},${Math.round(70 + s * 80)},${Math.round(70 + s * 30)})`;
+      return { bg: `rgb(${Math.round(189 + s * 50)},${Math.round(70 + s * 80)},${Math.round(70 + s * 30)})`, text: '#fff' };
     }
     // Light mode
     if (t < 0.5) {
       const s = t * 2;
-      return `rgb(${Math.round(220 + s * 10)},${Math.round(38 + s * 60)},${Math.round(38 + s * 60)})`;
+      return { bg: `rgb(${Math.round(220 + s * 10)},${Math.round(38 + s * 60)},${Math.round(38 + s * 60)})`, text: '#fff' };
     }
     const s = (t - 0.5) * 2;
-    return `rgb(${Math.round(230 + s * 25)},${Math.round(98 + s * 130)},${Math.round(98 + s * 130)})`;
+    return { bg: `rgb(${Math.round(230 + s * 25)},${Math.round(98 + s * 130)},${Math.round(98 + s * 130)})`, text: '#1e293b' };
   };
 
   return (
@@ -183,7 +183,7 @@ export default function P2_Ticket() {
                   <tr key={l}>
                     <td className="hl">{l.replace('Araújo ', '')}</td>
                     {V[l].map((v, idx) => (
-                      <td key={idx} style={{ background: hc(v), color: '#fff' }}>
+                      <td key={idx} style={{ background: hc(v).bg, color: hc(v).text }}>
                         R${v}
                       </td>
                     ))}
