@@ -37,7 +37,7 @@ function applyFilters(ds, f) {
 function getInitialTheme() {
   if (typeof window === 'undefined') return 'light';
   const stored = localStorage.getItem('araujo-theme');
-  return (stored === 'dark' || stored === 'light') ? stored : 'light';
+  return stored === 'dark' || stored === 'light' ? stored : 'light';
 }
 
 function applyThemeToDOM(theme) {
