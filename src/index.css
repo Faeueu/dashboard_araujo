@@ -403,6 +403,17 @@
   transform: rotate(180deg);
 }
 
+/* Indicador visual de conteúdo colapsado */
+.chart-collapsed-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: linear-gradient(to bottom, transparent, var(--color-card));
+  border-top: 1px dashed var(--color-b1);
+  margin-top: -1px;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    DELTA SPANS (fmt.js)
 ═══════════════════════════════════════════════════════════════ */
