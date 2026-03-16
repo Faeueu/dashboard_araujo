@@ -1,29 +1,40 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import Sidebar from './components/Sidebar.jsx';
 import FilterBar from './components/FilterBar.jsx';
 import Breadcrumb from './components/Breadcrumb.jsx';
-import P1_VisaoGeral from './pages/P1_VisaoGeral.jsx';
-import P2_TicketMedio from './pages/P2_Ticket.jsx';
-import P3_MargemMix from './pages/P3_Margem.jsx';
-import P4_Estoque from './pages/P4_Estoque.jsx';
-import P5_Rupturas from './pages/P5_Rupturas.jsx';
-import P6_Metas from './pages/P6_Metas.jsx';
 import { useDashboard } from './core/DashboardContext.jsx';
+import LoadingSkeleton from './components/Skeleton.jsx';
+
+// Lazy load pages for code splitting
+const P1_VisaoGeral = lazy(() => import('./pages/P1_VisaoGeral.jsx'));
+const P2_TicketMedio = lazy(() => import('./pages/P2_Ticket.jsx'));
+const P3_MargemMix = lazy(() => import('./pages/P3_Margem.jsx'));
+const P4_Estoque = lazy(() => import('./pages/P4_Estoque.jsx'));
+const P5_Rupturas = lazy(() => import('./pages/P5_Rupturas.jsx'));
+const P6_Metas = lazy(() => import('./pages/P6_Metas.jsx'));
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { page } = useDashboard();
 
   const renderPage = () => {
-    switch (page) {
-      case 'visao-geral': return <P1_VisaoGeral />;
-      case 'ticket':      return <P2_TicketMedio />;
-      case 'margem':      return <P3_MargemMix />;
-      case 'estoque':     return <P4_Estoque />;
-      case 'rupturas':    return <P5_Rupturas />;
-      case 'metas':       return <P6_Metas />;
-      default:            return <P1_VisaoGeral />;
-    }
+    const pageComponent = (() => {
+      switch (page) {
+        case 'visao-geral': return <P1_VisaoGeral />;
+        case 'ticket':      return <P2_TicketMedio />;
+        case 'margem':      return <P3_MargemMix />;
+        case 'estoque':     return <P4_Estoque />;
+        case 'rupturas':    return <P5_Rupturas />;
+        case 'metas':       return <P6_Metas />;
+        default:            return <P1_VisaoGeral />;
+      }
+    })();
+
+    return (
+      <Suspense fallback={<LoadingSkeleton />}>
+        {pageComponent}
+      </Suspense>
+    );
   };
 
   return (
