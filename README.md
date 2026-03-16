@@ -104,13 +104,7 @@ npm run build
 
 # Preview do build de produção
 npm run preview
-```
 
-> **Nota Google Drive**: como o projeto está no Google Drive, `npm install` pode
-> apresentar erros de filesystem (EBADF/EPERM). Neste caso, copie o `package.json`
-> para um disco local, rode `npm install` lá e copie o `node_modules` de volta.
-
----
 
 ## Estrutura do Projeto
 
