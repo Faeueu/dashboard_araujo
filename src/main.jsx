@@ -38,7 +38,7 @@ function Root() {
         if (retryCount < MAX_RETRIES) {
           // Exponential backoff: 1s, 2s, 4s...
           const timeout = Math.pow(2, retryCount) * 1000;
-          console.log(`Re-tentando em ${timeout}ms...`);
+          console.warn(`Re-tentando em ${timeout}ms...`);
           setTimeout(() => {
             if (!isCancelled) setRetryCount(prev => prev + 1);
           }, timeout);

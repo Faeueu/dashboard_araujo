@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 /* ─── KPI Skeleton ──────────────────────────────────────────── */
 export function KpiSkeleton({ delay = 0 }) {
   return (

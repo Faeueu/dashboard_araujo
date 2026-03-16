@@ -91,7 +91,6 @@ export default function P4_Estoque() {
               const v = st[b.k] || 0;
               const p = ((v / tot) * 100).toFixed(1);
               // Determine text color based on bar background
-              const barIsDark = ['Ruptura', 'Crítico'].includes(b.k) || c.isDark;
               const textColor = b.k === 'Normal' && !c.isDark ? '#334155' : '#fff';
               return (
                 <div key={b.k} className="sbar-row">

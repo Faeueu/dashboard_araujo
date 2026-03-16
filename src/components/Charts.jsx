@@ -294,7 +294,7 @@ export function BarChart({ labels, datasets, horiz = false, yFmt, xFmt, legend =
 }
 
 // ── DONUT CHART ────────────────────────────────────────────────
-export function DonutChart({ labels, data, colors, cutout = '64%', ttFmt, height }) {
+export function DonutChart({ labels, data, colors, cutout = '64%', height }) {
   const baseTheme = useBaseTheme();
   const c = useChartColors();
 
@@ -325,7 +325,7 @@ export function DonutChart({ labels, data, colors, cutout = '64%', ttFmt, height
     tooltip: {
       ...baseTheme.tooltip,
       y: {
-        formatter: (val, { seriesIndex, w }) => {
+        formatter: (val, { w }) => {
           const total = w.globals.series.reduce((a, b) => a + b, 0);
           const pct = ((val / total) * 100).toFixed(1);
           return `${val.toLocaleString('pt-BR')} (${pct}%)`;

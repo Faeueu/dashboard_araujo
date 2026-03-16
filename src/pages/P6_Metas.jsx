@@ -74,7 +74,7 @@ export default function P6_Metas() {
         <ChartCard title="% Atingimento da Meta de Faturamento" hint="Verde ≥95% · Amarelo 80–94% · Vermelho <80%">
           <BarChart
             labels={ma.map(fMes)}
-            datasets={LOJAS.map((l, i) => {
+            datasets={LOJAS.map((l) => {
               const vs = ma.map(m => {
                 const r = mm[m]?.[l] || 0;
                 const mt = metaM[m]?.[l] || 1;
