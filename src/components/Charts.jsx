@@ -2,38 +2,6 @@ import ReactApexChart from 'react-apexcharts';
 import { useTheme } from '../core/DashboardContext.jsx';
 import { useMemo } from 'react';
 
-/* ─── Accessibility Helpers ───────────────────────────────── */
-function generateTrendDescription(data, type, title) {
-  if (!data || data.length === 0) return `${title}: sem dados disponíveis.`;
-
-  if (type === 'line' && data[0]?.data) {
-    const values = data[0].data;
-    if (values.length < 2) return `${title}: ${values.length} ponto de dados.`;
-
-    const first = values[0];
-    const last = values[values.length - 1];
-    const trend = last > first ? 'crescimento' : last < first ? 'queda' : 'estabilidade';
-    const percent = first !== 0 ? Math.abs(((last - first) / first) * 100).toFixed(1) : 0;
-    return `${title}: tendência de ${trend} de ${percent}% ao longo do período. ${values.length} pontos de dados.`;
-  }
-
-  if (type === 'bar') {
-    const total = data.reduce((sum, ds) => sum + (ds.data?.reduce((a, b) => a + b, 0) || 0), 0);
-    return `${title}: ${data.length} séries de dados. Total acumulado: ${total.toLocaleString('pt-BR')}.`;
-  }
-
-  if (type === 'donut') {
-    const total = data.reduce((a, b) => a + b, 0);
-    return `${title}: ${data.length} categorias. Total: ${total.toLocaleString('pt-BR')}.`;
-  }
-
-  if (type === 'scatter') {
-    return `${title}: ${data.length} séries de dispersão com ${data[0]?.data?.length || 0} pontos cada.`;
-  }
-
-  return `${title}: ${data.length} séries de dados.`;
-}
-
 /* ─── Luminance & Contrast Helpers ──────────────────────────── */
 function getLuminance(hex) {
   if (!hex || hex.startsWith('rgba') || hex.startsWith('rgb(')) return 0.5;
@@ -105,21 +73,6 @@ export function useChartColors() {
   }), [isDark]);
 }
 
-/* ─── Export static COLORS for backward compat (fallback) ───── */
-export const COLORS = {
-  red: '#DC2626',
-  redD: 'rgba(220,38,38,.08)',
-  red2: '#EF4444',
-  white: '#0F172A',
-  w2: '#475569',
-  gray: '#94A3B8',
-  gray2: '#CBD5E1',
-  centro: '#DC2626',
-  norte: '#64748B',
-  sul: '#1E293B',
-  grid: 'rgba(0,0,0,.06)',
-};
-
 const font = "'Plus Jakarta Sans', system-ui, sans-serif";
 
 function useBaseTheme() {
@@ -162,11 +115,9 @@ function useBaseTheme() {
 }
 
 // ── LINE CHART ─────────────────────────────────────────────────
-export function LineChart({ labels, datasets, yFmt, yMin, yMax, legend = false, maxT = 10, height, title = 'Gráfico de linhas' }) {
+export function LineChart({ labels, datasets, yFmt, yMin, yMax, legend = false, maxT = 6, height }) {
   const baseTheme = useBaseTheme();
   const c = useChartColors();
-
-  const ariaDescription = useMemo(() => generateTrendDescription(datasets, 'line', title), [datasets, title]);
 
   const series = datasets.map(ds => ({
     name: ds.label || '',
@@ -179,32 +130,18 @@ export function LineChart({ labels, datasets, yFmt, yMin, yMax, legend = false, 
       ...baseTheme.chart,
       type: 'line',
       height: height || 300,
-      zoom: {
-        enabled: false,
-        type: 'x',
-        autoScaleYaxis: false,
-        zoomedArea: {
-          fill:   { color: 'transparent' },
-          stroke: { color: 'transparent' },
-        },
-      },
+      zoom: { enabled: false, type: 'x', autoScaleYaxis: false },
       selection: { enabled: false },
-      pan:       { enabled: false },
-      toolbar: {
-        show: false,
-        tools: {
-          download: false, selection: false, zoom: false,
-          zoomin: false, zoomout: false, pan: false, reset: false,
-        },
-      },
+      pan: { enabled: false },
+      toolbar: { show: false },
     },
 
     colors: datasets.map(ds => ds.borderColor || c.red),
 
     stroke: {
-      curve:     'smooth',
-      width:     datasets.map(ds => ds.borderDash ? 1.8 : 2.5),
-      dashArray: datasets.map(ds => ds.borderDash ? 6   : 0),
+      curve: 'smooth',
+      width: datasets.map(ds => ds.borderDash ? 1.8 : 2.5),
+      dashArray: datasets.map(ds => ds.borderDash ? 6 : 0),
     },
 
     fill: {
@@ -217,14 +154,15 @@ export function LineChart({ labels, datasets, yFmt, yMin, yMax, legend = false, 
     },
 
     markers: {
-      size:        datasets.map(ds => ds.borderDash ? 0 : 4),
-      colors:      datasets.map(ds => ds.pointBackgroundColor || ds.borderColor || c.red),
+      size: datasets.map(ds => ds.borderDash ? 0 : 4),
+      colors: datasets.map(ds => ds.pointBackgroundColor || ds.borderColor || c.red),
       strokeWidth: 0,
-      hover:       { sizeOffset: 2 },
+      hover: { sizeOffset: 2 },
     },
 
     xaxis: {
-      categories: labels, tickAmount: maxT,
+      categories: labels,
+      tickAmount: 10, // Maintain high density for x-axis time series 
       labels: {
         style: { colors: c.labelColor, fontSize: '11px', fontWeight: 500 },
         rotate: -35, hideOverlappingLabels: true,
@@ -234,6 +172,8 @@ export function LineChart({ labels, datasets, yFmt, yMin, yMax, legend = false, 
 
     yaxis: {
       min: yMin, max: yMax,
+      tickAmount: maxT, // FIX: Control y-axis density to prevent overlap (default 6 instead of 10)
+      decimalsInFloat: 0,
       labels: {
         style: { colors: c.labelColor, fontSize: '11px', fontWeight: 500 },
         formatter: yFmt || (v => v),
@@ -261,18 +201,16 @@ export function LineChart({ labels, datasets, yFmt, yMin, yMax, legend = false, 
   };
 
   return (
-    <div role="img" aria-label={ariaDescription}>
+    <div role="img" aria-label="Gráfico de linhas">
       <ReactApexChart options={options} series={series} type="line" height={height || 300} />
     </div>
   );
 }
 
 // ── BAR CHART ──────────────────────────────────────────────────
-export function BarChart({ labels, datasets, horiz = false, yFmt, xFmt, legend = false, height, title = 'Gráfico de barras' }) {
+export function BarChart({ labels, datasets, horiz = false, yFmt, xFmt, legend = false, height, stacked = false }) {
   const baseTheme = useBaseTheme();
   const c = useChartColors();
-
-  const ariaDescription = useMemo(() => generateTrendDescription(datasets, 'bar', title), [datasets, title]);
 
   const series = datasets.map(ds => ({
     name: ds.label || '',
@@ -287,19 +225,18 @@ export function BarChart({ labels, datasets, horiz = false, yFmt, xFmt, legend =
     ? [datasets[0].backgroundColor]
     : datasets.map(ds => typeof ds.backgroundColor === 'string' ? ds.backgroundColor : c.red);
 
-  // Smart data label colors — contrast with bar for horizontal, contrast with card bg for vertical
   let dlColors;
   if (barColors) {
     dlColors = horiz
-      ? barColors.map(bg => getContrastText(bg))          // inside bar
-      : barColors.map(() => c.dataLabelColor);             // above bar
+      ? barColors.map(bg => getContrastText(bg))
+      : barColors.map(() => c.dataLabelColor);
   } else {
     dlColors = [c.dataLabelColor];
   }
 
   const options = {
     ...baseTheme,
-    chart: { ...baseTheme.chart, type: 'bar', height: height || 300, stacked: false },
+    chart: { ...baseTheme.chart, type: 'bar', height: height || 300, stacked: stacked },
     plotOptions: {
       bar: {
         horizontal: horiz,
@@ -316,7 +253,7 @@ export function BarChart({ labels, datasets, horiz = false, yFmt, xFmt, legend =
     dataLabels: {
       enabled: true,
       style: {
-        fontSize: '12px',
+        fontSize: '11px',
         fontFamily: font,
         fontWeight: 700,
         colors: dlColors,
@@ -328,7 +265,7 @@ export function BarChart({ labels, datasets, horiz = false, yFmt, xFmt, legend =
     xaxis: {
       categories: labels,
       labels: {
-        style: { colors: c.axisColor, fontSize: '12px', fontWeight: 500 },
+        style: { colors: c.axisColor, fontSize: '11px', fontWeight: 500 },
         formatter: horiz ? (xFmt || (v => v)) : undefined,
       },
       axisBorder: { show: false },
@@ -336,9 +273,10 @@ export function BarChart({ labels, datasets, horiz = false, yFmt, xFmt, legend =
     },
     yaxis: {
       labels: {
-        style: { colors: c.axisColor, fontSize: '12px', fontWeight: 500 },
+        style: { colors: c.axisColor, fontSize: '11px', fontWeight: 500 },
         formatter: horiz ? undefined : (yFmt || (v => v)),
       },
+      tickAmount: horiz ? undefined : 6, // Prevents overlap in vertical bars
     },
     legend: { ...baseTheme.legend, show: legend, position: 'top' },
     tooltip: {
@@ -349,18 +287,16 @@ export function BarChart({ labels, datasets, horiz = false, yFmt, xFmt, legend =
   };
 
   return (
-    <div role="img" aria-label={ariaDescription}>
+    <div role="img" aria-label="Gráfico de barras">
       <ReactApexChart options={options} series={series} type="bar" height={height || 300} />
     </div>
   );
 }
 
 // ── DONUT CHART ────────────────────────────────────────────────
-export function DonutChart({ labels, data, colors, cutout = '64%', ttFmt, height, title = 'Gráfico de rosca' }) {
+export function DonutChart({ labels, data, colors, cutout = '64%', ttFmt, height }) {
   const baseTheme = useBaseTheme();
   const c = useChartColors();
-
-  const ariaDescription = useMemo(() => generateTrendDescription(data, 'donut', title), [data, title]);
 
   const cutoutNum = parseInt(cutout) || 64;
 
@@ -369,23 +305,23 @@ export function DonutChart({ labels, data, colors, cutout = '64%', ttFmt, height
     chart: { ...baseTheme.chart, type: 'donut', height: height || 220 },
     labels,
     colors: colors || [c.red, c.red2, c.red3, c.red4, c.red5],
-    stroke: { width: 2, colors: [c.card] },
+    stroke: { width: 3, colors: [c.card] },
     plotOptions: {
       pie: {
         donut: {
           size: `${cutoutNum}%`,
           labels: {
             show: true,
-            name:  { show: true, fontSize: '14px', fontFamily: font, fontWeight: 700, color: c.text1 },
-            value: { show: true, fontSize: '20px', fontFamily: font, fontWeight: 800, color: c.text1, formatter: (val) => Number(val).toLocaleString('pt-BR') },
+            name:  { show: true, fontSize: '11px', fontFamily: font, fontWeight: 700, color: c.text2, offsetY: -8 },
+            value: { show: true, fontSize: '16px', fontFamily: font, fontWeight: 800, color: c.text1, offsetY: 4, formatter: (val) => Number(val).toLocaleString('pt-BR') },
             total: { show: false },
           },
         },
         expandOnClick: false,
       },
     },
-    dataLabels: { enabled: false },
-    legend: { show: false },
+    dataLabels: { enabled: false }, // FIX: Force remove internal slice data labels that broke the UI
+    legend: { show: false }, // FIX: Removing apexcharts default legend completely since we use custom HTML
     tooltip: {
       ...baseTheme.tooltip,
       y: {
@@ -399,18 +335,16 @@ export function DonutChart({ labels, data, colors, cutout = '64%', ttFmt, height
   };
 
   return (
-    <div role="img" aria-label={ariaDescription}>
+    <div role="img" aria-label="Gráfico de rosca">
       <ReactApexChart options={options} series={data} type="donut" height={height || 220} />
     </div>
   );
 }
 
 // ── SCATTER CHART ──────────────────────────────────────────────
-export function ScatterChart({ datasets, xFmt, yFmt, height, title = 'Gráfico de dispersão' }) {
+export function ScatterChart({ datasets, xFmt, yFmt, height }) {
   const baseTheme = useBaseTheme();
   const c = useChartColors();
-
-  const ariaDescription = useMemo(() => generateTrendDescription(datasets, 'scatter', title), [datasets, title]);
 
   const series = datasets.map(ds => ({
     name: ds.label || '',
@@ -434,16 +368,17 @@ export function ScatterChart({ datasets, xFmt, yFmt, height, title = 'Gráfico d
     xaxis: {
       type: 'numeric',
       labels: {
-        style: { colors: c.axisColor, fontSize: '12px', fontWeight: 500 },
+        style: { colors: c.axisColor, fontSize: '11px', fontWeight: 500 },
         formatter: xFmt || (v => v),
       },
       axisBorder: { show: false }, axisTicks: { show: false },
     },
     yaxis: {
       labels: {
-        style: { colors: c.axisColor, fontSize: '12px', fontWeight: 500 },
+        style: { colors: c.axisColor, fontSize: '11px', fontWeight: 500 },
         formatter: yFmt || (v => v),
       },
+      tickAmount: 5,
     },
     legend: { show: false },
     tooltip: {
@@ -461,22 +396,16 @@ export function ScatterChart({ datasets, xFmt, yFmt, height, title = 'Gráfico d
   };
 
   return (
-    <div role="img" aria-label={ariaDescription}>
+    <div role="img" aria-label="Gráfico de dispersão">
       <ReactApexChart options={options} series={series} type="scatter" height={height || 300} />
     </div>
   );
 }
 
 // ── DUAL-AXIS CHART ────────────────────────────────────────────
-export function DualChart({ labels, bDs, lDs, height, title = 'Gráfico de eixo duplo' }) {
+export function DualChart({ labels, bDs, lDs, height }) {
   const baseTheme = useBaseTheme();
   const c = useChartColors();
-
-  const ariaDescription = useMemo(() => {
-    const barTotal = bDs.data?.reduce((a, b) => a + b, 0) || 0;
-    const lineAvg = lDs.data?.length ? (lDs.data.reduce((a, b) => a + b, 0) / lDs.data.length).toFixed(1) : 0;
-    return `${title}: barras totalizando ${barTotal.toLocaleString('pt-BR')}, linha com média de ${lineAvg}. ${labels.length} categorias.`;
-  }, [bDs, lDs, labels, title]);
 
   const series = [
     { name: bDs.label || 'Barras', type: 'bar', data: bDs.data },
@@ -496,22 +425,24 @@ export function DualChart({ labels, bDs, lDs, height, title = 'Gráfico de eixo 
     dataLabels: { enabled: false },
     xaxis: {
       categories: labels,
-      labels: { style: { colors: c.axisColor, fontSize: '12px', fontWeight: 500 } },
+      labels: { style: { colors: c.axisColor, fontSize: '11px', fontWeight: 500 } },
       axisBorder: { show: false }, axisTicks: { show: false },
     },
     yaxis: [
       {
         title: { text: '' },
+        tickAmount: 5,
         labels: {
-          style: { colors: c.axisColor, fontSize: '12px', fontWeight: 500 },
+          style: { colors: c.axisColor, fontSize: '11px', fontWeight: 500 },
           formatter: bDs.yFmt || (v => v),
         },
       },
       {
         opposite: true,
         title: { text: '' },
+        tickAmount: 5,
         labels: {
-          style: { colors: c.text2, fontSize: '12px', fontWeight: 500 },
+          style: { colors: c.text2, fontSize: '11px', fontWeight: 500 },
           formatter: lDs.yFmt || (v => v),
         },
       },
@@ -522,27 +453,16 @@ export function DualChart({ labels, bDs, lDs, height, title = 'Gráfico de eixo 
   };
 
   return (
-    <div role="img" aria-label={ariaDescription}>
+    <div role="img" aria-label="Gráfico de eixo duplo">
       <ReactApexChart options={options} series={series} type="line" height={height || 320} />
     </div>
   );
 }
 
 // ── RADAR CHART ────────────────────────────────────────────────
-export function RadarChart({ labels, datasets, height, title = 'Gráfico radar de performance' }) {
+export function RadarChart({ labels, datasets, height }) {
   const baseTheme = useBaseTheme();
   const c = useChartColors();
-
-  const ariaDescription = useMemo(() => {
-    const seriesCount = datasets.length;
-    const dimensions = labels.length;
-    const avgValues = datasets.map(ds => ({
-      label: ds.label,
-      avg: ds.data?.length ? (ds.data.reduce((a, b) => a + b, 0) / ds.data.length).toFixed(0) : 0,
-    }));
-    const avgText = avgValues.map(v => `${v.label}: ${v.avg}%`).join(', ');
-    return `${title}: ${seriesCount} séries em ${dimensions} dimensões. Médias: ${avgText}.`;
-  }, [datasets, labels, title]);
 
   const series = datasets.map(ds => ({
     name: ds.label || '',
@@ -586,7 +506,7 @@ export function RadarChart({ labels, datasets, height, title = 'Gráfico radar d
   };
 
   return (
-    <div role="img" aria-label={ariaDescription}>
+    <div role="img" aria-label="Gráfico radar de performance">
       <ReactApexChart options={options} series={series} type="radar" height={height || 340} />
     </div>
   );
