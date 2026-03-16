@@ -76,7 +76,7 @@ export default function Sidebar({ isOpen, onClose }) {
               className={`
                 w-full flex items-center gap-3 px-3 py-[10px] rounded-xl
                 text-[14px] font-medium cursor-pointer border-none text-left transition-all duration-140
-                mb-[2px] select-none
+                mb-[2px] select-none focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1
                 ${isActive
                   ? 'bg-primary-dim text-primary font-bold'
                   : 'bg-transparent text-text-2 hover:bg-bg hover:text-text-1'
@@ -101,7 +101,7 @@ export default function Sidebar({ isOpen, onClose }) {
         <button
           onClick={toggleTheme}
           aria-label={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium cursor-pointer border-none bg-bg text-text-2 hover:text-text-1 transition-all duration-200 group"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium cursor-pointer border-none bg-bg text-text-2 hover:text-text-1 transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1"
         >
           <span className="text-text-3 group-hover:text-text-1 transition-colors duration-200">
             {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
