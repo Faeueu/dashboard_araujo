@@ -1,16 +1,34 @@
 // src/utils/fmt.js  — Formatadores de exibição
 
-const _brl  = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL', minimumFractionDigits:2, maximumFractionDigits:2 });
-const _n0   = new Intl.NumberFormat('pt-BR', { minimumFractionDigits:0, maximumFractionDigits:0 });
-const _n1   = new Intl.NumberFormat('pt-BR', { minimumFractionDigits:1, maximumFractionDigits:1 });
+const _brl = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL',
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+const _n0 = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+const _n1 = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
-export const MES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+export const MES = [
+  'Jan',
+  'Fev',
+  'Mar',
+  'Abr',
+  'Mai',
+  'Jun',
+  'Jul',
+  'Ago',
+  'Set',
+  'Out',
+  'Nov',
+  'Dez',
+];
 
 // R$ compacto: 1.23M / 456k / R$ 99,00
 export function brl(v) {
   if (v == null || isNaN(v)) return '—';
   if (v >= 1_000_000) return 'R$ ' + _n1.format(v / 1_000_000) + 'M';
-  if (v >= 10_000)    return 'R$ ' + _n0.format(v / 1_000) + 'k';
+  if (v >= 10_000) return 'R$ ' + _n0.format(v / 1_000) + 'k';
   return _brl.format(v);
 }
 
@@ -20,7 +38,7 @@ export function brlFull(v) {
   return _brl.format(v);
 }
 
-const _n2   = new Intl.NumberFormat('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:2 });
+const _n2 = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 // Percentual  29.61 → "29,61%"
 export function pct(v) {

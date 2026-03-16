@@ -37,20 +37,24 @@ export default function P3_Margem() {
   const mel = cm[0] || { label: '—', pct: 0 };
   const pior = cm[cm.length - 1] || { label: '—', pct: 0 };
 
-  const barSeries = [{
-    data: cm.map(d => +d.pct.toFixed(1)),
-    backgroundColor: cm.map(d => d.pct >= 40 ? c.red : d.pct >= 30 ? c.red2 : d.pct >= 23 ? c.barAlt : c.bar),
-    borderRadius: 6,
-    borderSkipped: false,
-    barThickness: 22
-  }];
+  const barSeries = [
+    {
+      data: cm.map(d => +d.pct.toFixed(1)),
+      backgroundColor: cm.map(d =>
+        d.pct >= 40 ? c.red : d.pct >= 30 ? c.red2 : d.pct >= 23 ? c.barAlt : c.bar
+      ),
+      borderRadius: 6,
+      borderSkipped: false,
+      barThickness: 22,
+    },
+  ];
 
   const scatterSeries = cm.map(d => ({
     label: d.label,
     data: [{ x: d.rec, y: +d.pct.toFixed(1) }],
     backgroundColor: d.pct >= 40 ? c.red : d.pct >= 30 ? c.red2 : c.barAlt,
     pointRadius: 12,
-    pointHoverRadius: 15
+    pointHoverRadius: 15,
   }));
 
   const mm = {};
@@ -69,14 +73,21 @@ export default function P3_Margem() {
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
-        <KpiCard label="% Margem Bruta" value={pct(mgP)} sub={mgP >= 29 ? '✓ acima do benchmark' : '⚠ atenção'} />
+        <KpiCard
+          label="% Margem Bruta"
+          value={pct(mgP)}
+          sub={mgP >= 29 ? '✓ acima do benchmark' : '⚠ atenção'}
+        />
         <KpiCard label="Margem Bruta R$" value={brl(mg)} />
         <KpiCard label="Maior Margem" value={mel.label} sub={pct(mel.pct)} />
         <KpiCard label="Menor Margem" value={pior.label} sub={pct(pior.pct)} alert />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ChartCard title="Margem Bruta % por Categoria" hint="Ordenado desc — vermelho = acima de 30%">
+        <ChartCard
+          title="Margem Bruta % por Categoria"
+          hint="Ordenado desc — vermelho = acima de 30%"
+        >
           <BarChart
             labels={cm.map(d => d.label)}
             datasets={barSeries}
@@ -86,7 +97,10 @@ export default function P3_Margem() {
           />
         </ChartCard>
 
-        <ChartCard title="Receita vs Margem por Categoria" hint="Quadrante ideal: direita-alto (alto faturamento + alta margem)">
+        <ChartCard
+          title="Receita vs Margem por Categoria"
+          hint="Quadrante ideal: direita-alto (alto faturamento + alta margem)"
+        >
           <ScatterChart
             datasets={scatterSeries}
             xFmt={v => brl(v)}
@@ -95,7 +109,11 @@ export default function P3_Margem() {
           />
         </ChartCard>
 
-        <ChartCard title="Evolução de Receita por Loja e Mês" hint="Barras agrupadas — comparativo mensal entre unidades" span>
+        <ChartCard
+          title="Evolução de Receita por Loja e Mês"
+          hint="Barras agrupadas — comparativo mensal entre unidades"
+          span
+        >
           <BarChart
             labels={ma.map(fMes)}
             datasets={LOJAS.map((l, i) => ({
@@ -103,7 +121,7 @@ export default function P3_Margem() {
               data: ma.map(m => Math.round(mm[m]?.[l] || 0)),
               backgroundColor: LCOL[i],
               borderRadius: 6,
-              barPercentage: 0.7
+              barPercentage: 0.7,
             }))}
             legend
             yFmt={v => brl(v)}

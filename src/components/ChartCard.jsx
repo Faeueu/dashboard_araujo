@@ -27,10 +27,18 @@ export default function ChartCard({ title, hint, children, span = false }) {
           className="w-[28px] h-[28px] rounded-lg flex items-center justify-center bg-bg border border-b1 cursor-pointer transition-all duration-200 hover:border-b2 hover:bg-card-h shrink-0"
         >
           <svg
-            width="12" height="12" viewBox="0 0 12 12" fill="none"
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
             className={`collapse-chevron text-text-3 ${collapsed ? 'rotated' : ''}`}
           >
-            <path d="M2.5 4.5l3.5 3 3.5-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            <path
+              d="M2.5 4.5l3.5 3 3.5-3"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
           </svg>
         </button>
       </div>
@@ -45,7 +53,9 @@ export default function ChartCard({ title, hint, children, span = false }) {
       {/* Indicador visual de conteúdo colapsado */}
       {collapsed && (
         <div className="chart-collapsed-indicator">
-          <span className="text-text-3 text-[11px] font-medium">Clique para expandir o gráfico</span>
+          <span className="text-text-3 text-[11px] font-medium">
+            Clique para expandir o gráfico
+          </span>
         </div>
       )}
     </div>

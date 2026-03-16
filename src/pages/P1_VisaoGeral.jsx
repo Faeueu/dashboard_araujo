@@ -2,7 +2,13 @@ import { useFilteredData } from '../core/DashboardContext.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import KpiCard from '../components/KpiCard.jsx';
 import ChartCard from '../components/ChartCard.jsx';
-import { LineChart, BarChart, DonutChart, DualChart, useChartColors } from '../components/Charts.jsx';
+import {
+  LineChart,
+  BarChart,
+  DonutChart,
+  DualChart,
+  useChartColors,
+} from '../components/Charts.jsx';
 import { sum, aggVendas, semanas, recSemanal } from '../utils/filters.js';
 import { brl, brlFull, pct, dataCurta } from '../utils/fmt.js';
 
@@ -39,19 +45,23 @@ export default function P1_VisaoGeral() {
     borderWidth: 3,
     pointRadius: 3,
     pointHoverRadius: 6,
-    pointBackgroundColor: LCOL[i]
+    pointBackgroundColor: LCOL[i],
   }));
 
   const byLoja = aggVendas(vendas, 'loja');
   // Feature added: labels de percentual no BarChart horizontal
   const totLoja = byLoja.reduce((a, b) => a + b.rec, 0);
-  const barSeriesLoja = [{
-    data: byLoja.map(d => d.rec),
-    backgroundColor: byLoja.map(d => d.label.includes('Norte') ? c.norte : d.label.includes('Sul') ? c.sul : c.red),
-    borderRadius: 8,
-    borderSkipped: false,
-    barThickness: 32
-  }];
+  const barSeriesLoja = [
+    {
+      data: byLoja.map(d => d.rec),
+      backgroundColor: byLoja.map(d =>
+        d.label.includes('Norte') ? c.norte : d.label.includes('Sul') ? c.sul : c.red
+      ),
+      borderRadius: 8,
+      borderSkipped: false,
+      barThickness: 32,
+    },
+  ];
 
   const top7 = cats.slice(0, 7);
   const outRec = cats.slice(7).reduce((a, d) => a + d.rec, 0);
@@ -61,7 +71,9 @@ export default function P1_VisaoGeral() {
 
   const DOW_LABELS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
   const dm = {};
-  vendas.forEach(v => { dm[v.dow] = (dm[v.dow] || 0) + v.rec; });
+  vendas.forEach(v => {
+    dm[v.dow] = (dm[v.dow] || 0) + v.rec;
+  });
   const diaArr = DOW_LABELS.map(d => dm[d] || 0);
 
   // Feature added: linha de meta média semanal
@@ -105,16 +117,19 @@ export default function P1_VisaoGeral() {
             datasets={barSeriesLoja}
             horiz
             xFmt={(v, { dataPointIndex }) => {
-               const val = byLoja[dataPointIndex]?.rec || 0;
-               const p = ((val / totLoja) * 100).toFixed(1);
-               return `${brl(v)}  (${p}%)`;
+              const val = byLoja[dataPointIndex]?.rec || 0;
+              const p = ((val / totLoja) * 100).toFixed(1);
+              return `${brl(v)}  (${p}%)`;
             }}
             height={280}
           />
         </ChartCard>
 
         {/* Feature fixed: Layout donut chart e legenda HTML */}
-        <ChartCard title="Mix de Receita por Categoria" hint="Distribuição proporcional do faturamento">
+        <ChartCard
+          title="Mix de Receita por Categoria"
+          hint="Distribuição proporcional do faturamento"
+        >
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 px-4 py-2">
             <div className="w-[200px] shrink-0">
               <DonutChart
@@ -122,10 +137,12 @@ export default function P1_VisaoGeral() {
                 data={dVal}
                 colors={CCAT}
                 height={220}
-                ttFmt={ctx => ` ${ctx.label}: ${brl(ctx.raw)} (${((ctx.raw / totCat) * 100).toFixed(1)}%)`}
+                ttFmt={ctx =>
+                  ` ${ctx.label}: ${brl(ctx.raw)} (${((ctx.raw / totCat) * 100).toFixed(1)}%)`
+                }
               />
             </div>
-            
+
             <div className="flex-1 grid grid-cols-2 gap-x-2 gap-y-3 pl-4 sm:border-l border-b1 min-w-[200px]">
               {dLbl.map((l, i) => {
                 const perc = ((dVal[i] / totCat) * 100).toFixed(1);
@@ -136,7 +153,9 @@ export default function P1_VisaoGeral() {
                         className="w-[8px] h-[8px] rounded-full shrink-0"
                         style={{ background: CCAT[i] }}
                       />
-                      <span className="truncate" title={l}>{l}</span>
+                      <span className="truncate" title={l}>
+                        {l}
+                      </span>
                     </div>
                     <div className="font-mono text-[11px] font-bold text-text-1 pl-[14px]">
                       {perc}%
@@ -149,7 +168,10 @@ export default function P1_VisaoGeral() {
         </ChartCard>
 
         {/* Feature added: Linha de Média Diária usando DualChart */}
-        <ChartCard title="Receita por Dia da Semana" hint="Sábado e domingo destacados em vermelho · Média em linha">
+        <ChartCard
+          title="Receita por Dia da Semana"
+          hint="Sábado e domingo destacados em vermelho · Média em linha"
+        >
           <DualChart
             labels={DOW_LABELS}
             height={310}
@@ -157,9 +179,11 @@ export default function P1_VisaoGeral() {
               type: 'bar',
               label: 'Receita Diária',
               data: DOW_LABELS.map(d => Math.round(dm[d] || 0)),
-              backgroundColor: DOW_LABELS.map((_, i) => i === 5 ? c.red : i === 6 ? c.red2 : c.bar),
+              backgroundColor: DOW_LABELS.map((_, i) =>
+                i === 5 ? c.red : i === 6 ? c.red2 : c.bar
+              ),
               borderRadius: 6,
-              yFmt: v => brl(v)
+              yFmt: v => brl(v),
             }}
             lDs={{
               type: 'line',
@@ -167,7 +191,7 @@ export default function P1_VisaoGeral() {
               data: Array(7).fill(Math.round(mediaDia)),
               borderColor: c.text3,
               borderDash: [5, 4],
-              yFmt: v => brl(v)
+              yFmt: v => brl(v),
             }}
           />
         </ChartCard>

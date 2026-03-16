@@ -24,8 +24,8 @@ export function aggVendas(rows, campo) {
     const k = r[campo] || '—';
     if (!m[k]) m[k] = { label: k, rec: 0, mg: 0, tx: 0 };
     m[k].rec += r.rec;
-    m[k].mg  += r.mg;
-    m[k].tx  += r.tx;
+    m[k].mg += r.mg;
+    m[k].tx += r.tx;
   }
   return Object.values(m).sort((a, b) => b.rec - a.rec);
 }
@@ -37,7 +37,7 @@ export function margemPorCat(vendas) {
     const k = v.cat;
     if (!m[k]) m[k] = { label: k, rec: 0, mg: 0 };
     m[k].rec += v.rec;
-    m[k].mg  += v.mg;
+    m[k].mg += v.mg;
   }
   return Object.values(m)
     .map(d => ({ ...d, pct: d.rec > 0 ? (d.mg / d.rec) * 100 : 0 }))
@@ -91,11 +91,11 @@ export function coberturaFaixas(estoque) {
   const f = { '0–7d': 0, '8–15d': 0, '16–30d': 0, '31–60d': 0, '60d+': 0 };
   for (const e of estoque) {
     const c = e.cob;
-    if      (c <=  7) f['0–7d']++;
+    if (c <= 7) f['0–7d']++;
     else if (c <= 15) f['8–15d']++;
     else if (c <= 30) f['16–30d']++;
     else if (c <= 60) f['31–60d']++;
-    else              f['60d+']++;
+    else f['60d+']++;
   }
   return f;
 }
@@ -129,4 +129,3 @@ export function wk(dateStr) {
 
 // Ordem dos meses para o dashboard
 export const MORD = ['2025-12', '2026-01', '2026-02', '2026-03'];
-

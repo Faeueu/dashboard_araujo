@@ -51,14 +51,30 @@ export default function P5_Rupturas() {
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
-        <KpiCard label="Receita Total Perdida" value={brl(perd)} sub="receita estimada" alert={perd > 0} />
-        <KpiCard label="Eventos de Ruptura" value={num(rupturas.length)} sub="eventos registrados" />
+        <KpiCard
+          label="Receita Total Perdida"
+          value={brl(perd)}
+          sub="receita estimada"
+          alert={perd > 0}
+        />
+        <KpiCard
+          label="Eventos de Ruptura"
+          value={num(rupturas.length)}
+          sub="eventos registrados"
+        />
         <KpiCard label="Principal Causa" value={topM.label} sub={num(topM.n) + ' ocorrências'} />
-        <KpiCard label="Categoria Mais Afetada" value={topC.label} sub={brl(topC.p) + ' perdidos'} />
+        <KpiCard
+          label="Categoria Mais Afetada"
+          value={topC.label}
+          sub={brl(topC.p) + ' perdidos'}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ChartCard title="Rupturas por Motivo" hint="Distribuição de causas — quantidade de eventos">
+        <ChartCard
+          title="Rupturas por Motivo"
+          hint="Distribuição de causas — quantidade de eventos"
+        >
           <div className="flex flex-col items-center gap-6 mt-2">
             <div className="w-[240px]">
               <DonutChart
@@ -72,16 +88,28 @@ export default function P5_Rupturas() {
             </div>
             <div className="flex flex-wrap gap-3 justify-center">
               {itemsM.map((d, i) => (
-                <div key={d.label} className="flex items-center gap-2 text-[13px] text-text-2 font-medium">
-                  <span className="w-[10px] h-[10px] rounded-full shrink-0 border-2 border-white shadow-sm" style={{ background: MC[i] || c.bar }}></span>
-                  <span>{d.label} <span className="font-mono text-[11px] text-text-3 font-bold">({d.n})</span></span>
+                <div
+                  key={d.label}
+                  className="flex items-center gap-2 text-[13px] text-text-2 font-medium"
+                >
+                  <span
+                    className="w-[10px] h-[10px] rounded-full shrink-0 border-2 border-white shadow-sm"
+                    style={{ background: MC[i] || c.bar }}
+                  ></span>
+                  <span>
+                    {d.label}{' '}
+                    <span className="font-mono text-[11px] text-text-3 font-bold">({d.n})</span>
+                  </span>
                 </div>
               ))}
             </div>
           </div>
         </ChartCard>
 
-        <ChartCard title="Rupturas e Receita Perdida por Mês" hint="Barras = quantidade · Linha = impacto financeiro (R$)">
+        <ChartCard
+          title="Rupturas e Receita Perdida por Mês"
+          hint="Barras = quantidade · Linha = impacto financeiro (R$)"
+        >
           <DualChart
             labels={ma.map(fMes)}
             bDs={{
@@ -93,7 +121,7 @@ export default function P5_Rupturas() {
               borderWidth: 1,
               borderRadius: 6,
               yAxisID: 'y',
-              yFmt: v => num(v)
+              yFmt: v => num(v),
             }}
             lDs={{
               type: 'line',
@@ -105,27 +133,31 @@ export default function P5_Rupturas() {
               pointRadius: 5,
               tension: 0.3,
               yAxisID: 'y2',
-              yFmt: v => brl(v)
+              yFmt: v => brl(v),
             }}
             height={340}
           />
         </ChartCard>
 
-        <ChartCard title="Impacto Financeiro por Categoria" hint="Receita perdida estimada — ordenado por impacto" span>
+        <ChartCard
+          title="Impacto Financeiro por Categoria"
+          hint="Receita perdida estimada — ordenado por impacto"
+          span
+        >
           <BarChart
             labels={top10.map(d => d.label)}
-            datasets={[{
-              data: top10.map(d => Math.round(d.p)),
-              backgroundColor: top10.map((_, i) => {
-                const opacity = (1 - i * 0.07).toFixed(2);
-                return c.isDark
-                  ? `rgba(239,68,68,${opacity})`
-                  : `rgba(220,38,38,${opacity})`;
-              }),
-              borderRadius: 6,
-              borderSkipped: false,
-              barThickness: 26
-            }]}
+            datasets={[
+              {
+                data: top10.map(d => Math.round(d.p)),
+                backgroundColor: top10.map((_, i) => {
+                  const opacity = (1 - i * 0.07).toFixed(2);
+                  return c.isDark ? `rgba(239,68,68,${opacity})` : `rgba(220,38,38,${opacity})`;
+                }),
+                borderRadius: 6,
+                borderSkipped: false,
+                barThickness: 26,
+              },
+            ]}
             horiz
             xFmt={v => brl(v)}
             height={400}

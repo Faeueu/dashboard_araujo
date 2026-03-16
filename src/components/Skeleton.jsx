@@ -1,10 +1,22 @@
 /* ─── KPI Skeleton ──────────────────────────────────────────── */
 export function KpiSkeleton({ delay = 0 }) {
   return (
-    <div className="bg-card border border-b1 rounded-2xl p-6 text-center" style={{ animationDelay: `${delay}ms` }}>
-      <div className="skeleton-text w-[80px] h-[10px] mx-auto mb-4" style={{ animationDelay: `${delay}ms` }} />
-      <div className="skeleton w-[120px] h-[30px] mx-auto mb-3 rounded-lg" style={{ animationDelay: `${delay + 50}ms` }} />
-      <div className="skeleton-text w-[90px] h-[10px] mx-auto" style={{ animationDelay: `${delay + 100}ms` }} />
+    <div
+      className="bg-card border border-b1 rounded-2xl p-6 text-center"
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <div
+        className="skeleton-text w-[80px] h-[10px] mx-auto mb-4"
+        style={{ animationDelay: `${delay}ms` }}
+      />
+      <div
+        className="skeleton w-[120px] h-[30px] mx-auto mb-3 rounded-lg"
+        style={{ animationDelay: `${delay + 50}ms` }}
+      />
+      <div
+        className="skeleton-text w-[90px] h-[10px] mx-auto"
+        style={{ animationDelay: `${delay + 100}ms` }}
+      />
     </div>
   );
 }
@@ -12,12 +24,24 @@ export function KpiSkeleton({ delay = 0 }) {
 /* ─── Chart Skeleton ────────────────────────────────────────── */
 export function ChartSkeleton({ height = 300, span = false, delay = 0 }) {
   return (
-    <div className={`bg-card border border-b1 rounded-2xl p-6 ${span ? 'col-span-full' : ''}`} style={{ animationDelay: `${delay}ms` }}>
+    <div
+      className={`bg-card border border-b1 rounded-2xl p-6 ${span ? 'col-span-full' : ''}`}
+      style={{ animationDelay: `${delay}ms` }}
+    >
       <div className="flex flex-col items-center gap-2 mb-5 pb-4 border-b border-b1">
-        <div className="skeleton-text w-[200px] h-[14px]" style={{ animationDelay: `${delay}ms` }} />
-        <div className="skeleton-text w-[160px] h-[10px] mt-1" style={{ animationDelay: `${delay + 50}ms` }} />
+        <div
+          className="skeleton-text w-[200px] h-[14px]"
+          style={{ animationDelay: `${delay}ms` }}
+        />
+        <div
+          className="skeleton-text w-[160px] h-[10px] mt-1"
+          style={{ animationDelay: `${delay + 50}ms` }}
+        />
       </div>
-      <div className="skeleton w-full rounded-xl" style={{ height: `${height}px`, animationDelay: `${delay + 100}ms` }} />
+      <div
+        className="skeleton w-full rounded-xl"
+        style={{ height: `${height}px`, animationDelay: `${delay + 100}ms` }}
+      />
     </div>
   );
 }
@@ -76,7 +100,11 @@ export default function LoadingSkeleton() {
           <div className="flex items-center gap-3">
             <div className="skeleton-text w-[50px] h-[10px]" />
             {[100, 80, 110].map((w, i) => (
-              <div key={i} className="skeleton w-[${w}px] h-[36px] rounded-xl" style={{ width: `${w}px` }} />
+              <div
+                key={i}
+                className="skeleton w-[${w}px] h-[36px] rounded-xl"
+                style={{ width: `${w}px` }}
+              />
             ))}
           </div>
         </div>

@@ -54,18 +54,22 @@ export default function P4_Estoque() {
     { k: 'Ruptura', l: 'Ruptura', c: c.red },
     { k: 'Crítico', l: 'Crítico', c: c.warning },
     { k: 'Abaixo_Mínimo', l: 'Abaixo Mín.', c: c.barAlt },
-    { k: 'Normal', l: 'Normal', c: c.bar }
+    { k: 'Normal', l: 'Normal', c: c.bar },
   ];
 
   const cob = cobF(estoque);
   const ck = Object.keys(cob);
-  const barSeries = [{
-    data: Object.values(cob),
-    backgroundColor: ck.map(k => k === '0–7d' ? c.red : k === '8–15d' ? c.red2 : k === '16–30d' ? c.barAlt : c.bar),
-    borderRadius: 6,
-    borderSkipped: false,
-    barThickness: 40
-  }];
+  const barSeries = [
+    {
+      data: Object.values(cob),
+      backgroundColor: ck.map(k =>
+        k === '0–7d' ? c.red : k === '8–15d' ? c.red2 : k === '16–30d' ? c.barAlt : c.bar
+      ),
+      borderRadius: 6,
+      borderSkipped: false,
+      barThickness: 40,
+    },
+  ];
 
   const rows = stCat(estoque).slice(0, 12);
 
@@ -79,13 +83,26 @@ export default function P4_Estoque() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
         <KpiCard label="Valor Total em Estoque" value={brl(val)} />
-        <KpiCard label="SKUs em Ruptura" value={num(rup)} sub={rup > 0 ? 'requer ação imediata' : ''} alert={rup > 0} />
+        <KpiCard
+          label="SKUs em Ruptura"
+          value={num(rup)}
+          sub={rup > 0 ? 'requer ação imediata' : ''}
+          alert={rup > 0}
+        />
         <KpiCard label="Abaixo do Mínimo" value={num(abx)} sub="SKUs abaixo do mínimo" />
-        <KpiCard label="Risco de Vencimento" value={num(risc)} sub="produtos em risco" alert={risc > 0} />
+        <KpiCard
+          label="Risco de Vencimento"
+          value={num(risc)}
+          sub="produtos em risco"
+          alert={risc > 0}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ChartCard title="Distribuição por Status de Estoque" hint="Posição atual — todos os SKUs e lojas filtradas">
+        <ChartCard
+          title="Distribuição por Status de Estoque"
+          hint="Posição atual — todos os SKUs e lojas filtradas"
+        >
           <div className="mt-4">
             {bars.map(b => {
               const v = st[b.k] || 0;
@@ -103,20 +120,20 @@ export default function P4_Estoque() {
                       {v}
                     </div>
                   </div>
-                  <span className="sbar-pct" style={{ color: b.c }}>{p}%</span>
+                  <span className="sbar-pct" style={{ color: b.c }}>
+                    {p}%
+                  </span>
                 </div>
               );
             })}
           </div>
         </ChartCard>
 
-        <ChartCard title="Histograma de Cobertura em Dias" hint="Ideal: 16–30 dias · Abaixo de 7d = risco imediato">
-          <BarChart
-            labels={ck}
-            datasets={barSeries}
-            yFmt={v => num(v)}
-            height={300}
-          />
+        <ChartCard
+          title="Histograma de Cobertura em Dias"
+          hint="Ideal: 16–30 dias · Abaixo de 7d = risco imediato"
+        >
+          <BarChart labels={ck} datasets={barSeries} yFmt={v => num(v)} height={300} />
         </ChartCard>
 
         <ChartCard title="SKUs Críticos por Categoria" hint="Ordenado por volume de alertas" span>
@@ -137,14 +154,23 @@ export default function P4_Estoque() {
                   <tr key={r.cat}>
                     <td className="dn text-left!">{r.cat}</td>
                     <td>
-                      <span className={`inline-flex items-center gap-1 font-mono text-[11px] px-3 py-1 rounded-full font-bold ${r.Ruptura > 0 ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-success/10 text-success border border-success/20'}`}>
+                      <span
+                        className={`inline-flex items-center gap-1 font-mono text-[11px] px-3 py-1 rounded-full font-bold ${r.Ruptura > 0 ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-success/10 text-success border border-success/20'}`}
+                      >
                         {r.Ruptura}
                       </span>
                     </td>
                     <td className="font-mono font-bold text-warning">{r.Crítico}</td>
                     <td className="font-mono font-bold text-text-3">{r.Abaixo_Mínimo}</td>
                     <td className="font-mono font-bold text-text-3">{r.Normal}</td>
-                    <td className="font-mono font-extrabold" style={{ color: r.tot > 150 ? c.red : r.tot > 80 ? c.warning : 'var(--color-text-2)' }}>{r.tot}</td>
+                    <td
+                      className="font-mono font-extrabold"
+                      style={{
+                        color: r.tot > 150 ? c.red : r.tot > 80 ? c.warning : 'var(--color-text-2)',
+                      }}
+                    >
+                      {r.tot}
+                    </td>
                   </tr>
                 ))}
               </tbody>

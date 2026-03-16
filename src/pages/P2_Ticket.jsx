@@ -44,8 +44,10 @@ export default function P2_Ticket() {
 
   const DOW_LABELS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
   const dm = {};
-  vendas.forEach(v => { dm[v.dow] = (dm[v.dow] || 0) + v.rec; });
-  const mel = DOW_LABELS.reduce((b, d) => (dm[d] || 0) > (dm[b] || 0) ? d : b, DOW_LABELS[0]);
+  vendas.forEach(v => {
+    dm[v.dow] = (dm[v.dow] || 0) + v.rec;
+  });
+  const mel = DOW_LABELS.reduce((b, d) => ((dm[d] || 0) > (dm[b] || 0) ? d : b), DOW_LABELS[0]);
 
   const ts = tkSem(atend);
   const lineSeries = [
@@ -58,33 +60,35 @@ export default function P2_Ticket() {
       tension: 0.4,
       borderWidth: 3,
       pointRadius: 4,
-      pointBackgroundColor: c.red
+      pointBackgroundColor: c.red,
     },
     {
       label: 'Meta R$96,60',
-      data: Array(ts.length).fill(96.60),
+      data: Array(ts.length).fill(96.6),
       borderColor: c.text3,
       borderDash: [5, 4],
       borderWidth: 2,
-      pointRadius: 0
-    }
+      pointRadius: 0,
+    },
   ];
 
   const cs = [...camps].sort((a, b) => a.tp - b.tp);
-  const barSeries = [{
-    data: cs.map(d => Math.round(d.tp)),
-    backgroundColor: cs.map(d => d.tp >= 280 ? c.red : d.tp >= 268 ? c.red2 : c.bar),
-    borderRadius: 6,
-    borderSkipped: false,
-    barThickness: 28
-  }];
+  const barSeries = [
+    {
+      data: cs.map(d => Math.round(d.tp)),
+      backgroundColor: cs.map(d => (d.tp >= 280 ? c.red : d.tp >= 268 ? c.red2 : c.bar)),
+      borderRadius: 6,
+      borderSkipped: false,
+      barThickness: 28,
+    },
+  ];
 
   const L = ['Araújo Centro', 'Araújo Norte', 'Araújo Sul'];
   const D = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
   const V = {
     'Araújo Centro': [82, 87, 90, 93, 98, 112, 107],
     'Araújo Norte': [88, 93, 97, 100, 105, 120, 114],
-    'Araújo Sul': [79, 84, 88, 91, 96, 110, 104]
+    'Araújo Sul': [79, 84, 88, 91, 96, 110, 104],
   };
 
   const allV = Object.values(V).flat();
@@ -122,12 +126,19 @@ export default function P2_Ticket() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
         <KpiCard label="Ticket Médio Real" value={brlFull(tk)} sub="por atendimento" />
-        <KpiCard label="Melhor Campanha" value={topC.label} sub={brlFull(topC.tp) + ' / transação'} />
+        <KpiCard
+          label="Melhor Campanha"
+          value={topC.label}
+          sub={brlFull(topC.tp) + ' / transação'}
+        />
         <KpiCard label="Dia de Pico" value={mel} sub={brl(dm[mel] || 0) + ' acumulado'} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ChartCard title="Evolução Semanal do Ticket" hint="Linha real vs meta de R$96,60 (tracejada)">
+        <ChartCard
+          title="Evolução Semanal do Ticket"
+          hint="Linha real vs meta de R$96,60 (tracejada)"
+        >
           <LineChart
             labels={ts.map(d => dataCurta(d.w))}
             datasets={lineSeries}
@@ -139,7 +150,10 @@ export default function P2_Ticket() {
           />
         </ChartCard>
 
-        <ChartCard title="Valor Médio por Campanha" hint="R$ por transação — qual campanha gera mais">
+        <ChartCard
+          title="Valor Médio por Campanha"
+          hint="R$ por transação — qual campanha gera mais"
+        >
           <BarChart
             labels={cs.map(d => d.label)}
             datasets={barSeries}
@@ -149,13 +163,19 @@ export default function P2_Ticket() {
           />
         </ChartCard>
 
-        <ChartCard title="Heatmap: Loja × Dia da Semana" hint="Ticket estimado — quanto mais claro, maior o ticket" span>
+        <ChartCard
+          title="Heatmap: Loja × Dia da Semana"
+          hint="Ticket estimado — quanto mais claro, maior o ticket"
+          span
+        >
           <div className="tscroll mt-3">
             <table className="hmt">
               <thead>
                 <tr>
                   <th>Loja</th>
-                  {D.map(d => <th key={d}>{d}</th>)}
+                  {D.map(d => (
+                    <th key={d}>{d}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
@@ -163,10 +183,7 @@ export default function P2_Ticket() {
                   <tr key={l}>
                     <td className="hl">{l.replace('Araújo ', '')}</td>
                     {V[l].map((v, idx) => (
-                      <td
-                        key={idx}
-                        style={{ background: hc(v), color: '#fff' }}
-                      >
+                      <td key={idx} style={{ background: hc(v), color: '#fff' }}>
                         R${v}
                       </td>
                     ))}
@@ -181,15 +198,26 @@ export default function P2_Ticket() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
         <div className="ins">
           <div className="ins-title">Cross-sell</div>
-          <div className="ins-txt">Campanhas combinando Carnes + Bebidas elevam ticket em 18–25% vs. campanha única.</div>
+          <div className="ins-txt">
+            Campanhas combinando Carnes + Bebidas elevam ticket em 18–25% vs. campanha única.
+          </div>
         </div>
         <div className="ins" style={{ borderLeftColor: 'var(--color-text-2)' }}>
-          <div className="ins-title" style={{ color: 'var(--color-text-2)' }}>Sazonalidade</div>
-          <div className="ins-txt">Sábado lidera em volume. Segunda é o dia mais fraco — oportunidade para ação promocional.</div>
+          <div className="ins-title" style={{ color: 'var(--color-text-2)' }}>
+            Sazonalidade
+          </div>
+          <div className="ins-txt">
+            Sábado lidera em volume. Segunda é o dia mais fraco — oportunidade para ação
+            promocional.
+          </div>
         </div>
         <div className="ins" style={{ borderLeftColor: 'var(--color-text-3)' }}>
-          <div className="ins-title" style={{ color: 'var(--color-text-3)' }}>Mix Premium</div>
-          <div className="ins-txt">Perfumaria (43% mg) e Bazar (38% mg) têm alto ticket — ampliar espaço no PDV.</div>
+          <div className="ins-title" style={{ color: 'var(--color-text-3)' }}>
+            Mix Premium
+          </div>
+          <div className="ins-txt">
+            Perfumaria (43% mg) e Bazar (38% mg) têm alto ticket — ampliar espaço no PDV.
+          </div>
         </div>
       </div>
     </>

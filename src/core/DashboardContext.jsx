@@ -62,16 +62,12 @@ export function ThemeProvider({ children }) {
   }, [theme]);
 
   const toggleTheme = useCallback(() => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   }, []);
 
   const value = useMemo(() => ({ theme, toggleTheme }), [theme, toggleTheme]);
 
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {
@@ -93,29 +89,29 @@ export function DashboardProvider({ dataset, children }) {
     setFiltros({ lojas: [], meses: [], cats: [] });
   }, []);
 
-  const hasActiveFiltros = filtros.lojas.length > 0 || filtros.meses.length > 0 || filtros.cats.length > 0;
+  const hasActiveFiltros =
+    filtros.lojas.length > 0 || filtros.meses.length > 0 || filtros.cats.length > 0;
 
   const filteredData = useMemo(
     () => (dataset ? applyFilters(dataset, filtros) : null),
     [dataset, filtros]
   );
 
-  const value = useMemo(() => ({
-    dataset,
-    page,
-    setPage,
-    filtros,
-    setFiltro,
-    clearFiltros,
-    hasActiveFiltros,
-    filteredData,
-  }), [dataset, page, filtros, setFiltro, clearFiltros, hasActiveFiltros, filteredData]);
-
-  return (
-    <DashboardContext.Provider value={value}>
-      {children}
-    </DashboardContext.Provider>
+  const value = useMemo(
+    () => ({
+      dataset,
+      page,
+      setPage,
+      filtros,
+      setFiltro,
+      clearFiltros,
+      hasActiveFiltros,
+      filteredData,
+    }),
+    [dataset, page, filtros, setFiltro, clearFiltros, hasActiveFiltros, filteredData]
   );
+
+  return <DashboardContext.Provider value={value}>{children}</DashboardContext.Provider>;
 }
 
 export function useDashboard() {

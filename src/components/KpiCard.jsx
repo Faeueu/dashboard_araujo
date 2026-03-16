@@ -10,10 +10,12 @@ export default function KpiCard({ label, value = '—', sub = '', alert = false,
         ${alert ? 'border-primary/30' : ''}
       `}
     >
-      <div className={`
+      <div
+        className={`
         absolute top-0 left-0 right-0 h-[3px] bg-primary rounded-t-2xl transition-opacity duration-200
         ${alert ? 'opacity-100' : 'opacity-0 group-hover:opacity-40'}
-      `} />
+      `}
+      />
       <div className="font-mono text-[10.5px] tracking-[2px] uppercase text-text-3 mb-3 font-semibold">
         {label}
       </div>
@@ -23,11 +25,7 @@ export default function KpiCard({ label, value = '—', sub = '', alert = false,
       >
         {value}
       </div>
-      {sub && (
-        <div className="font-mono text-[11px] text-text-3 font-medium">
-          {sub}
-        </div>
-      )}
+      {sub && <div className="font-mono text-[11px] text-text-3 font-medium">{sub}</div>}
     </div>
   );
 }

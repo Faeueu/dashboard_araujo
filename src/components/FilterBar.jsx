@@ -14,7 +14,7 @@ function Dropdown({ campo, opcoes, ativos, onToggle, onClear }) {
   const hasActive = ativos.length > 0;
 
   useEffect(() => {
-    const handler = (e) => {
+    const handler = e => {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false);
     };
     document.addEventListener('mousedown', handler);
@@ -22,13 +22,17 @@ function Dropdown({ campo, opcoes, ativos, onToggle, onClear }) {
   }, []);
 
   useEffect(() => {
-    const handler = (e) => { if (e.key === 'Escape') setOpen(false); };
+    const handler = e => {
+      if (e.key === 'Escape') setOpen(false);
+    };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, []);
 
   const label = hasActive
-    ? (ativos.length === 1 ? fmt(ativos[0]) : `${ativos.length} selecionados`)
+    ? ativos.length === 1
+      ? fmt(ativos[0])
+      : `${ativos.length} selecionados`
     : LABEL_MAP[campo];
 
   return (
@@ -36,9 +40,10 @@ function Dropdown({ campo, opcoes, ativos, onToggle, onClear }) {
       <button
         onClick={() => setOpen(v => !v)}
         className={`flex items-center gap-2 px-3.5 py-2 border rounded-xl text-[13px] font-semibold cursor-pointer whitespace-nowrap transition-all duration-140 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1
-          ${hasActive
-            ? 'border-primary text-primary bg-primary-dim'
-            : 'bg-card border-b1 text-text-2 hover:border-b3 hover:text-text-1'
+          ${
+            hasActive
+              ? 'border-primary text-primary bg-primary-dim'
+              : 'bg-card border-b1 text-text-2 hover:border-b3 hover:text-text-1'
           }`}
       >
         <span className="truncate max-w-[140px]">{label}</span>
@@ -47,16 +52,26 @@ function Dropdown({ campo, opcoes, ativos, onToggle, onClear }) {
           viewBox="0 0 10 10"
           fill="none"
         >
-          <path d="M2 3.8l3 2.8 3-2.8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path
+            d="M2 3.8l3 2.8 3-2.8"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
         </svg>
       </button>
 
-      <div className={`${open ? 'block' : 'hidden'} absolute top-[calc(100%+7px)] left-0 bg-card border border-b1 rounded-xl min-w-[230px] z-400 shadow-dropdown overflow-hidden animate-[ddIn_140ms_var(--ease-out)_both]`}>
+      <div
+        className={`${open ? 'block' : 'hidden'} absolute top-[calc(100%+7px)] left-0 bg-card border border-b1 rounded-xl min-w-[230px] z-400 shadow-dropdown overflow-hidden animate-[ddIn_140ms_var(--ease-out)_both]`}
+      >
         <div className="flex justify-between items-center px-4 py-3 border-b border-b1 font-mono text-[10px] tracking-[1.5px] uppercase text-text-3 font-semibold">
           <span>{LABEL_MAP[campo]}</span>
           {hasActive && (
             <button
-              onClick={() => { onClear(campo); setOpen(false); }}
+              onClick={() => {
+                onClear(campo);
+                setOpen(false);
+              }}
               className="font-mono text-[10px] text-primary bg-none border-none cursor-pointer p-0 font-bold hover:underline focus:outline-none focus:ring-2 focus:ring-primary/50 rounded px-1"
             >
               limpar
@@ -70,15 +85,21 @@ function Dropdown({ campo, opcoes, ativos, onToggle, onClear }) {
               <li
                 key={op}
                 onClick={() => onToggle(campo, op)}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(campo, op); }}}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onToggle(campo, op);
+                  }
+                }}
                 tabIndex={0}
                 role="button"
                 aria-pressed={sel}
                 className={`
                   flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13.5px] transition-all duration-100 font-medium focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-inset
-                  ${sel
-                    ? 'text-primary bg-primary-dim font-bold'
-                    : 'text-text-2 hover:bg-bg hover:text-text-1'
+                  ${
+                    sel
+                      ? 'text-primary bg-primary-dim font-bold'
+                      : 'text-text-2 hover:bg-bg hover:text-text-1'
                   }
                 `}
               >
@@ -113,7 +134,7 @@ export default function FilterBar() {
     setFiltro(storeKey, cur);
   };
 
-  const handleClear = (campo) => {
+  const handleClear = campo => {
     setFiltro(CAMPO_MAP[campo], []);
   };
 
@@ -124,9 +145,27 @@ export default function FilterBar() {
           Filtrar
         </span>
 
-        <Dropdown campo="loja" opcoes={lojas} ativos={filtros.lojas} onToggle={handleToggle} onClear={handleClear} />
-        <Dropdown campo="mes" opcoes={meses} ativos={filtros.meses} onToggle={handleToggle} onClear={handleClear} />
-        <Dropdown campo="cat" opcoes={cats} ativos={filtros.cats} onToggle={handleToggle} onClear={handleClear} />
+        <Dropdown
+          campo="loja"
+          opcoes={lojas}
+          ativos={filtros.lojas}
+          onToggle={handleToggle}
+          onClear={handleClear}
+        />
+        <Dropdown
+          campo="mes"
+          opcoes={meses}
+          ativos={filtros.meses}
+          onToggle={handleToggle}
+          onClear={handleClear}
+        />
+        <Dropdown
+          campo="cat"
+          opcoes={cats}
+          ativos={filtros.cats}
+          onToggle={handleToggle}
+          onClear={handleClear}
+        />
 
         {hasActiveFiltros && (
           <button
@@ -134,7 +173,12 @@ export default function FilterBar() {
             className="flex items-center gap-1.5 px-3.5 py-2 bg-primary/5 border border-primary/20 rounded-xl text-primary font-sans text-[12.5px] font-bold cursor-pointer transition-all duration-140 hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1"
           >
             <svg width="10" height="10" viewBox="0 0 10 10">
-              <path d="M1.5 1.5l7 7M8.5 1.5l-7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              <path
+                d="M1.5 1.5l7 7M8.5 1.5l-7 7"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+              />
             </svg>
             Limpar
           </button>

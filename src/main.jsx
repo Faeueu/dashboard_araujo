@@ -24,7 +24,7 @@ function Root() {
         const response = await fetch('/data/dataset.json');
         if (!response.ok) throw new Error(`HTTP Erro: ${response.status}`);
         const data = await response.json();
-        
+
         if (!isCancelled) {
           setDataset(data);
           setLoading(false);
@@ -32,9 +32,9 @@ function Root() {
         }
       } catch (err) {
         if (isCancelled) return;
-        
+
         console.error(`Falha no fetch (tentativa ${retryCount + 1}):`, err);
-        
+
         if (retryCount < MAX_RETRIES) {
           // Exponential backoff: 1s, 2s, 4s...
           const timeout = Math.pow(2, retryCount) * 1000;
@@ -67,16 +67,24 @@ function Root() {
 
         <div className="bg-card border border-b1 rounded-2xl p-8 max-w-[440px] w-full mx-4 text-center">
           <div className="w-[48px] h-[48px] rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-              <line x1="12" y1="9" x2="12" y2="13"/>
-              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--color-primary)"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
           </div>
 
           <h2 className="text-[18px] font-bold text-text-1 mb-2">Falha Crítica de Conexão</h2>
           <p className="text-[13px] text-text-2 mb-4 leading-relaxed">
-            Não foi possível carregar o banco de dados do dashboard após múltiplas tentativas. 
+            Não foi possível carregar o banco de dados do dashboard após múltiplas tentativas.
             Verifique sua conexão ou a disponibilidade do servidor.
           </p>
           <div className="font-mono text-[11px] text-text-3 bg-bg rounded-lg p-3 mb-5 text-left border border-b1">
