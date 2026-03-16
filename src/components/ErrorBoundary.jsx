@@ -12,6 +12,22 @@ export default class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('ErrorBoundary caught:', error, errorInfo);
+
+    // Log externo em produção (preparado para Sentry/DataDog)
+    if (import.meta.env.PROD) {
+      // Exemplo: Sentry.captureException(error, { extra: errorInfo });
+      // Exemplo: DataDog.logger.error('Dashboard Error', { error: error.message, stack: error.stack });
+      console.error('[PROD] Erro capturado - pronto para envio ao serviço de logging:', {
+        message: error.message,
+        stack: error.stack,
+        componentStack: errorInfo.componentStack,
+        timestamp: new Date().toISOString(),
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+      });
+    }
+
+    this.setState({ errorInfo });
   }
 
   handleRetry = () => {

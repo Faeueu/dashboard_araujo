@@ -1,25 +1,25 @@
 import { useState } from 'react';
 
 /* ─── KPI Skeleton ──────────────────────────────────────────── */
-export function KpiSkeleton() {
+export function KpiSkeleton({ delay = 0 }) {
   return (
-    <div className="bg-card border border-b1 rounded-2xl p-6 text-center">
-      <div className="skeleton-text w-[80px] h-[10px] mx-auto mb-4" />
-      <div className="skeleton w-[120px] h-[30px] mx-auto mb-3 rounded-lg" />
-      <div className="skeleton-text w-[90px] h-[10px] mx-auto" />
+    <div className="bg-card border border-b1 rounded-2xl p-6 text-center" style={{ animationDelay: `${delay}ms` }}>
+      <div className="skeleton-text w-[80px] h-[10px] mx-auto mb-4" style={{ animationDelay: `${delay}ms` }} />
+      <div className="skeleton w-[120px] h-[30px] mx-auto mb-3 rounded-lg" style={{ animationDelay: `${delay + 50}ms` }} />
+      <div className="skeleton-text w-[90px] h-[10px] mx-auto" style={{ animationDelay: `${delay + 100}ms` }} />
     </div>
   );
 }
 
 /* ─── Chart Skeleton ────────────────────────────────────────── */
-export function ChartSkeleton({ height = 300, span = false }) {
+export function ChartSkeleton({ height = 300, span = false, delay = 0 }) {
   return (
-    <div className={`bg-card border border-b1 rounded-2xl p-6 ${span ? 'col-span-full' : ''}`}>
+    <div className={`bg-card border border-b1 rounded-2xl p-6 ${span ? 'col-span-full' : ''}`} style={{ animationDelay: `${delay}ms` }}>
       <div className="flex flex-col items-center gap-2 mb-5 pb-4 border-b border-b1">
-        <div className="skeleton-text w-[200px] h-[14px]" />
-        <div className="skeleton-text w-[160px] h-[10px] mt-1" />
+        <div className="skeleton-text w-[200px] h-[14px]" style={{ animationDelay: `${delay}ms` }} />
+        <div className="skeleton-text w-[160px] h-[10px] mt-1" style={{ animationDelay: `${delay + 50}ms` }} />
       </div>
-      <div className="skeleton w-full rounded-xl" style={{ height: `${height}px` }} />
+      <div className="skeleton w-full rounded-xl" style={{ height: `${height}px`, animationDelay: `${delay + 100}ms` }} />
     </div>
   );
 }
@@ -96,14 +96,14 @@ export default function LoadingSkeleton() {
             {/* KPI row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
               {Array.from({ length: 4 }).map((_, i) => (
-                <KpiSkeleton key={i} />
+                <KpiSkeleton key={i} delay={i * 100} />
               ))}
             </div>
 
             {/* Chart row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <ChartSkeleton height={280} />
-              <ChartSkeleton height={280} />
+              <ChartSkeleton height={280} delay={400} />
+              <ChartSkeleton height={280} delay={500} />
             </div>
           </div>
         </main>

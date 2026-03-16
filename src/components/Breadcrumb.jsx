@@ -10,8 +10,12 @@ const PAGE_MAP = {
 };
 
 export default function Breadcrumb() {
-  const { page } = useDashboard();
+  const { page, setPage } = useDashboard();
   const label = PAGE_MAP[page] || 'Dashboard';
+
+  const handleHomeClick = () => {
+    setPage('visao-geral');
+  };
 
   return (
     <nav
@@ -22,11 +26,17 @@ export default function Breadcrumb() {
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
         <polyline points="9 22 9 12 15 12 15 22" />
       </svg>
-      <span className="text-text-3">Dashboard</span>
+      <button
+        onClick={handleHomeClick}
+        className="text-text-3 hover:text-text-1 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1 rounded px-1"
+        aria-label="Ir para Visão Geral"
+      >
+        Dashboard
+      </button>
       <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="opacity-40">
         <path d="M3.5 2l3.5 3-3.5 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
-      <span className="text-text-1 font-semibold">{label}</span>
+      <span className="text-text-1 font-semibold" aria-current="page">{label}</span>
     </nav>
   );
 }
