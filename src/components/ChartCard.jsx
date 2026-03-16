@@ -41,6 +41,13 @@ export default function ChartCard({ title, hint, children, span = false }) {
       >
         {children}
       </div>
+
+      {/* Indicador visual de conteúdo colapsado */}
+      {collapsed && (
+        <div className="chart-collapsed-indicator">
+          <span className="text-text-3 text-[11px] font-medium">Clique para expandir o gráfico</span>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,6 +2,38 @@ import ReactApexChart from 'react-apexcharts';
 import { useTheme } from '../core/DashboardContext.jsx';
 import { useMemo } from 'react';
 
+/* ─── Accessibility Helpers ───────────────────────────────── */
+function generateTrendDescription(data, type, title) {
+  if (!data || data.length === 0) return `${title}: sem dados disponíveis.`;
+
+  if (type === 'line' && data[0]?.data) {
+    const values = data[0].data;
+    if (values.length < 2) return `${title}: ${values.length} ponto de dados.`;
+
+    const first = values[0];
+    const last = values[values.length - 1];
+    const trend = last > first ? 'crescimento' : last < first ? 'queda' : 'estabilidade';
+    const percent = first !== 0 ? Math.abs(((last - first) / first) * 100).toFixed(1) : 0;
+    return `${title}: tendência de ${trend} de ${percent}% ao longo do período. ${values.length} pontos de dados.`;
+  }
+
+  if (type === 'bar') {
+    const total = data.reduce((sum, ds) => sum + (ds.data?.reduce((a, b) => a + b, 0) || 0), 0);
+    return `${title}: ${data.length} séries de dados. Total acumulado: ${total.toLocaleString('pt-BR')}.`;
+  }
+
+  if (type === 'donut') {
+    const total = data.reduce((a, b) => a + b, 0);
+    return `${title}: ${data.length} categorias. Total: ${total.toLocaleString('pt-BR')}.`;
+  }
+
+  if (type === 'scatter') {
+    return `${title}: ${data.length} séries de dispersão com ${data[0]?.data?.length || 0} pontos cada.`;
+  }
+
+  return `${title}: ${data.length} séries de dados.`;
+}
+
 /* ─── Luminance & Contrast Helpers ──────────────────────────── */
 function getLuminance(hex) {
   if (!hex || hex.startsWith('rgba') || hex.startsWith('rgb(')) return 0.5;
@@ -130,9 +162,11 @@ function useBaseTheme() {
 }
 
 // ── LINE CHART ─────────────────────────────────────────────────
-export function LineChart({ labels, datasets, yFmt, yMin, yMax, legend = false, maxT = 10, height }) {
+export function LineChart({ labels, datasets, yFmt, yMin, yMax, legend = false, maxT = 10, height, title = 'Gráfico de linhas' }) {
   const baseTheme = useBaseTheme();
   const c = useChartColors();
+
+  const ariaDescription = useMemo(() => generateTrendDescription(datasets, 'line', title), [datasets, title]);
 
   const series = datasets.map(ds => ({
     name: ds.label || '',
@@ -227,16 +261,18 @@ export function LineChart({ labels, datasets, yFmt, yMin, yMax, legend = false, 
   };
 
   return (
-    <div role="img" aria-label="Gráfico de linhas">
+    <div role="img" aria-label={ariaDescription}>
       <ReactApexChart options={options} series={series} type="line" height={height || 300} />
     </div>
   );
 }
 
 // ── BAR CHART ──────────────────────────────────────────────────
-export function BarChart({ labels, datasets, horiz = false, yFmt, xFmt, legend = false, height }) {
+export function BarChart({ labels, datasets, horiz = false, yFmt, xFmt, legend = false, height, title = 'Gráfico de barras' }) {
   const baseTheme = useBaseTheme();
   const c = useChartColors();
+
+  const ariaDescription = useMemo(() => generateTrendDescription(datasets, 'bar', title), [datasets, title]);
 
   const series = datasets.map(ds => ({
     name: ds.label || '',
@@ -313,16 +349,18 @@ export function BarChart({ labels, datasets, horiz = false, yFmt, xFmt, legend =
   };
 
   return (
-    <div role="img" aria-label="Gráfico de barras">
+    <div role="img" aria-label={ariaDescription}>
       <ReactApexChart options={options} series={series} type="bar" height={height || 300} />
     </div>
   );
 }
 
 // ── DONUT CHART ────────────────────────────────────────────────
-export function DonutChart({ labels, data, colors, cutout = '64%', ttFmt, height }) {
+export function DonutChart({ labels, data, colors, cutout = '64%', ttFmt, height, title = 'Gráfico de rosca' }) {
   const baseTheme = useBaseTheme();
   const c = useChartColors();
+
+  const ariaDescription = useMemo(() => generateTrendDescription(data, 'donut', title), [data, title]);
 
   const cutoutNum = parseInt(cutout) || 64;
 
@@ -361,16 +399,18 @@ export function DonutChart({ labels, data, colors, cutout = '64%', ttFmt, height
   };
 
   return (
-    <div role="img" aria-label="Gráfico de rosca">
+    <div role="img" aria-label={ariaDescription}>
       <ReactApexChart options={options} series={data} type="donut" height={height || 220} />
     </div>
   );
 }
 
 // ── SCATTER CHART ──────────────────────────────────────────────
-export function ScatterChart({ datasets, xFmt, yFmt, height }) {
+export function ScatterChart({ datasets, xFmt, yFmt, height, title = 'Gráfico de dispersão' }) {
   const baseTheme = useBaseTheme();
   const c = useChartColors();
+
+  const ariaDescription = useMemo(() => generateTrendDescription(datasets, 'scatter', title), [datasets, title]);
 
   const series = datasets.map(ds => ({
     name: ds.label || '',
@@ -421,16 +461,22 @@ export function ScatterChart({ datasets, xFmt, yFmt, height }) {
   };
 
   return (
-    <div role="img" aria-label="Gráfico de dispersão">
+    <div role="img" aria-label={ariaDescription}>
       <ReactApexChart options={options} series={series} type="scatter" height={height || 300} />
     </div>
   );
 }
 
 // ── DUAL-AXIS CHART ────────────────────────────────────────────
-export function DualChart({ labels, bDs, lDs, height }) {
+export function DualChart({ labels, bDs, lDs, height, title = 'Gráfico de eixo duplo' }) {
   const baseTheme = useBaseTheme();
   const c = useChartColors();
+
+  const ariaDescription = useMemo(() => {
+    const barTotal = bDs.data?.reduce((a, b) => a + b, 0) || 0;
+    const lineAvg = lDs.data?.length ? (lDs.data.reduce((a, b) => a + b, 0) / lDs.data.length).toFixed(1) : 0;
+    return `${title}: barras totalizando ${barTotal.toLocaleString('pt-BR')}, linha com média de ${lineAvg}. ${labels.length} categorias.`;
+  }, [bDs, lDs, labels, title]);
 
   const series = [
     { name: bDs.label || 'Barras', type: 'bar', data: bDs.data },
@@ -476,16 +522,27 @@ export function DualChart({ labels, bDs, lDs, height }) {
   };
 
   return (
-    <div role="img" aria-label="Gráfico de eixo duplo">
+    <div role="img" aria-label={ariaDescription}>
       <ReactApexChart options={options} series={series} type="line" height={height || 320} />
     </div>
   );
 }
 
 // ── RADAR CHART ────────────────────────────────────────────────
-export function RadarChart({ labels, datasets, height }) {
+export function RadarChart({ labels, datasets, height, title = 'Gráfico radar de performance' }) {
   const baseTheme = useBaseTheme();
   const c = useChartColors();
+
+  const ariaDescription = useMemo(() => {
+    const seriesCount = datasets.length;
+    const dimensions = labels.length;
+    const avgValues = datasets.map(ds => ({
+      label: ds.label,
+      avg: ds.data?.length ? (ds.data.reduce((a, b) => a + b, 0) / ds.data.length).toFixed(0) : 0,
+    }));
+    const avgText = avgValues.map(v => `${v.label}: ${v.avg}%`).join(', ');
+    return `${title}: ${seriesCount} séries em ${dimensions} dimensões. Médias: ${avgText}.`;
+  }, [datasets, labels, title]);
 
   const series = datasets.map(ds => ({
     name: ds.label || '',
@@ -529,7 +586,7 @@ export function RadarChart({ labels, datasets, height }) {
   };
 
   return (
-    <div role="img" aria-label="Gráfico radar de performance">
+    <div role="img" aria-label={ariaDescription}>
       <ReactApexChart options={options} series={series} type="radar" height={height || 340} />
     </div>
   );
