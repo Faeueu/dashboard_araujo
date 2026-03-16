@@ -104,7 +104,7 @@ npm run build
 
 # Preview do build de produção
 npm run preview
-
+```
 
 ## Estrutura do Projeto
 
