@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { useDashboard } from '../core/DashboardContext.jsx';
-import { uniq } from '../utils/filters.js';
+import { uniq, lojaDisplay } from '../utils/filters.js';
 import { mes as fmtMes } from '../utils/fmt.js';
 
 const CAMPO_MAP = { loja: 'lojas', mes: 'meses', cat: 'cats' };
 const LABEL_MAP = { loja: 'Loja', mes: 'Mês', cat: 'Categoria' };
-const FORMAT_MAP = { loja: v => v, mes: fmtMes, cat: v => v };
+const FORMAT_MAP = { loja: lojaDisplay, mes: fmtMes, cat: v => v };
 
 function Dropdown({ campo, opcoes, ativos, onToggle, onClear }) {
   const [open, setOpen] = useState(false);

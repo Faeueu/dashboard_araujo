@@ -3,7 +3,7 @@ import PageHeader from '../components/PageHeader.jsx';
 import KpiCard from '../components/KpiCard.jsx';
 import ChartCard from '../components/ChartCard.jsx';
 import { BarChart, RadarChart, useChartColors } from '../components/Charts.jsx';
-import { sum, MORD } from '../utils/filters.js';
+import { sum, MORD, lojaDisplay } from '../utils/filters.js';
 import { brl, pct, mes as fMes } from '../utils/fmt.js';
 
 const LOJAS = ['Araújo Centro', 'Araújo Norte', 'Araújo Sul'];
@@ -65,7 +65,7 @@ export default function P6_Metas() {
         />
         <KpiCard
           label="Melhor Loja"
-          value={totL ? totL.l.replace('Araújo ', '') : '—'}
+          value={totL ? lojaDisplay(totL.l) : '—'}
           sub={totL ? brl(totL.tot) : ''}
         />
       </div>
@@ -79,7 +79,7 @@ export default function P6_Metas() {
           <BarChart
             labels={ma.map(fMes)}
             datasets={LOJAS.map((l, i) => ({
-              label: l.replace('Araújo ', ''),
+              label: lojaDisplay(l),
               data: ma.map(m => Math.round(mm[m]?.[l] || 0)),
               backgroundColor: LCOL[i],
               borderRadius: 6,
@@ -104,7 +104,7 @@ export default function P6_Metas() {
                 return +((r / mt) * 100).toFixed(1);
               });
               return {
-                label: l.replace('Araújo ', ''),
+                label: lojaDisplay(l),
                 data: vs,
                 backgroundColor: vs.map(atCol),
                 borderRadius: 6,
@@ -118,7 +118,7 @@ export default function P6_Metas() {
 
         <ChartCard
           title="Radar de Performance — 5 Dimensões"
-          hint="Centro vs Norte vs Sul · escala 0–120"
+          hint="Araújo vs Primavera vs Marauto · escala 0–120"
         >
           <RadarChart
             labels={[
@@ -130,7 +130,7 @@ export default function P6_Metas() {
             ]}
             datasets={[
               {
-                label: 'Centro',
+                label: 'Araújo',
                 data: [68, 104, 96, 87, 93],
                 borderColor: c.centro,
                 backgroundColor: c.isDark ? 'rgba(239,68,68,.10)' : 'rgba(220,38,38,.08)',
@@ -138,7 +138,7 @@ export default function P6_Metas() {
                 pointBackgroundColor: c.centro,
               },
               {
-                label: 'Norte',
+                label: 'Primavera',
                 data: [73, 108, 98, 90, 91],
                 borderColor: c.norte,
                 backgroundColor: c.isDark ? 'rgba(96,165,250,.08)' : 'rgba(100,116,139,.06)',
@@ -146,7 +146,7 @@ export default function P6_Metas() {
                 pointBackgroundColor: c.norte,
               },
               {
-                label: 'Sul',
+                label: 'Marauto',
                 data: [70, 102, 94, 85, 94],
                 borderColor: c.sul,
                 backgroundColor: c.isDark ? 'rgba(167,139,250,.08)' : 'rgba(30,41,59,.06)',

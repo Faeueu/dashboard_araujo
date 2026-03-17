@@ -2,14 +2,8 @@ import { useFilteredData } from '../core/DashboardContext.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import KpiCard from '../components/KpiCard.jsx';
 import ChartCard from '../components/ChartCard.jsx';
-import {
-  LineChart,
-  BarChart,
-  DonutChart,
-  DualChart,
-  useChartColors,
-} from '../components/Charts.jsx';
-import { sum, aggVendas, semanas, recSemanal } from '../utils/filters.js';
+import { LineChart, BarChart, DonutChart, useChartColors } from '../components/Charts.jsx';
+import { sum, aggVendas, semanas, recSemanal, lojaDisplay } from '../utils/filters.js';
 import { brl, brlFull, pct, dataCurta } from '../utils/fmt.js';
 
 const LOJAS = ['Araújo Centro', 'Araújo Norte', 'Araújo Sul'];
@@ -36,7 +30,7 @@ export default function P1_VisaoGeral() {
   const wks = semanas(vendas);
   const byLj = recSemanal(vendas);
   const lineSeries = LOJAS.map((l, i) => ({
-    label: l.replace('Araújo ', ''),
+    label: lojaDisplay(l),
     data: wks.map(w => Math.round(byLj[l]?.[w] || 0)),
     borderColor: LCOL[i],
     backgroundColor: i === 0 ? c.redD : 'transparent',
@@ -76,9 +70,6 @@ export default function P1_VisaoGeral() {
   });
   const diaArr = DOW_LABELS.map(d => dm[d] || 0);
 
-  // Feature added: linha de meta média semanal
-  const mediaDia = diaArr.reduce((a, b) => a + b, 0) / 7;
-
   return (
     <>
       <PageHeader
@@ -113,7 +104,7 @@ export default function P1_VisaoGeral() {
 
         <ChartCard title="Participação por Loja" hint="Receita total acumulada no período">
           <BarChart
-            labels={byLoja.map(d => d.label.replace('Araújo ', ''))}
+            labels={byLoja.map(d => lojaDisplay(d.label))}
             datasets={barSeriesLoja}
             horiz
             xFmt={(v, { dataPointIndex }) => {
@@ -167,32 +158,20 @@ export default function P1_VisaoGeral() {
           </div>
         </ChartCard>
 
-        {/* Feature added: Linha de Média Diária usando DualChart */}
-        <ChartCard
-          title="Receita por Dia da Semana"
-          hint="Sábado e domingo destacados em vermelho · Média em linha"
-        >
-          <DualChart
+        <ChartCard title="Receita por Dia da Semana" hint="Sábado e domingo destacados em vermelho">
+          <BarChart
             labels={DOW_LABELS}
+            datasets={[
+              {
+                data: DOW_LABELS.map(d => Math.round(dm[d] || 0)),
+                backgroundColor: DOW_LABELS.map((_, i) =>
+                  i === 5 ? c.red : i === 6 ? c.red2 : c.bar
+                ),
+                borderRadius: 6,
+              },
+            ]}
+            yFmt={v => brl(v)}
             height={310}
-            bDs={{
-              type: 'bar',
-              label: 'Receita Diária',
-              data: DOW_LABELS.map(d => Math.round(dm[d] || 0)),
-              backgroundColor: DOW_LABELS.map((_, i) =>
-                i === 5 ? c.red : i === 6 ? c.red2 : c.bar
-              ),
-              borderRadius: 6,
-              yFmt: v => brl(v),
-            }}
-            lDs={{
-              type: 'line',
-              label: 'Média Semanal',
-              data: Array(7).fill(Math.round(mediaDia)),
-              borderColor: c.text3,
-              borderDash: [5, 4],
-              yFmt: v => brl(v),
-            }}
           />
         </ChartCard>
       </div>

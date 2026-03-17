@@ -3,7 +3,7 @@ import PageHeader from '../components/PageHeader.jsx';
 import KpiCard from '../components/KpiCard.jsx';
 import ChartCard from '../components/ChartCard.jsx';
 import { LineChart, BarChart, useChartColors } from '../components/Charts.jsx';
-import { sum, wk } from '../utils/filters.js';
+import { sum, wk, lojaDisplay } from '../utils/filters.js';
 import { brl, brlFull, dataCurta } from '../utils/fmt.js';
 
 function tkSem(atend) {
@@ -193,7 +193,7 @@ export default function P2_Ticket() {
               <tbody>
                 {L.map(l => (
                   <tr key={l}>
-                    <td className="hl">{l.replace('Araújo ', '')}</td>
+                    <td className="hl">{lojaDisplay(l)}</td>
                     {V[l].map((v, idx) => (
                       <td key={idx} style={{ background: hc(v).bg, color: hc(v).text }}>
                         R${v}

@@ -129,3 +129,13 @@ export function wk(dateStr) {
 
 // Ordem dos meses para o dashboard
 export const MORD = ['2025-12', '2026-01', '2026-02', '2026-03'];
+
+// Mapeamento de nomes internos → nomes de exibição das lojas
+export const LOJA_DISPLAY = {
+  'Araújo Centro': 'Araújo',
+  'Araújo Norte': 'Primavera',
+  'Araújo Sul': 'Marauto',
+};
+
+// Conveniente: recebe nome interno, retorna display
+export const lojaDisplay = nome => LOJA_DISPLAY[nome] || nome;

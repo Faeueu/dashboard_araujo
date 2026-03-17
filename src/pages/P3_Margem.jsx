@@ -3,7 +3,7 @@ import PageHeader from '../components/PageHeader.jsx';
 import KpiCard from '../components/KpiCard.jsx';
 import ChartCard from '../components/ChartCard.jsx';
 import { BarChart, ScatterChart, useChartColors } from '../components/Charts.jsx';
-import { sum, MORD } from '../utils/filters.js';
+import { sum, MORD, lojaDisplay } from '../utils/filters.js';
 import { brl, pct, mes as fMes } from '../utils/fmt.js';
 
 const LOJAS = ['Araújo Centro', 'Araújo Norte', 'Araújo Sul'];
@@ -117,7 +117,7 @@ export default function P3_Margem() {
           <BarChart
             labels={ma.map(fMes)}
             datasets={LOJAS.map((l, i) => ({
-              label: l.replace('Araújo ', ''),
+              label: lojaDisplay(l),
               data: ma.map(m => Math.round(mm[m]?.[l] || 0)),
               backgroundColor: LCOL[i],
               borderRadius: 6,
