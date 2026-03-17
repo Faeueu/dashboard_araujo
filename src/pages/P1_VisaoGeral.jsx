@@ -68,7 +68,6 @@ export default function P1_VisaoGeral() {
   vendas.forEach(v => {
     dm[v.dow] = (dm[v.dow] || 0) + v.rec;
   });
-  const diaArr = DOW_LABELS.map(d => dm[d] || 0);
 
   return (
     <>
