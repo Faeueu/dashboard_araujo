@@ -2,32 +2,28 @@
  * supabase.js — Cliente Supabase para o dashboard.
  * Usa variáveis de ambiente Vite (VITE_SUPABASE_*).
  */
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn(
-    "⚠ Supabase não configurado. Defina VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY no .env",
+    '⚠ Supabase não configurado. Defina VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY no .env'
   );
 }
 
 export const supabase =
-  supabaseUrl && supabaseAnonKey
-    ? createClient(supabaseUrl, supabaseAnonKey)
-    : null;
+  supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
 /**
  * Busca receita + margem por loja e mês (view agregada)
  */
 export async function fetchReceitaLojaMes() {
   if (!supabase) return [];
-  const { data, error } = await supabase
-    .from("vw_receita_loja_mes")
-    .select("*");
+  const { data, error } = await supabase.from('vw_receita_loja_mes').select('*');
   if (error) {
-    console.error("Erro ao buscar receita:", error);
+    console.error('Erro ao buscar receita:', error);
     return [];
   }
   return data;
@@ -38,11 +34,9 @@ export async function fetchReceitaLojaMes() {
  */
 export async function fetchReceitaCategoriaMes() {
   if (!supabase) return [];
-  const { data, error } = await supabase
-    .from("vw_receita_categoria_mes")
-    .select("*");
+  const { data, error } = await supabase.from('vw_receita_categoria_mes').select('*');
   if (error) {
-    console.error("Erro ao buscar categorias:", error);
+    console.error('Erro ao buscar categorias:', error);
     return [];
   }
   return data;
@@ -53,12 +47,12 @@ export async function fetchReceitaCategoriaMes() {
  */
 export async function fetchDRO(loja, mes) {
   if (!supabase) return [];
-  let query = supabase.from("vw_dro_resumo").select("*");
-  if (loja) query = query.eq("loja", loja);
-  if (mes) query = query.eq("mes", mes);
+  let query = supabase.from('vw_dro_resumo').select('*');
+  if (loja) query = query.eq('loja', loja);
+  if (mes) query = query.eq('mes', mes);
   const { data, error } = await query;
   if (error) {
-    console.error("Erro ao buscar DRO:", error);
+    console.error('Erro ao buscar DRO:', error);
     return [];
   }
   return data;
@@ -71,7 +65,7 @@ export async function fetchDRO(loja, mes) {
 export async function fetchVendasPeriodo(filtros = {}) {
   if (!supabase) return [];
   let query = supabase
-    .from("vendas_periodo")
+    .from('vendas_periodo')
     .select(
       `
       *,
@@ -79,16 +73,16 @@ export async function fetchVendasPeriodo(filtros = {}) {
         categorias (codigo_mercadologico, departamento, secao, grupo)
       ),
       lojas!inner (nome_display, codigo)
-    `,
+    `
     )
-    .order("venda", { ascending: false });
+    .order('venda', { ascending: false });
 
-  if (filtros.loja_id) query = query.eq("loja_id", filtros.loja_id);
-  if (filtros.mes) query = query.eq("mes", filtros.mes);
+  if (filtros.loja_id) query = query.eq('loja_id', filtros.loja_id);
+  if (filtros.mes) query = query.eq('mes', filtros.mes);
 
   const { data, error } = await query;
   if (error) {
-    console.error("Erro ao buscar vendas:", error);
+    console.error('Erro ao buscar vendas:', error);
     return [];
   }
   return data;
@@ -99,11 +93,9 @@ export async function fetchVendasPeriodo(filtros = {}) {
  */
 export async function fetchEstoqueStatus() {
   if (!supabase) return [];
-  const { data, error } = await supabase
-    .from("vw_estoque_status")
-    .select("*");
+  const { data, error } = await supabase.from('vw_estoque_status').select('*');
   if (error) {
-    console.error("Erro ao buscar estoque:", error);
+    console.error('Erro ao buscar estoque:', error);
     return [];
   }
   return data;
@@ -115,21 +107,21 @@ export async function fetchEstoqueStatus() {
 export async function fetchValidade(filtros = {}) {
   if (!supabase) return [];
   let query = supabase
-    .from("validade")
+    .from('validade')
     .select(
       `
       *,
       produtos (codigo, descricao),
       lojas (nome_display)
-    `,
+    `
     )
-    .order("dias_restantes", { ascending: true });
+    .order('dias_restantes', { ascending: true });
 
-  if (filtros.loja_id) query = query.eq("loja_id", filtros.loja_id);
+  if (filtros.loja_id) query = query.eq('loja_id', filtros.loja_id);
 
   const { data, error } = await query;
   if (error) {
-    console.error("Erro ao buscar validade:", error);
+    console.error('Erro ao buscar validade:', error);
     return [];
   }
   return data;
@@ -140,12 +132,9 @@ export async function fetchValidade(filtros = {}) {
  */
 export async function fetchLojas() {
   if (!supabase) return [];
-  const { data, error } = await supabase
-    .from("lojas")
-    .select("*")
-    .order("id");
+  const { data, error } = await supabase.from('lojas').select('*').order('id');
   if (error) {
-    console.error("Erro ao buscar lojas:", error);
+    console.error('Erro ao buscar lojas:', error);
     return [];
   }
   return data;
@@ -157,22 +146,22 @@ export async function fetchLojas() {
 export async function fetchMovimentacao(filtros = {}) {
   if (!supabase) return [];
   let query = supabase
-    .from("movimentacao")
+    .from('movimentacao')
     .select(
       `
       *,
       produtos (codigo, descricao),
       lojas (nome_display)
-    `,
+    `
     )
-    .order("valor_venda", { ascending: false });
+    .order('valor_venda', { ascending: false });
 
-  if (filtros.loja_id) query = query.eq("loja_id", filtros.loja_id);
-  if (filtros.mes) query = query.eq("mes", filtros.mes);
+  if (filtros.loja_id) query = query.eq('loja_id', filtros.loja_id);
+  if (filtros.mes) query = query.eq('mes', filtros.mes);
 
   const { data, error } = await query;
   if (error) {
-    console.error("Erro ao buscar movimentação:", error);
+    console.error('Erro ao buscar movimentação:', error);
     return [];
   }
   return data;
