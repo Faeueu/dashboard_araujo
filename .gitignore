@@ -27,3 +27,13 @@ desktop.ini
 .cache/
 .temp/
 *.tsbuildinfo
+
+# ETL Python
+etl/.env
+etl/__pycache__/
+etl/_inspection_result.json
+dados/
+
+# Python
+__pycache__/
+*.pyc
